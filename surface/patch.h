@@ -2,6 +2,7 @@
 
 #include "indexgen.h"
 #include "mathutils.h"
+#include "contig_vector.h"
 
 #include <functional>
 #include <memory>
@@ -21,6 +22,8 @@ namespace planet_engine
 	swc				 sec
 	*/
 
+	struct patch;
+
 	struct vertex
 	{
 		// Vertex position
@@ -35,6 +38,8 @@ namespace planet_engine
 	{
 		double planet_radius;
 		std::function<double(double, double, double)> noise_func;
+		contig_vector<std::shared_ptr<patch>> leaf_patches;
+		contig_vector<std::shared_ptr<patch>> leaf_parents;
 	};
 
 	struct patch : std::enable_shared_from_this<patch>
@@ -54,7 +59,7 @@ namespace planet_engine
 			unsigned int level;
 			double side_len;
 			std::weak_ptr<patch> parent;
-			const planet_data* data;
+			planet_data* data;
 		};
 		struct mesh
 		{
@@ -78,7 +83,7 @@ namespace planet_engine
 		unsigned int level;  // Level within the quadtree
 		double side_len;     // Side lenght of the patch
 
-		const planet_data* data;
+		planet_data* data;
 
 		std::weak_ptr<patch> parent;
 
