@@ -125,11 +125,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="contig_vector.h" />
     <ClInclude Include="indexgen.h" />
+    <ClInclude Include="mathutils.h" />
     <ClInclude Include="patch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="indexgen.cpp" />
+    <ClCompile Include="patch.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

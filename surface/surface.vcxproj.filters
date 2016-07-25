@@ -21,9 +21,18 @@
     <ClInclude Include="indexgen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="mathutils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="contig_vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="indexgen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="patch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
