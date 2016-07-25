@@ -6,6 +6,7 @@
 
 #include <functional>
 #include <memory>
+#include <queue>
 
 namespace planet_engine
 {
@@ -40,6 +41,8 @@ namespace planet_engine
 		std::function<double(double, double, double)> noise_func;
 		contig_vector<std::shared_ptr<patch>> leaf_patches;
 		contig_vector<std::shared_ptr<patch>> leaf_parents;
+		std::queue<std::shared_ptr<patch>> to_subdivide;
+		std::queue<std::shared_ptr<patch>> to_merge;
 	};
 
 	struct patch : std::enable_shared_from_this<patch>
@@ -104,7 +107,6 @@ namespace planet_engine
 			pos = to_sphere(nwc + nec + swc + sec, data->planet_radius);
 		}
 
-	private:
 		std::shared_ptr<mesh> gen_mesh();
 	};
 }
