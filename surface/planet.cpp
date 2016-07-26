@@ -38,5 +38,9 @@ namespace planet_engine
 		sides[4] = std::make_shared<patch>(info);
 
 		set_info(info, dvec3(radius, -radius, -radius), dvec3(radius, radius, -radius), dvec3(radius, -radius, radius), dvec3(radius, radius, radius));
+		sides[5] = std::make_shared<patch>(info);
+
+		for (size_t i = 0; i < 6; ++i)
+			data->leaf_patches.push_back(sides[i]->gen_mesh());
 	}
 }

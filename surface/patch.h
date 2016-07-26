@@ -26,7 +26,7 @@ namespace planet_engine
 	struct patch;
 	struct planet_data;
 
-	struct vertex
+	struct mesh_vertex
 	{
 		// Vertex position
 		glm::fvec3 vertex;
@@ -57,7 +57,7 @@ namespace planet_engine
 		};
 		struct mesh
 		{
-			vertex data[NUM_VERTICES];    // Vertex data
+			mesh_vertex* data;                 // Vertex data
 			double farthest_vertex;       // Distance from adj_pos to the farthest vertex
 			glm::dvec3 adj_pos;           // Position adjusted for terrain height
 			std::shared_ptr<patch> patch; // Patch that this mesh was generated for
@@ -73,6 +73,25 @@ namespace planet_engine
 				static constexpr double MULT = 1.0 / (2.5 * 2.5);
 
 				return length2(cam_pos - adj_pos) * MULT > farthest_vertex * farthest_vertex;
+			}
+
+			mesh() :
+				data(nullptr)
+			{
+
+			}
+			mesh(mesh&& m) :
+				data(m.data),
+				farthest_vertex(m.farthest_vertex),
+				adj_pos(m.adj_pos),
+				patch(m.patch)
+			{
+				m.data = nullptr;
+			}
+
+			~mesh()
+			{
+				delete[] data;
 			}
 		};
 
@@ -94,26 +113,12 @@ namespace planet_engine
 
 		std::weak_ptr<patch> parent;
 
-		patch(const info& info) :
-			nw(nullptr),
-			ne(nullptr),
-			sw(nullptr),
-			se(nullptr),
-			nwc(info.nwc),
-			nec(info.nec),
-			swc(info.swc),
-			sec(info.sec),
-			level(info.level),
-			data(info.data),
-			parent(info.parent)
-		{
-			pos = to_sphere(nwc + nec + swc + sec, data->planet_radius);
-		}
+		patch(const info& info);
 
 		void split();
 		void merge();
 
-		std::shared_ptr<mesh> gen_mesh() const;
+		std::shared_ptr<mesh> gen_mesh();
 		bool is_leaf() const
 		{
 			return !nw;

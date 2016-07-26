@@ -8,12 +8,13 @@ namespace planet_engine
 	using glm::fvec3;
 	using glm::normalize;
 
-	std::shared_ptr<patch::mesh> patch::gen_mesh() const
+	std::shared_ptr<patch::mesh> patch::gen_mesh()
 	{
 		static constexpr double INTERP = 1.0 / (SIDE_LEN - 1);
 
 		patch::mesh* mesh_ptr = new mesh;
 
+		mesh_ptr->data = new mesh_vertex[NUM_VERTICES];
 		mesh_ptr->patch = this->shared_from_this();
 		mesh_ptr->adj_pos = glm::normalize(pos) * data->noise_func(pos.x, pos.y, pos.z) + pos;
 		mesh_ptr->farthest_vertex = std::numeric_limits<float>::max();
@@ -132,5 +133,21 @@ namespace planet_engine
 	void patch::merge()
 	{
 		nw = ne = sw = se = nullptr;
+	}
+
+	patch::patch(const info& info) :
+		nw(nullptr),
+		ne(nullptr),
+		sw(nullptr),
+		se(nullptr),
+		nwc(info.nwc),
+		nec(info.nec),
+		swc(info.swc),
+		sec(info.sec),
+		level(info.level),
+		data(info.data),
+		parent(info.parent)
+	{
+		pos = to_sphere(nwc + nec + swc + sec, data->planet_radius);
 	}
 }
