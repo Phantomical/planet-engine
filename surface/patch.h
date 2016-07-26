@@ -24,6 +24,7 @@ namespace planet_engine
 	*/
 
 	struct patch;
+	struct planet_data;
 
 	struct vertex
 	{
@@ -35,15 +36,6 @@ namespace planet_engine
 		float displacement;
 	};
 
-	struct planet_data
-	{
-		double planet_radius;
-		std::function<double(double, double, double)> noise_func;
-		contig_vector<std::shared_ptr<patch>> leaf_patches;
-		contig_vector<std::shared_ptr<patch>> leaf_parents;
-		std::queue<std::shared_ptr<patch>> to_subdivide;
-		std::queue<std::shared_ptr<patch>> to_merge;
-	};
 
 	struct patch : std::enable_shared_from_this<patch>
 	{
@@ -60,15 +52,28 @@ namespace planet_engine
 			glm::dvec3 sec;
 			glm::dvec3 swc;
 			unsigned int level;
-			double side_len;
 			std::weak_ptr<patch> parent;
-			planet_data* data;
+			std::shared_ptr<planet_data> data;
 		};
 		struct mesh
 		{
-			vertex data[NUM_VERTICES]; // Vertex data
-			double farthest_vertex;    // Distance from adj_pos to the farthest vertex
-			glm::dvec3 adj_pos;        // Position adjusted for terrain height
+			vertex data[NUM_VERTICES];    // Vertex data
+			double farthest_vertex;       // Distance from adj_pos to the farthest vertex
+			glm::dvec3 adj_pos;           // Position adjusted for terrain height
+			std::shared_ptr<patch> patch; // Patch that this mesh was generated for
+
+			bool should_subdivide(const glm::dvec3& cam_pos)
+			{
+				static constexpr double MULT = 1.0 / (2.5 * 2.5);
+
+				return length2(cam_pos - adj_pos) * MULT < farthest_vertex * farthest_vertex;
+			}
+			bool should_merge(const glm::dvec3& cam_pos)
+			{
+				static constexpr double MULT = 1.0 / (2.5 * 2.5);
+
+				return length2(cam_pos - adj_pos) * MULT > farthest_vertex * farthest_vertex;
+			}
 		};
 
 		std::shared_ptr<patch> nw;
@@ -84,9 +89,8 @@ namespace planet_engine
 		glm::dvec3 pos; // Position in planet space
 
 		unsigned int level;  // Level within the quadtree
-		double side_len;     // Side lenght of the patch
 
-		planet_data* data;
+		std::shared_ptr<planet_data> data;
 
 		std::weak_ptr<patch> parent;
 
@@ -100,13 +104,29 @@ namespace planet_engine
 			swc(info.swc),
 			sec(info.sec),
 			level(info.level),
-			side_len(info.side_len),
 			data(info.data),
 			parent(info.parent)
 		{
 			pos = to_sphere(nwc + nec + swc + sec, data->planet_radius);
 		}
 
-		std::shared_ptr<mesh> gen_mesh();
+		void split();
+		void merge();
+
+		std::shared_ptr<mesh> gen_mesh() const;
+		bool is_leaf() const
+		{
+			return !nw;
+		}
+	};
+
+	struct planet_data
+	{
+		double planet_radius;
+		std::function<double(double, double, double)> noise_func;
+		contig_vector<std::shared_ptr<patch::mesh>> leaf_patches;
+		contig_vector<std::shared_ptr<patch::mesh>> leaf_parents;
+		std::queue<std::shared_ptr<patch>> to_subdivide;
+		std::queue<std::shared_ptr<patch>> to_merge;
 	};
 }

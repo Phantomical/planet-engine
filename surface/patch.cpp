@@ -8,12 +8,13 @@ namespace planet_engine
 	using glm::fvec3;
 	using glm::normalize;
 
-	std::shared_ptr<patch::mesh> patch::gen_mesh()
+	std::shared_ptr<patch::mesh> patch::gen_mesh() const
 	{
 		static constexpr double INTERP = 1.0 / (SIDE_LEN - 1);
 
 		patch::mesh* mesh_ptr = new mesh;
 
+		mesh_ptr->patch = this->shared_from_this();
 		mesh_ptr->adj_pos = glm::normalize(pos) * data->noise_func(pos.x, pos.y, pos.z) + pos;
 		mesh_ptr->farthest_vertex = std::numeric_limits<float>::max();
 
@@ -34,14 +35,14 @@ namespace planet_engine
 				double displacement = data->noise_func(vtx.x, vtx.y, vtx.z);
 				vtx += nvtx * displacement;
 				//Assign vertex position
-				mesh_ptr->data[x * SIDE_LEN + y].vertex = (fvec3)(vtx-mesh_ptr->adj_pos);
+				mesh_ptr->data[x * SIDE_LEN + y].vertex = (fvec3)(vtx - mesh_ptr->adj_pos);
 				// Texture coordinate is for cubemap textures only
 				mesh_ptr->data[x * SIDE_LEN + y].texcoord = (fvec3)nvtx;
 				// Assign displacement value
 				mesh_ptr->data[x * SIDE_LEN + y].displacement = (float)displacement;
 
 				mesh_ptr->farthest_vertex = std::max<double>(
-					length2(mesh_ptr->data[x * SIDE_LEN + y].vertex), 
+					length2(mesh_ptr->data[x * SIDE_LEN + y].vertex),
 					mesh_ptr->farthest_vertex);
 			}
 		}
@@ -95,5 +96,41 @@ namespace planet_engine
 		//TODO: Normal calculations for lighting
 
 		return std::shared_ptr<mesh>(mesh_ptr);
+	}
+
+	void patch::split()
+	{
+		info info;
+		info.data = data;
+		info.level = level + 1;
+		info.parent = shared_from_this();
+		dvec3 centre = (nwc + nec + swc + sec) * 0.25;
+
+		info.nwc = nwc;
+		info.nec = (nwc + nec) * 0.5;
+		info.swc = (nwc + swc) * 0.5;
+		info.sec = centre;
+		nw = std::make_shared<patch>(info);
+
+		info.nwc = (nwc + nec) * 0.5;
+		info.nec = nec;
+		info.swc = centre;
+		info.sec = (nec + sec) * 0.5;
+		ne = std::make_shared<patch>(info);
+
+		info.nwc = (nwc + swc) * 0.5;
+		info.nec = centre;
+		info.swc = swc;
+		info.sec = (swc + sec) * 0.5;
+		sw = std::make_shared<patch>(info);
+
+		info.nwc = centre;
+		info.nec = (nec + sec) * 0.5;
+		info.swc = (swc + sec) * 0.5;
+		info.sec = sec;
+	}
+	void patch::merge()
+	{
+		nw = ne = sw = se = nullptr;
 	}
 }
