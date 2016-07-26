@@ -10,5 +10,7 @@ namespace planet_engine
 		std::shared_ptr<planet_data> data;
 
 		planet(double radius, const std::function<double(double, double, double)>& noise_func);
+
+		void update(const glm::dvec3& cam_pos);
 	};
 }

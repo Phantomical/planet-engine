@@ -43,4 +43,23 @@ namespace planet_engine
 		for (size_t i = 0; i < 6; ++i)
 			data->leaf_patches.push_back(sides[i]->gen_mesh());
 	}
+
+	void planet::update(const glm::dvec3& cam_pos)
+	{
+		for (auto& leaf : data->leaf_patches)
+		{
+			if (leaf->should_subdivide(cam_pos))
+			{
+				data->to_subdivide.push(leaf->patch);
+			}
+		}
+
+		for (auto& lp : data->leaf_parents)
+		{
+			if (lp->should_merge(cam_pos))
+			{
+				data->to_merge.push(lp->patch);
+			}
+		}
+	}
 }
