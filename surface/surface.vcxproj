@@ -129,10 +129,12 @@
     <ClInclude Include="indexgen.h" />
     <ClInclude Include="mathutils.h" />
     <ClInclude Include="patch.h" />
+    <ClInclude Include="planet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="indexgen.cpp" />
     <ClCompile Include="patch.cpp" />
+    <ClCompile Include="planet.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
