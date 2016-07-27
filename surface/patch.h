@@ -63,32 +63,13 @@ namespace planet_engine
 			{
 				static constexpr double MULT = 1.0 / (2.5 * 2.5);
 
-				return length2(cam_pos - adj_pos) * MULT < farthest_vertex * farthest_vertex;
+				return length2(cam_pos - pos) * MULT < farthest_vertex * farthest_vertex;
 			}
 			bool should_merge(const glm::dvec3& cam_pos)
 			{
 				static constexpr double MULT = 1.0 / (2.5 * 2.5);
 
-				return length2(cam_pos - adj_pos) * MULT > farthest_vertex * farthest_vertex;
-			}
-
-			mesh() :
-				data(nullptr)
-			{
-
-			}
-			mesh(mesh&& m) :
-				data(m.data),
-				farthest_vertex(m.farthest_vertex),
-				adj_pos(m.adj_pos),
-				patch(m.patch)
-			{
-				m.data = nullptr;
-			}
-
-			~mesh()
-			{
-				delete[] data;
+				return length2(cam_pos - pos) * MULT > farthest_vertex * farthest_vertex;
 			}
 		};
 
@@ -115,7 +96,6 @@ namespace planet_engine
 		void split();
 		void merge();
 
-		std::shared_ptr<mesh> gen_mesh();
 		bool is_leaf() const
 		{
 			return !nw;
@@ -127,7 +107,7 @@ namespace planet_engine
 		double planet_radius;
 		contig_vector<std::shared_ptr<patch::mesh>> leaf_patches;
 		contig_vector<std::shared_ptr<patch::mesh>> leaf_parents;
-		std::queue<std::shared_ptr<patch>> to_subdivide;
-		std::queue<std::shared_ptr<patch>> to_merge;
+		std::vector<std::shared_ptr<patch>> to_subdivide;
+		std::vector<std::shared_ptr<patch>> to_merge;
 	};
 }

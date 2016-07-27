@@ -1,12 +1,12 @@
 #version 430
 
-layout(std430, binding = 0) buffer GeneratorInputs
+layout(std140, binding = 0) uniform GeneratorInputs
 {
-	dvec3 pos;
-	dvec3 nwc;
-	dvec3 nec;
-	dvec3 swc;
-	dvec3 sec;
+	dvec4 pos;
+	dvec4 nwc;
+	dvec4 nec;
+	dvec4 swc;
+	dvec4 sec;
 	double planet_radius;
 	double skirt_depth;
 	double scale;
@@ -24,6 +24,15 @@ dvec3 to_sphere(dvec3 v)
 {
 	return planet_radius * normalize(v);
 }
+
+#define pos GeneratorInputs.pos.xyz
+#define nwc GeneratorInputs.nwc.xyz
+#define nec GeneratorInputs.nec.xyz
+#define swc GeneratorInputs.swc.xyz
+#define sec GeneratorInputs.sec.xyz
+#define planet_radius GeneratorInputs.planet_radius
+#define skirt_depth GeneratorInputs.skirt_depth
+#define scale GeneratorInputs.scale
 
 void main()
 {

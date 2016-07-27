@@ -49,7 +49,7 @@ namespace planet_engine
 		{
 			if (leaf->should_subdivide(cam_pos))
 			{
-				data->to_subdivide.push(leaf->patch);
+				data->to_subdivide.push_back(leaf->patch);
 			}
 		}
 
@@ -57,7 +57,7 @@ namespace planet_engine
 		{
 			if (lp->should_merge(cam_pos))
 			{
-				data->to_merge.push(lp->patch);
+				data->to_merge.push_back(lp->patch);
 			}
 		}
 	}

@@ -8,18 +8,6 @@ namespace planet_engine
 	using glm::fvec3;
 	using glm::normalize;
 
-	std::shared_ptr<patch::mesh> patch::gen_mesh()
-	{
-		static constexpr double INTERP = 1.0 / (SIDE_LEN - 1);
-
-		patch::mesh* mesh_ptr = new mesh;
-
-		mesh_ptr->patch = this->shared_from_this();
-		mesh_ptr->pos = pos;
-
-		return std::shared_ptr<mesh>(mesh_ptr);
-	}
-
 	void patch::split()
 	{
 		info info;

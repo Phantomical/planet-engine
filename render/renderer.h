@@ -8,7 +8,7 @@
 
 namespace planet_engine
 {
-	struct renderer_data
+	struct render_data
 	{
 		GLuint mesh_buffer;
 		glm::dvec3 pos;
@@ -36,11 +36,13 @@ namespace planet_engine
 	public:
 		std::shared_ptr<planet_data> data;
 		planet planet;
-		std::map<std::shared_ptr<patch>, renderer_data> parent_map;
-		std::map<std::shared_ptr<patch>, renderer_data> rendermap;
-		std::deque<std::tuple<std::shared_ptr<patch>, GLuint, GLuint>> gen_results;
+		std::map<std::shared_ptr<patch>, render_data> parent_map;
+		std::map<std::shared_ptr<patch>, render_data> rendermap;
 		bool keep_meshes;
-
+		GLuint dummy_buffer;
+		GLuint meshgen_program;
+		GLuint uniform_index;
+		
 		void update(const glm::dvec3& cam_pos);
 	};
 	
