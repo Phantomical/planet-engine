@@ -86,7 +86,7 @@ static PROC WinGetProcAddress(const char *name)
 #endif
 
 int ogl_ext_ARB_gpu_shader_fp64 = 0;
-int ogl_ext_EXT_vertex_attrib_64bit = 0;
+int ogl_ext_ARB_vertex_attrib_64bit = 0;
 
 /* Extension: ARB_gpu_shader_fp64*/
 typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETUNIFORMDVPROC)(GLuint, GLint, GLdouble *);
@@ -126,27 +126,27 @@ static void CODEGEN_FUNCPTR Switch_UniformMatrix4x2dv(GLint location, GLsizei co
 typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLUNIFORMMATRIX4X3DVPROC)(GLint, GLsizei, GLboolean, const GLdouble *);
 static void CODEGEN_FUNCPTR Switch_UniformMatrix4x3dv(GLint location, GLsizei count, GLboolean transpose, const GLdouble * value);
 
-/* Extension: EXT_vertex_attrib_64bit*/
-typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETVERTEXATTRIBLDVEXTPROC)(GLuint, GLenum, GLdouble *);
-static void CODEGEN_FUNCPTR Switch_GetVertexAttribLdvEXT(GLuint index, GLenum pname, GLdouble * params);
-typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBL1DEXTPROC)(GLuint, GLdouble);
-static void CODEGEN_FUNCPTR Switch_VertexAttribL1dEXT(GLuint index, GLdouble x);
-typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBL1DVEXTPROC)(GLuint, const GLdouble *);
-static void CODEGEN_FUNCPTR Switch_VertexAttribL1dvEXT(GLuint index, const GLdouble * v);
-typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBL2DEXTPROC)(GLuint, GLdouble, GLdouble);
-static void CODEGEN_FUNCPTR Switch_VertexAttribL2dEXT(GLuint index, GLdouble x, GLdouble y);
-typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBL2DVEXTPROC)(GLuint, const GLdouble *);
-static void CODEGEN_FUNCPTR Switch_VertexAttribL2dvEXT(GLuint index, const GLdouble * v);
-typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBL3DEXTPROC)(GLuint, GLdouble, GLdouble, GLdouble);
-static void CODEGEN_FUNCPTR Switch_VertexAttribL3dEXT(GLuint index, GLdouble x, GLdouble y, GLdouble z);
-typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBL3DVEXTPROC)(GLuint, const GLdouble *);
-static void CODEGEN_FUNCPTR Switch_VertexAttribL3dvEXT(GLuint index, const GLdouble * v);
-typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBL4DEXTPROC)(GLuint, GLdouble, GLdouble, GLdouble, GLdouble);
-static void CODEGEN_FUNCPTR Switch_VertexAttribL4dEXT(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBL4DVEXTPROC)(GLuint, const GLdouble *);
-static void CODEGEN_FUNCPTR Switch_VertexAttribL4dvEXT(GLuint index, const GLdouble * v);
-typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBLPOINTEREXTPROC)(GLuint, GLint, GLenum, GLsizei, const void *);
-static void CODEGEN_FUNCPTR Switch_VertexAttribLPointerEXT(GLuint index, GLint size, GLenum type, GLsizei stride, const void * pointer);
+/* Extension: ARB_vertex_attrib_64bit*/
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETVERTEXATTRIBLDVPROC)(GLuint, GLenum, GLdouble *);
+static void CODEGEN_FUNCPTR Switch_GetVertexAttribLdv(GLuint index, GLenum pname, GLdouble * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBL1DPROC)(GLuint, GLdouble);
+static void CODEGEN_FUNCPTR Switch_VertexAttribL1d(GLuint index, GLdouble x);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBL1DVPROC)(GLuint, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_VertexAttribL1dv(GLuint index, const GLdouble * v);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBL2DPROC)(GLuint, GLdouble, GLdouble);
+static void CODEGEN_FUNCPTR Switch_VertexAttribL2d(GLuint index, GLdouble x, GLdouble y);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBL2DVPROC)(GLuint, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_VertexAttribL2dv(GLuint index, const GLdouble * v);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBL3DPROC)(GLuint, GLdouble, GLdouble, GLdouble);
+static void CODEGEN_FUNCPTR Switch_VertexAttribL3d(GLuint index, GLdouble x, GLdouble y, GLdouble z);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBL3DVPROC)(GLuint, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_VertexAttribL3dv(GLuint index, const GLdouble * v);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBL4DPROC)(GLuint, GLdouble, GLdouble, GLdouble, GLdouble);
+static void CODEGEN_FUNCPTR Switch_VertexAttribL4d(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBL4DVPROC)(GLuint, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_VertexAttribL4dv(GLuint index, const GLdouble * v);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBLPOINTERPROC)(GLuint, GLint, GLenum, GLsizei, const void *);
+static void CODEGEN_FUNCPTR Switch_VertexAttribLPointer(GLuint index, GLint size, GLenum type, GLsizei stride, const void * pointer);
 
 /* Extension: 1.0*/
 typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBLENDFUNCPROC)(GLenum, GLenum);
@@ -265,6 +265,8 @@ typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDRAWELEMENTSPROC)(GLenum, GLsizei, GLe
 static void CODEGEN_FUNCPTR Switch_DrawElements(GLenum mode, GLsizei count, GLenum type, const void * indices);
 typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGENTEXTURESPROC)(GLsizei, GLuint *);
 static void CODEGEN_FUNCPTR Switch_GenTextures(GLsizei n, GLuint * textures);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETPOINTERVPROC)(GLenum, void **);
+static void CODEGEN_FUNCPTR Switch_GetPointerv(GLenum pname, void ** params);
 typedef GLboolean (CODEGEN_FUNCPTR *PFN_PTRC_GLISTEXTUREPROC)(GLuint);
 static GLboolean CODEGEN_FUNCPTR Switch_IsTexture(GLuint texture);
 typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPOLYGONOFFSETPROC)(GLfloat, GLfloat);
@@ -860,6 +862,578 @@ static void CODEGEN_FUNCPTR Switch_VertexAttribP4ui(GLuint index, GLenum type, G
 typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBP4UIVPROC)(GLuint, GLenum, GLboolean, const GLuint *);
 static void CODEGEN_FUNCPTR Switch_VertexAttribP4uiv(GLuint index, GLenum type, GLboolean normalized, const GLuint * value);
 
+/* Extension: 4.0*/
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBEGINQUERYINDEXEDPROC)(GLenum, GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_BeginQueryIndexed(GLenum target, GLuint index, GLuint id);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBINDTRANSFORMFEEDBACKPROC)(GLenum, GLuint);
+static void CODEGEN_FUNCPTR Switch_BindTransformFeedback(GLenum target, GLuint id);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBLENDEQUATIONSEPARATEIPROC)(GLuint, GLenum, GLenum);
+static void CODEGEN_FUNCPTR Switch_BlendEquationSeparatei(GLuint buf, GLenum modeRGB, GLenum modeAlpha);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBLENDEQUATIONIPROC)(GLuint, GLenum);
+static void CODEGEN_FUNCPTR Switch_BlendEquationi(GLuint buf, GLenum mode);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBLENDFUNCSEPARATEIPROC)(GLuint, GLenum, GLenum, GLenum, GLenum);
+static void CODEGEN_FUNCPTR Switch_BlendFuncSeparatei(GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBLENDFUNCIPROC)(GLuint, GLenum, GLenum);
+static void CODEGEN_FUNCPTR Switch_BlendFunci(GLuint buf, GLenum src, GLenum dst);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDELETETRANSFORMFEEDBACKSPROC)(GLsizei, const GLuint *);
+static void CODEGEN_FUNCPTR Switch_DeleteTransformFeedbacks(GLsizei n, const GLuint * ids);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDRAWARRAYSINDIRECTPROC)(GLenum, const void *);
+static void CODEGEN_FUNCPTR Switch_DrawArraysIndirect(GLenum mode, const void * indirect);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDRAWELEMENTSINDIRECTPROC)(GLenum, GLenum, const void *);
+static void CODEGEN_FUNCPTR Switch_DrawElementsIndirect(GLenum mode, GLenum type, const void * indirect);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDRAWTRANSFORMFEEDBACKPROC)(GLenum, GLuint);
+static void CODEGEN_FUNCPTR Switch_DrawTransformFeedback(GLenum mode, GLuint id);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDRAWTRANSFORMFEEDBACKSTREAMPROC)(GLenum, GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_DrawTransformFeedbackStream(GLenum mode, GLuint id, GLuint stream);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLENDQUERYINDEXEDPROC)(GLenum, GLuint);
+static void CODEGEN_FUNCPTR Switch_EndQueryIndexed(GLenum target, GLuint index);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGENTRANSFORMFEEDBACKSPROC)(GLsizei, GLuint *);
+static void CODEGEN_FUNCPTR Switch_GenTransformFeedbacks(GLsizei n, GLuint * ids);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETACTIVESUBROUTINENAMEPROC)(GLuint, GLenum, GLuint, GLsizei, GLsizei *, GLchar *);
+static void CODEGEN_FUNCPTR Switch_GetActiveSubroutineName(GLuint program, GLenum shadertype, GLuint index, GLsizei bufsize, GLsizei * length, GLchar * name);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETACTIVESUBROUTINEUNIFORMNAMEPROC)(GLuint, GLenum, GLuint, GLsizei, GLsizei *, GLchar *);
+static void CODEGEN_FUNCPTR Switch_GetActiveSubroutineUniformName(GLuint program, GLenum shadertype, GLuint index, GLsizei bufsize, GLsizei * length, GLchar * name);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETACTIVESUBROUTINEUNIFORMIVPROC)(GLuint, GLenum, GLuint, GLenum, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetActiveSubroutineUniformiv(GLuint program, GLenum shadertype, GLuint index, GLenum pname, GLint * values);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETPROGRAMSTAGEIVPROC)(GLuint, GLenum, GLenum, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetProgramStageiv(GLuint program, GLenum shadertype, GLenum pname, GLint * values);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETQUERYINDEXEDIVPROC)(GLenum, GLuint, GLenum, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetQueryIndexediv(GLenum target, GLuint index, GLenum pname, GLint * params);
+typedef GLuint (CODEGEN_FUNCPTR *PFN_PTRC_GLGETSUBROUTINEINDEXPROC)(GLuint, GLenum, const GLchar *);
+static GLuint CODEGEN_FUNCPTR Switch_GetSubroutineIndex(GLuint program, GLenum shadertype, const GLchar * name);
+typedef GLint (CODEGEN_FUNCPTR *PFN_PTRC_GLGETSUBROUTINEUNIFORMLOCATIONPROC)(GLuint, GLenum, const GLchar *);
+static GLint CODEGEN_FUNCPTR Switch_GetSubroutineUniformLocation(GLuint program, GLenum shadertype, const GLchar * name);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETUNIFORMSUBROUTINEUIVPROC)(GLenum, GLint, GLuint *);
+static void CODEGEN_FUNCPTR Switch_GetUniformSubroutineuiv(GLenum shadertype, GLint location, GLuint * params);
+typedef GLboolean (CODEGEN_FUNCPTR *PFN_PTRC_GLISTRANSFORMFEEDBACKPROC)(GLuint);
+static GLboolean CODEGEN_FUNCPTR Switch_IsTransformFeedback(GLuint id);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLMINSAMPLESHADINGPROC)(GLfloat);
+static void CODEGEN_FUNCPTR Switch_MinSampleShading(GLfloat value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPATCHPARAMETERFVPROC)(GLenum, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_PatchParameterfv(GLenum pname, const GLfloat * values);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPATCHPARAMETERIPROC)(GLenum, GLint);
+static void CODEGEN_FUNCPTR Switch_PatchParameteri(GLenum pname, GLint value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPAUSETRANSFORMFEEDBACKPROC)(void);
+static void CODEGEN_FUNCPTR Switch_PauseTransformFeedback(void);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLRESUMETRANSFORMFEEDBACKPROC)(void);
+static void CODEGEN_FUNCPTR Switch_ResumeTransformFeedback(void);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLUNIFORMSUBROUTINESUIVPROC)(GLenum, GLsizei, const GLuint *);
+static void CODEGEN_FUNCPTR Switch_UniformSubroutinesuiv(GLenum shadertype, GLsizei count, const GLuint * indices);
+
+/* Extension: 4.1*/
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLACTIVESHADERPROGRAMPROC)(GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_ActiveShaderProgram(GLuint pipeline, GLuint program);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBINDPROGRAMPIPELINEPROC)(GLuint);
+static void CODEGEN_FUNCPTR Switch_BindProgramPipeline(GLuint pipeline);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCLEARDEPTHFPROC)(GLfloat);
+static void CODEGEN_FUNCPTR Switch_ClearDepthf(GLfloat d);
+typedef GLuint (CODEGEN_FUNCPTR *PFN_PTRC_GLCREATESHADERPROGRAMVPROC)(GLenum, GLsizei, const GLchar *const*);
+static GLuint CODEGEN_FUNCPTR Switch_CreateShaderProgramv(GLenum type, GLsizei count, const GLchar *const* strings);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDELETEPROGRAMPIPELINESPROC)(GLsizei, const GLuint *);
+static void CODEGEN_FUNCPTR Switch_DeleteProgramPipelines(GLsizei n, const GLuint * pipelines);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDEPTHRANGEARRAYVPROC)(GLuint, GLsizei, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_DepthRangeArrayv(GLuint first, GLsizei count, const GLdouble * v);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDEPTHRANGEINDEXEDPROC)(GLuint, GLdouble, GLdouble);
+static void CODEGEN_FUNCPTR Switch_DepthRangeIndexed(GLuint index, GLdouble n, GLdouble f);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDEPTHRANGEFPROC)(GLfloat, GLfloat);
+static void CODEGEN_FUNCPTR Switch_DepthRangef(GLfloat n, GLfloat f);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGENPROGRAMPIPELINESPROC)(GLsizei, GLuint *);
+static void CODEGEN_FUNCPTR Switch_GenProgramPipelines(GLsizei n, GLuint * pipelines);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETDOUBLEI_VPROC)(GLenum, GLuint, GLdouble *);
+static void CODEGEN_FUNCPTR Switch_GetDoublei_v(GLenum target, GLuint index, GLdouble * data);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETFLOATI_VPROC)(GLenum, GLuint, GLfloat *);
+static void CODEGEN_FUNCPTR Switch_GetFloati_v(GLenum target, GLuint index, GLfloat * data);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETPROGRAMBINARYPROC)(GLuint, GLsizei, GLsizei *, GLenum *, void *);
+static void CODEGEN_FUNCPTR Switch_GetProgramBinary(GLuint program, GLsizei bufSize, GLsizei * length, GLenum * binaryFormat, void * binary);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETPROGRAMPIPELINEINFOLOGPROC)(GLuint, GLsizei, GLsizei *, GLchar *);
+static void CODEGEN_FUNCPTR Switch_GetProgramPipelineInfoLog(GLuint pipeline, GLsizei bufSize, GLsizei * length, GLchar * infoLog);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETPROGRAMPIPELINEIVPROC)(GLuint, GLenum, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetProgramPipelineiv(GLuint pipeline, GLenum pname, GLint * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETSHADERPRECISIONFORMATPROC)(GLenum, GLenum, GLint *, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype, GLint * range, GLint * precision);
+typedef GLboolean (CODEGEN_FUNCPTR *PFN_PTRC_GLISPROGRAMPIPELINEPROC)(GLuint);
+static GLboolean CODEGEN_FUNCPTR Switch_IsProgramPipeline(GLuint pipeline);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMBINARYPROC)(GLuint, GLenum, const void *, GLsizei);
+static void CODEGEN_FUNCPTR Switch_ProgramBinary(GLuint program, GLenum binaryFormat, const void * binary, GLsizei length);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMPARAMETERIPROC)(GLuint, GLenum, GLint);
+static void CODEGEN_FUNCPTR Switch_ProgramParameteri(GLuint program, GLenum pname, GLint value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM1DPROC)(GLuint, GLint, GLdouble);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform1d(GLuint program, GLint location, GLdouble v0);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM1DVPROC)(GLuint, GLint, GLsizei, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform1dv(GLuint program, GLint location, GLsizei count, const GLdouble * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM1FPROC)(GLuint, GLint, GLfloat);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform1f(GLuint program, GLint location, GLfloat v0);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM1FVPROC)(GLuint, GLint, GLsizei, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform1fv(GLuint program, GLint location, GLsizei count, const GLfloat * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM1IPROC)(GLuint, GLint, GLint);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform1i(GLuint program, GLint location, GLint v0);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM1IVPROC)(GLuint, GLint, GLsizei, const GLint *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform1iv(GLuint program, GLint location, GLsizei count, const GLint * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM1UIPROC)(GLuint, GLint, GLuint);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform1ui(GLuint program, GLint location, GLuint v0);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM1UIVPROC)(GLuint, GLint, GLsizei, const GLuint *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform1uiv(GLuint program, GLint location, GLsizei count, const GLuint * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM2DPROC)(GLuint, GLint, GLdouble, GLdouble);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform2d(GLuint program, GLint location, GLdouble v0, GLdouble v1);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM2DVPROC)(GLuint, GLint, GLsizei, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform2dv(GLuint program, GLint location, GLsizei count, const GLdouble * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM2FPROC)(GLuint, GLint, GLfloat, GLfloat);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform2f(GLuint program, GLint location, GLfloat v0, GLfloat v1);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM2FVPROC)(GLuint, GLint, GLsizei, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform2fv(GLuint program, GLint location, GLsizei count, const GLfloat * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM2IPROC)(GLuint, GLint, GLint, GLint);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform2i(GLuint program, GLint location, GLint v0, GLint v1);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM2IVPROC)(GLuint, GLint, GLsizei, const GLint *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform2iv(GLuint program, GLint location, GLsizei count, const GLint * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM2UIPROC)(GLuint, GLint, GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform2ui(GLuint program, GLint location, GLuint v0, GLuint v1);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM2UIVPROC)(GLuint, GLint, GLsizei, const GLuint *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform2uiv(GLuint program, GLint location, GLsizei count, const GLuint * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM3DPROC)(GLuint, GLint, GLdouble, GLdouble, GLdouble);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform3d(GLuint program, GLint location, GLdouble v0, GLdouble v1, GLdouble v2);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM3DVPROC)(GLuint, GLint, GLsizei, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform3dv(GLuint program, GLint location, GLsizei count, const GLdouble * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM3FPROC)(GLuint, GLint, GLfloat, GLfloat, GLfloat);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform3f(GLuint program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM3FVPROC)(GLuint, GLint, GLsizei, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform3fv(GLuint program, GLint location, GLsizei count, const GLfloat * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM3IPROC)(GLuint, GLint, GLint, GLint, GLint);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform3i(GLuint program, GLint location, GLint v0, GLint v1, GLint v2);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM3IVPROC)(GLuint, GLint, GLsizei, const GLint *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform3iv(GLuint program, GLint location, GLsizei count, const GLint * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM3UIPROC)(GLuint, GLint, GLuint, GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform3ui(GLuint program, GLint location, GLuint v0, GLuint v1, GLuint v2);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM3UIVPROC)(GLuint, GLint, GLsizei, const GLuint *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform3uiv(GLuint program, GLint location, GLsizei count, const GLuint * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM4DPROC)(GLuint, GLint, GLdouble, GLdouble, GLdouble, GLdouble);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform4d(GLuint program, GLint location, GLdouble v0, GLdouble v1, GLdouble v2, GLdouble v3);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM4DVPROC)(GLuint, GLint, GLsizei, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform4dv(GLuint program, GLint location, GLsizei count, const GLdouble * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM4FPROC)(GLuint, GLint, GLfloat, GLfloat, GLfloat, GLfloat);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform4f(GLuint program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM4FVPROC)(GLuint, GLint, GLsizei, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform4fv(GLuint program, GLint location, GLsizei count, const GLfloat * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM4IPROC)(GLuint, GLint, GLint, GLint, GLint, GLint);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform4i(GLuint program, GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM4IVPROC)(GLuint, GLint, GLsizei, const GLint *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform4iv(GLuint program, GLint location, GLsizei count, const GLint * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM4UIPROC)(GLuint, GLint, GLuint, GLuint, GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform4ui(GLuint program, GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORM4UIVPROC)(GLuint, GLint, GLsizei, const GLuint *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniform4uiv(GLuint program, GLint location, GLsizei count, const GLuint * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX2DVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix2dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX2FVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix2fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX2X3DVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix2x3dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX2X3FVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix2x3fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX2X4DVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix2x4dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX2X4FVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix2x4fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX3DVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix3dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX3FVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix3fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX3X2DVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix3x2dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX3X2FVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix3x2fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX3X4DVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix3x4dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX3X4FVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix3x4fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX4DVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix4dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX4FVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix4fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX4X2DVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix4x2dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX4X2FVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix4x2fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX4X3DVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLdouble *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix4x3dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPROGRAMUNIFORMMATRIX4X3FVPROC)(GLuint, GLint, GLsizei, GLboolean, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix4x3fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLRELEASESHADERCOMPILERPROC)(void);
+static void CODEGEN_FUNCPTR Switch_ReleaseShaderCompiler(void);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLSCISSORARRAYVPROC)(GLuint, GLsizei, const GLint *);
+static void CODEGEN_FUNCPTR Switch_ScissorArrayv(GLuint first, GLsizei count, const GLint * v);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLSCISSORINDEXEDPROC)(GLuint, GLint, GLint, GLsizei, GLsizei);
+static void CODEGEN_FUNCPTR Switch_ScissorIndexed(GLuint index, GLint left, GLint bottom, GLsizei width, GLsizei height);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLSCISSORINDEXEDVPROC)(GLuint, const GLint *);
+static void CODEGEN_FUNCPTR Switch_ScissorIndexedv(GLuint index, const GLint * v);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLSHADERBINARYPROC)(GLsizei, const GLuint *, GLenum, const void *, GLsizei);
+static void CODEGEN_FUNCPTR Switch_ShaderBinary(GLsizei count, const GLuint * shaders, GLenum binaryformat, const void * binary, GLsizei length);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLUSEPROGRAMSTAGESPROC)(GLuint, GLbitfield, GLuint);
+static void CODEGEN_FUNCPTR Switch_UseProgramStages(GLuint pipeline, GLbitfield stages, GLuint program);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVALIDATEPROGRAMPIPELINEPROC)(GLuint);
+static void CODEGEN_FUNCPTR Switch_ValidateProgramPipeline(GLuint pipeline);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVIEWPORTARRAYVPROC)(GLuint, GLsizei, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_ViewportArrayv(GLuint first, GLsizei count, const GLfloat * v);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVIEWPORTINDEXEDFPROC)(GLuint, GLfloat, GLfloat, GLfloat, GLfloat);
+static void CODEGEN_FUNCPTR Switch_ViewportIndexedf(GLuint index, GLfloat x, GLfloat y, GLfloat w, GLfloat h);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVIEWPORTINDEXEDFVPROC)(GLuint, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_ViewportIndexedfv(GLuint index, const GLfloat * v);
+
+/* Extension: 4.2*/
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBINDIMAGETEXTUREPROC)(GLuint, GLuint, GLint, GLboolean, GLint, GLenum, GLenum);
+static void CODEGEN_FUNCPTR Switch_BindImageTexture(GLuint unit, GLuint texture, GLint level, GLboolean layered, GLint layer, GLenum access, GLenum format);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDRAWARRAYSINSTANCEDBASEINSTANCEPROC)(GLenum, GLint, GLsizei, GLsizei, GLuint);
+static void CODEGEN_FUNCPTR Switch_DrawArraysInstancedBaseInstance(GLenum mode, GLint first, GLsizei count, GLsizei instancecount, GLuint baseinstance);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDRAWELEMENTSINSTANCEDBASEINSTANCEPROC)(GLenum, GLsizei, GLenum, const void *, GLsizei, GLuint);
+static void CODEGEN_FUNCPTR Switch_DrawElementsInstancedBaseInstance(GLenum mode, GLsizei count, GLenum type, const void * indices, GLsizei instancecount, GLuint baseinstance);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDRAWELEMENTSINSTANCEDBASEVERTEXBASEINSTANCEPROC)(GLenum, GLsizei, GLenum, const void *, GLsizei, GLint, GLuint);
+static void CODEGEN_FUNCPTR Switch_DrawElementsInstancedBaseVertexBaseInstance(GLenum mode, GLsizei count, GLenum type, const void * indices, GLsizei instancecount, GLint basevertex, GLuint baseinstance);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDRAWTRANSFORMFEEDBACKINSTANCEDPROC)(GLenum, GLuint, GLsizei);
+static void CODEGEN_FUNCPTR Switch_DrawTransformFeedbackInstanced(GLenum mode, GLuint id, GLsizei instancecount);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDRAWTRANSFORMFEEDBACKSTREAMINSTANCEDPROC)(GLenum, GLuint, GLuint, GLsizei);
+static void CODEGEN_FUNCPTR Switch_DrawTransformFeedbackStreamInstanced(GLenum mode, GLuint id, GLuint stream, GLsizei instancecount);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETACTIVEATOMICCOUNTERBUFFERIVPROC)(GLuint, GLuint, GLenum, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetActiveAtomicCounterBufferiv(GLuint program, GLuint bufferIndex, GLenum pname, GLint * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETINTERNALFORMATIVPROC)(GLenum, GLenum, GLenum, GLsizei, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetInternalformativ(GLenum target, GLenum internalformat, GLenum pname, GLsizei bufSize, GLint * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLMEMORYBARRIERPROC)(GLbitfield);
+static void CODEGEN_FUNCPTR Switch_MemoryBarrier(GLbitfield barriers);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXSTORAGE1DPROC)(GLenum, GLsizei, GLenum, GLsizei);
+static void CODEGEN_FUNCPTR Switch_TexStorage1D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXSTORAGE2DPROC)(GLenum, GLsizei, GLenum, GLsizei, GLsizei);
+static void CODEGEN_FUNCPTR Switch_TexStorage2D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXSTORAGE3DPROC)(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei);
+static void CODEGEN_FUNCPTR Switch_TexStorage3D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth);
+
+/* Extension: 4.3*/
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBINDVERTEXBUFFERPROC)(GLuint, GLuint, GLintptr, GLsizei);
+static void CODEGEN_FUNCPTR Switch_BindVertexBuffer(GLuint bindingindex, GLuint buffer, GLintptr offset, GLsizei stride);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCLEARBUFFERDATAPROC)(GLenum, GLenum, GLenum, GLenum, const void *);
+static void CODEGEN_FUNCPTR Switch_ClearBufferData(GLenum target, GLenum internalformat, GLenum format, GLenum type, const void * data);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCLEARBUFFERSUBDATAPROC)(GLenum, GLenum, GLintptr, GLsizeiptr, GLenum, GLenum, const void *);
+static void CODEGEN_FUNCPTR Switch_ClearBufferSubData(GLenum target, GLenum internalformat, GLintptr offset, GLsizeiptr size, GLenum format, GLenum type, const void * data);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCOPYIMAGESUBDATAPROC)(GLuint, GLenum, GLint, GLint, GLint, GLint, GLuint, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei);
+static void CODEGEN_FUNCPTR Switch_CopyImageSubData(GLuint srcName, GLenum srcTarget, GLint srcLevel, GLint srcX, GLint srcY, GLint srcZ, GLuint dstName, GLenum dstTarget, GLint dstLevel, GLint dstX, GLint dstY, GLint dstZ, GLsizei srcWidth, GLsizei srcHeight, GLsizei srcDepth);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDEBUGMESSAGECALLBACKPROC)(GLDEBUGPROC, const void *);
+static void CODEGEN_FUNCPTR Switch_DebugMessageCallback(GLDEBUGPROC callback, const void * userParam);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDEBUGMESSAGECONTROLPROC)(GLenum, GLenum, GLenum, GLsizei, const GLuint *, GLboolean);
+static void CODEGEN_FUNCPTR Switch_DebugMessageControl(GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint * ids, GLboolean enabled);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDEBUGMESSAGEINSERTPROC)(GLenum, GLenum, GLuint, GLenum, GLsizei, const GLchar *);
+static void CODEGEN_FUNCPTR Switch_DebugMessageInsert(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar * buf);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDISPATCHCOMPUTEPROC)(GLuint, GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_DispatchCompute(GLuint num_groups_x, GLuint num_groups_y, GLuint num_groups_z);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDISPATCHCOMPUTEINDIRECTPROC)(GLintptr);
+static void CODEGEN_FUNCPTR Switch_DispatchComputeIndirect(GLintptr indirect);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLFRAMEBUFFERPARAMETERIPROC)(GLenum, GLenum, GLint);
+static void CODEGEN_FUNCPTR Switch_FramebufferParameteri(GLenum target, GLenum pname, GLint param);
+typedef GLuint (CODEGEN_FUNCPTR *PFN_PTRC_GLGETDEBUGMESSAGELOGPROC)(GLuint, GLsizei, GLenum *, GLenum *, GLuint *, GLenum *, GLsizei *, GLchar *);
+static GLuint CODEGEN_FUNCPTR Switch_GetDebugMessageLog(GLuint count, GLsizei bufSize, GLenum * sources, GLenum * types, GLuint * ids, GLenum * severities, GLsizei * lengths, GLchar * messageLog);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETFRAMEBUFFERPARAMETERIVPROC)(GLenum, GLenum, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetFramebufferParameteriv(GLenum target, GLenum pname, GLint * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETINTERNALFORMATI64VPROC)(GLenum, GLenum, GLenum, GLsizei, GLint64 *);
+static void CODEGEN_FUNCPTR Switch_GetInternalformati64v(GLenum target, GLenum internalformat, GLenum pname, GLsizei bufSize, GLint64 * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETOBJECTLABELPROC)(GLenum, GLuint, GLsizei, GLsizei *, GLchar *);
+static void CODEGEN_FUNCPTR Switch_GetObjectLabel(GLenum identifier, GLuint name, GLsizei bufSize, GLsizei * length, GLchar * label);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETOBJECTPTRLABELPROC)(const void *, GLsizei, GLsizei *, GLchar *);
+static void CODEGEN_FUNCPTR Switch_GetObjectPtrLabel(const void * ptr, GLsizei bufSize, GLsizei * length, GLchar * label);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETPROGRAMINTERFACEIVPROC)(GLuint, GLenum, GLenum, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetProgramInterfaceiv(GLuint program, GLenum programInterface, GLenum pname, GLint * params);
+typedef GLuint (CODEGEN_FUNCPTR *PFN_PTRC_GLGETPROGRAMRESOURCEINDEXPROC)(GLuint, GLenum, const GLchar *);
+static GLuint CODEGEN_FUNCPTR Switch_GetProgramResourceIndex(GLuint program, GLenum programInterface, const GLchar * name);
+typedef GLint (CODEGEN_FUNCPTR *PFN_PTRC_GLGETPROGRAMRESOURCELOCATIONPROC)(GLuint, GLenum, const GLchar *);
+static GLint CODEGEN_FUNCPTR Switch_GetProgramResourceLocation(GLuint program, GLenum programInterface, const GLchar * name);
+typedef GLint (CODEGEN_FUNCPTR *PFN_PTRC_GLGETPROGRAMRESOURCELOCATIONINDEXPROC)(GLuint, GLenum, const GLchar *);
+static GLint CODEGEN_FUNCPTR Switch_GetProgramResourceLocationIndex(GLuint program, GLenum programInterface, const GLchar * name);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETPROGRAMRESOURCENAMEPROC)(GLuint, GLenum, GLuint, GLsizei, GLsizei *, GLchar *);
+static void CODEGEN_FUNCPTR Switch_GetProgramResourceName(GLuint program, GLenum programInterface, GLuint index, GLsizei bufSize, GLsizei * length, GLchar * name);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETPROGRAMRESOURCEIVPROC)(GLuint, GLenum, GLuint, GLsizei, const GLenum *, GLsizei, GLsizei *, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetProgramResourceiv(GLuint program, GLenum programInterface, GLuint index, GLsizei propCount, const GLenum * props, GLsizei bufSize, GLsizei * length, GLint * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLINVALIDATEBUFFERDATAPROC)(GLuint);
+static void CODEGEN_FUNCPTR Switch_InvalidateBufferData(GLuint buffer);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLINVALIDATEBUFFERSUBDATAPROC)(GLuint, GLintptr, GLsizeiptr);
+static void CODEGEN_FUNCPTR Switch_InvalidateBufferSubData(GLuint buffer, GLintptr offset, GLsizeiptr length);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLINVALIDATEFRAMEBUFFERPROC)(GLenum, GLsizei, const GLenum *);
+static void CODEGEN_FUNCPTR Switch_InvalidateFramebuffer(GLenum target, GLsizei numAttachments, const GLenum * attachments);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLINVALIDATESUBFRAMEBUFFERPROC)(GLenum, GLsizei, const GLenum *, GLint, GLint, GLsizei, GLsizei);
+static void CODEGEN_FUNCPTR Switch_InvalidateSubFramebuffer(GLenum target, GLsizei numAttachments, const GLenum * attachments, GLint x, GLint y, GLsizei width, GLsizei height);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLINVALIDATETEXIMAGEPROC)(GLuint, GLint);
+static void CODEGEN_FUNCPTR Switch_InvalidateTexImage(GLuint texture, GLint level);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLINVALIDATETEXSUBIMAGEPROC)(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei);
+static void CODEGEN_FUNCPTR Switch_InvalidateTexSubImage(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLMULTIDRAWARRAYSINDIRECTPROC)(GLenum, const void *, GLsizei, GLsizei);
+static void CODEGEN_FUNCPTR Switch_MultiDrawArraysIndirect(GLenum mode, const void * indirect, GLsizei drawcount, GLsizei stride);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLMULTIDRAWELEMENTSINDIRECTPROC)(GLenum, GLenum, const void *, GLsizei, GLsizei);
+static void CODEGEN_FUNCPTR Switch_MultiDrawElementsIndirect(GLenum mode, GLenum type, const void * indirect, GLsizei drawcount, GLsizei stride);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLOBJECTLABELPROC)(GLenum, GLuint, GLsizei, const GLchar *);
+static void CODEGEN_FUNCPTR Switch_ObjectLabel(GLenum identifier, GLuint name, GLsizei length, const GLchar * label);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLOBJECTPTRLABELPROC)(const void *, GLsizei, const GLchar *);
+static void CODEGEN_FUNCPTR Switch_ObjectPtrLabel(const void * ptr, GLsizei length, const GLchar * label);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPOPDEBUGGROUPPROC)(void);
+static void CODEGEN_FUNCPTR Switch_PopDebugGroup(void);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLPUSHDEBUGGROUPPROC)(GLenum, GLuint, GLsizei, const GLchar *);
+static void CODEGEN_FUNCPTR Switch_PushDebugGroup(GLenum source, GLuint id, GLsizei length, const GLchar * message);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLSHADERSTORAGEBLOCKBINDINGPROC)(GLuint, GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_ShaderStorageBlockBinding(GLuint program, GLuint storageBlockIndex, GLuint storageBlockBinding);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXBUFFERRANGEPROC)(GLenum, GLenum, GLuint, GLintptr, GLsizeiptr);
+static void CODEGEN_FUNCPTR Switch_TexBufferRange(GLenum target, GLenum internalformat, GLuint buffer, GLintptr offset, GLsizeiptr size);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXSTORAGE2DMULTISAMPLEPROC)(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLboolean);
+static void CODEGEN_FUNCPTR Switch_TexStorage2DMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXSTORAGE3DMULTISAMPLEPROC)(GLenum, GLsizei, GLenum, GLsizei, GLsizei, GLsizei, GLboolean);
+static void CODEGEN_FUNCPTR Switch_TexStorage3DMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTUREVIEWPROC)(GLuint, GLenum, GLuint, GLenum, GLuint, GLuint, GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_TextureView(GLuint texture, GLenum target, GLuint origtexture, GLenum internalformat, GLuint minlevel, GLuint numlevels, GLuint minlayer, GLuint numlayers);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBBINDINGPROC)(GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_VertexAttribBinding(GLuint attribindex, GLuint bindingindex);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBFORMATPROC)(GLuint, GLint, GLenum, GLboolean, GLuint);
+static void CODEGEN_FUNCPTR Switch_VertexAttribFormat(GLuint attribindex, GLint size, GLenum type, GLboolean normalized, GLuint relativeoffset);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBIFORMATPROC)(GLuint, GLint, GLenum, GLuint);
+static void CODEGEN_FUNCPTR Switch_VertexAttribIFormat(GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXATTRIBLFORMATPROC)(GLuint, GLint, GLenum, GLuint);
+static void CODEGEN_FUNCPTR Switch_VertexAttribLFormat(GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXBINDINGDIVISORPROC)(GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_VertexBindingDivisor(GLuint bindingindex, GLuint divisor);
+
+/* Extension: 4.4*/
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBINDBUFFERSBASEPROC)(GLenum, GLuint, GLsizei, const GLuint *);
+static void CODEGEN_FUNCPTR Switch_BindBuffersBase(GLenum target, GLuint first, GLsizei count, const GLuint * buffers);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBINDBUFFERSRANGEPROC)(GLenum, GLuint, GLsizei, const GLuint *, const GLintptr *, const GLsizeiptr *);
+static void CODEGEN_FUNCPTR Switch_BindBuffersRange(GLenum target, GLuint first, GLsizei count, const GLuint * buffers, const GLintptr * offsets, const GLsizeiptr * sizes);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBINDIMAGETEXTURESPROC)(GLuint, GLsizei, const GLuint *);
+static void CODEGEN_FUNCPTR Switch_BindImageTextures(GLuint first, GLsizei count, const GLuint * textures);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBINDSAMPLERSPROC)(GLuint, GLsizei, const GLuint *);
+static void CODEGEN_FUNCPTR Switch_BindSamplers(GLuint first, GLsizei count, const GLuint * samplers);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBINDTEXTURESPROC)(GLuint, GLsizei, const GLuint *);
+static void CODEGEN_FUNCPTR Switch_BindTextures(GLuint first, GLsizei count, const GLuint * textures);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBINDVERTEXBUFFERSPROC)(GLuint, GLsizei, const GLuint *, const GLintptr *, const GLsizei *);
+static void CODEGEN_FUNCPTR Switch_BindVertexBuffers(GLuint first, GLsizei count, const GLuint * buffers, const GLintptr * offsets, const GLsizei * strides);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBUFFERSTORAGEPROC)(GLenum, GLsizeiptr, const void *, GLbitfield);
+static void CODEGEN_FUNCPTR Switch_BufferStorage(GLenum target, GLsizeiptr size, const void * data, GLbitfield flags);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCLEARTEXIMAGEPROC)(GLuint, GLint, GLenum, GLenum, const void *);
+static void CODEGEN_FUNCPTR Switch_ClearTexImage(GLuint texture, GLint level, GLenum format, GLenum type, const void * data);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCLEARTEXSUBIMAGEPROC)(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, const void *);
+static void CODEGEN_FUNCPTR Switch_ClearTexSubImage(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void * data);
+
+/* Extension: 4.5*/
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBINDTEXTUREUNITPROC)(GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_BindTextureUnit(GLuint unit, GLuint texture);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLBLITNAMEDFRAMEBUFFERPROC)(GLuint, GLuint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum);
+static void CODEGEN_FUNCPTR Switch_BlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
+typedef GLenum (CODEGEN_FUNCPTR *PFN_PTRC_GLCHECKNAMEDFRAMEBUFFERSTATUSPROC)(GLuint, GLenum);
+static GLenum CODEGEN_FUNCPTR Switch_CheckNamedFramebufferStatus(GLuint framebuffer, GLenum target);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCLEARNAMEDBUFFERDATAPROC)(GLuint, GLenum, GLenum, GLenum, const void *);
+static void CODEGEN_FUNCPTR Switch_ClearNamedBufferData(GLuint buffer, GLenum internalformat, GLenum format, GLenum type, const void * data);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCLEARNAMEDBUFFERSUBDATAPROC)(GLuint, GLenum, GLintptr, GLsizeiptr, GLenum, GLenum, const void *);
+static void CODEGEN_FUNCPTR Switch_ClearNamedBufferSubData(GLuint buffer, GLenum internalformat, GLintptr offset, GLsizeiptr size, GLenum format, GLenum type, const void * data);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCLEARNAMEDFRAMEBUFFERFIPROC)(GLuint, GLenum, GLint, const GLfloat, GLint);
+static void CODEGEN_FUNCPTR Switch_ClearNamedFramebufferfi(GLuint framebuffer, GLenum buffer, GLint drawbuffer, const GLfloat depth, GLint stencil);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCLEARNAMEDFRAMEBUFFERFVPROC)(GLuint, GLenum, GLint, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_ClearNamedFramebufferfv(GLuint framebuffer, GLenum buffer, GLint drawbuffer, const GLfloat * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCLEARNAMEDFRAMEBUFFERIVPROC)(GLuint, GLenum, GLint, const GLint *);
+static void CODEGEN_FUNCPTR Switch_ClearNamedFramebufferiv(GLuint framebuffer, GLenum buffer, GLint drawbuffer, const GLint * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCLEARNAMEDFRAMEBUFFERUIVPROC)(GLuint, GLenum, GLint, const GLuint *);
+static void CODEGEN_FUNCPTR Switch_ClearNamedFramebufferuiv(GLuint framebuffer, GLenum buffer, GLint drawbuffer, const GLuint * value);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCLIPCONTROLPROC)(GLenum, GLenum);
+static void CODEGEN_FUNCPTR Switch_ClipControl(GLenum origin, GLenum depth);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCOMPRESSEDTEXTURESUBIMAGE1DPROC)(GLuint, GLint, GLint, GLsizei, GLenum, GLsizei, const void *);
+static void CODEGEN_FUNCPTR Switch_CompressedTextureSubImage1D(GLuint texture, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, const void * data);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCOMPRESSEDTEXTURESUBIMAGE2DPROC)(GLuint, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLsizei, const void *);
+static void CODEGEN_FUNCPTR Switch_CompressedTextureSubImage2D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void * data);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCOMPRESSEDTEXTURESUBIMAGE3DPROC)(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLsizei, const void *);
+static void CODEGEN_FUNCPTR Switch_CompressedTextureSubImage3D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void * data);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCOPYNAMEDBUFFERSUBDATAPROC)(GLuint, GLuint, GLintptr, GLintptr, GLsizeiptr);
+static void CODEGEN_FUNCPTR Switch_CopyNamedBufferSubData(GLuint readBuffer, GLuint writeBuffer, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCOPYTEXTURESUBIMAGE1DPROC)(GLuint, GLint, GLint, GLint, GLint, GLsizei);
+static void CODEGEN_FUNCPTR Switch_CopyTextureSubImage1D(GLuint texture, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCOPYTEXTURESUBIMAGE2DPROC)(GLuint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei);
+static void CODEGEN_FUNCPTR Switch_CopyTextureSubImage2D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCOPYTEXTURESUBIMAGE3DPROC)(GLuint, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei);
+static void CODEGEN_FUNCPTR Switch_CopyTextureSubImage3D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCREATEBUFFERSPROC)(GLsizei, GLuint *);
+static void CODEGEN_FUNCPTR Switch_CreateBuffers(GLsizei n, GLuint * buffers);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCREATEFRAMEBUFFERSPROC)(GLsizei, GLuint *);
+static void CODEGEN_FUNCPTR Switch_CreateFramebuffers(GLsizei n, GLuint * framebuffers);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCREATEPROGRAMPIPELINESPROC)(GLsizei, GLuint *);
+static void CODEGEN_FUNCPTR Switch_CreateProgramPipelines(GLsizei n, GLuint * pipelines);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCREATEQUERIESPROC)(GLenum, GLsizei, GLuint *);
+static void CODEGEN_FUNCPTR Switch_CreateQueries(GLenum target, GLsizei n, GLuint * ids);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCREATERENDERBUFFERSPROC)(GLsizei, GLuint *);
+static void CODEGEN_FUNCPTR Switch_CreateRenderbuffers(GLsizei n, GLuint * renderbuffers);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCREATESAMPLERSPROC)(GLsizei, GLuint *);
+static void CODEGEN_FUNCPTR Switch_CreateSamplers(GLsizei n, GLuint * samplers);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCREATETEXTURESPROC)(GLenum, GLsizei, GLuint *);
+static void CODEGEN_FUNCPTR Switch_CreateTextures(GLenum target, GLsizei n, GLuint * textures);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCREATETRANSFORMFEEDBACKSPROC)(GLsizei, GLuint *);
+static void CODEGEN_FUNCPTR Switch_CreateTransformFeedbacks(GLsizei n, GLuint * ids);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLCREATEVERTEXARRAYSPROC)(GLsizei, GLuint *);
+static void CODEGEN_FUNCPTR Switch_CreateVertexArrays(GLsizei n, GLuint * arrays);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLDISABLEVERTEXARRAYATTRIBPROC)(GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_DisableVertexArrayAttrib(GLuint vaobj, GLuint index);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLENABLEVERTEXARRAYATTRIBPROC)(GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_EnableVertexArrayAttrib(GLuint vaobj, GLuint index);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLFLUSHMAPPEDNAMEDBUFFERRANGEPROC)(GLuint, GLintptr, GLsizeiptr);
+static void CODEGEN_FUNCPTR Switch_FlushMappedNamedBufferRange(GLuint buffer, GLintptr offset, GLsizeiptr length);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGENERATETEXTUREMIPMAPPROC)(GLuint);
+static void CODEGEN_FUNCPTR Switch_GenerateTextureMipmap(GLuint texture);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETCOMPRESSEDTEXTUREIMAGEPROC)(GLuint, GLint, GLsizei, void *);
+static void CODEGEN_FUNCPTR Switch_GetCompressedTextureImage(GLuint texture, GLint level, GLsizei bufSize, void * pixels);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETCOMPRESSEDTEXTURESUBIMAGEPROC)(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLsizei, void *);
+static void CODEGEN_FUNCPTR Switch_GetCompressedTextureSubImage(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei bufSize, void * pixels);
+typedef GLenum (CODEGEN_FUNCPTR *PFN_PTRC_GLGETGRAPHICSRESETSTATUSPROC)(void);
+static GLenum CODEGEN_FUNCPTR Switch_GetGraphicsResetStatus(void);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETNAMEDBUFFERPARAMETERI64VPROC)(GLuint, GLenum, GLint64 *);
+static void CODEGEN_FUNCPTR Switch_GetNamedBufferParameteri64v(GLuint buffer, GLenum pname, GLint64 * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETNAMEDBUFFERPARAMETERIVPROC)(GLuint, GLenum, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetNamedBufferParameteriv(GLuint buffer, GLenum pname, GLint * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETNAMEDBUFFERPOINTERVPROC)(GLuint, GLenum, void **);
+static void CODEGEN_FUNCPTR Switch_GetNamedBufferPointerv(GLuint buffer, GLenum pname, void ** params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETNAMEDBUFFERSUBDATAPROC)(GLuint, GLintptr, GLsizeiptr, void *);
+static void CODEGEN_FUNCPTR Switch_GetNamedBufferSubData(GLuint buffer, GLintptr offset, GLsizeiptr size, void * data);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETNAMEDFRAMEBUFFERATTACHMENTPARAMETERIVPROC)(GLuint, GLenum, GLenum, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetNamedFramebufferAttachmentParameteriv(GLuint framebuffer, GLenum attachment, GLenum pname, GLint * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETNAMEDFRAMEBUFFERPARAMETERIVPROC)(GLuint, GLenum, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetNamedFramebufferParameteriv(GLuint framebuffer, GLenum pname, GLint * param);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETNAMEDRENDERBUFFERPARAMETERIVPROC)(GLuint, GLenum, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetNamedRenderbufferParameteriv(GLuint renderbuffer, GLenum pname, GLint * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETQUERYBUFFEROBJECTI64VPROC)(GLuint, GLuint, GLenum, GLintptr);
+static void CODEGEN_FUNCPTR Switch_GetQueryBufferObjecti64v(GLuint id, GLuint buffer, GLenum pname, GLintptr offset);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETQUERYBUFFEROBJECTIVPROC)(GLuint, GLuint, GLenum, GLintptr);
+static void CODEGEN_FUNCPTR Switch_GetQueryBufferObjectiv(GLuint id, GLuint buffer, GLenum pname, GLintptr offset);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETQUERYBUFFEROBJECTUI64VPROC)(GLuint, GLuint, GLenum, GLintptr);
+static void CODEGEN_FUNCPTR Switch_GetQueryBufferObjectui64v(GLuint id, GLuint buffer, GLenum pname, GLintptr offset);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETQUERYBUFFEROBJECTUIVPROC)(GLuint, GLuint, GLenum, GLintptr);
+static void CODEGEN_FUNCPTR Switch_GetQueryBufferObjectuiv(GLuint id, GLuint buffer, GLenum pname, GLintptr offset);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETTEXTUREIMAGEPROC)(GLuint, GLint, GLenum, GLenum, GLsizei, void *);
+static void CODEGEN_FUNCPTR Switch_GetTextureImage(GLuint texture, GLint level, GLenum format, GLenum type, GLsizei bufSize, void * pixels);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETTEXTURELEVELPARAMETERFVPROC)(GLuint, GLint, GLenum, GLfloat *);
+static void CODEGEN_FUNCPTR Switch_GetTextureLevelParameterfv(GLuint texture, GLint level, GLenum pname, GLfloat * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETTEXTURELEVELPARAMETERIVPROC)(GLuint, GLint, GLenum, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetTextureLevelParameteriv(GLuint texture, GLint level, GLenum pname, GLint * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETTEXTUREPARAMETERIIVPROC)(GLuint, GLenum, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetTextureParameterIiv(GLuint texture, GLenum pname, GLint * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETTEXTUREPARAMETERIUIVPROC)(GLuint, GLenum, GLuint *);
+static void CODEGEN_FUNCPTR Switch_GetTextureParameterIuiv(GLuint texture, GLenum pname, GLuint * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETTEXTUREPARAMETERFVPROC)(GLuint, GLenum, GLfloat *);
+static void CODEGEN_FUNCPTR Switch_GetTextureParameterfv(GLuint texture, GLenum pname, GLfloat * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETTEXTUREPARAMETERIVPROC)(GLuint, GLenum, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetTextureParameteriv(GLuint texture, GLenum pname, GLint * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETTEXTURESUBIMAGEPROC)(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, GLsizei, void *);
+static void CODEGEN_FUNCPTR Switch_GetTextureSubImage(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLsizei bufSize, void * pixels);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETTRANSFORMFEEDBACKI64_VPROC)(GLuint, GLenum, GLuint, GLint64 *);
+static void CODEGEN_FUNCPTR Switch_GetTransformFeedbacki64_v(GLuint xfb, GLenum pname, GLuint index, GLint64 * param);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETTRANSFORMFEEDBACKI_VPROC)(GLuint, GLenum, GLuint, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetTransformFeedbacki_v(GLuint xfb, GLenum pname, GLuint index, GLint * param);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETTRANSFORMFEEDBACKIVPROC)(GLuint, GLenum, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetTransformFeedbackiv(GLuint xfb, GLenum pname, GLint * param);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETVERTEXARRAYINDEXED64IVPROC)(GLuint, GLuint, GLenum, GLint64 *);
+static void CODEGEN_FUNCPTR Switch_GetVertexArrayIndexed64iv(GLuint vaobj, GLuint index, GLenum pname, GLint64 * param);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETVERTEXARRAYINDEXEDIVPROC)(GLuint, GLuint, GLenum, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetVertexArrayIndexediv(GLuint vaobj, GLuint index, GLenum pname, GLint * param);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETVERTEXARRAYIVPROC)(GLuint, GLenum, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetVertexArrayiv(GLuint vaobj, GLenum pname, GLint * param);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETNCOMPRESSEDTEXIMAGEPROC)(GLenum, GLint, GLsizei, void *);
+static void CODEGEN_FUNCPTR Switch_GetnCompressedTexImage(GLenum target, GLint lod, GLsizei bufSize, void * pixels);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETNTEXIMAGEPROC)(GLenum, GLint, GLenum, GLenum, GLsizei, void *);
+static void CODEGEN_FUNCPTR Switch_GetnTexImage(GLenum target, GLint level, GLenum format, GLenum type, GLsizei bufSize, void * pixels);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETNUNIFORMDVPROC)(GLuint, GLint, GLsizei, GLdouble *);
+static void CODEGEN_FUNCPTR Switch_GetnUniformdv(GLuint program, GLint location, GLsizei bufSize, GLdouble * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETNUNIFORMFVPROC)(GLuint, GLint, GLsizei, GLfloat *);
+static void CODEGEN_FUNCPTR Switch_GetnUniformfv(GLuint program, GLint location, GLsizei bufSize, GLfloat * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETNUNIFORMIVPROC)(GLuint, GLint, GLsizei, GLint *);
+static void CODEGEN_FUNCPTR Switch_GetnUniformiv(GLuint program, GLint location, GLsizei bufSize, GLint * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLGETNUNIFORMUIVPROC)(GLuint, GLint, GLsizei, GLuint *);
+static void CODEGEN_FUNCPTR Switch_GetnUniformuiv(GLuint program, GLint location, GLsizei bufSize, GLuint * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLINVALIDATENAMEDFRAMEBUFFERDATAPROC)(GLuint, GLsizei, const GLenum *);
+static void CODEGEN_FUNCPTR Switch_InvalidateNamedFramebufferData(GLuint framebuffer, GLsizei numAttachments, const GLenum * attachments);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLINVALIDATENAMEDFRAMEBUFFERSUBDATAPROC)(GLuint, GLsizei, const GLenum *, GLint, GLint, GLsizei, GLsizei);
+static void CODEGEN_FUNCPTR Switch_InvalidateNamedFramebufferSubData(GLuint framebuffer, GLsizei numAttachments, const GLenum * attachments, GLint x, GLint y, GLsizei width, GLsizei height);
+typedef void * (CODEGEN_FUNCPTR *PFN_PTRC_GLMAPNAMEDBUFFERPROC)(GLuint, GLenum);
+static void * CODEGEN_FUNCPTR Switch_MapNamedBuffer(GLuint buffer, GLenum access);
+typedef void * (CODEGEN_FUNCPTR *PFN_PTRC_GLMAPNAMEDBUFFERRANGEPROC)(GLuint, GLintptr, GLsizeiptr, GLbitfield);
+static void * CODEGEN_FUNCPTR Switch_MapNamedBufferRange(GLuint buffer, GLintptr offset, GLsizeiptr length, GLbitfield access);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLMEMORYBARRIERBYREGIONPROC)(GLbitfield);
+static void CODEGEN_FUNCPTR Switch_MemoryBarrierByRegion(GLbitfield barriers);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLNAMEDBUFFERDATAPROC)(GLuint, GLsizeiptr, const void *, GLenum);
+static void CODEGEN_FUNCPTR Switch_NamedBufferData(GLuint buffer, GLsizeiptr size, const void * data, GLenum usage);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLNAMEDBUFFERSTORAGEPROC)(GLuint, GLsizeiptr, const void *, GLbitfield);
+static void CODEGEN_FUNCPTR Switch_NamedBufferStorage(GLuint buffer, GLsizeiptr size, const void * data, GLbitfield flags);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLNAMEDBUFFERSUBDATAPROC)(GLuint, GLintptr, GLsizeiptr, const void *);
+static void CODEGEN_FUNCPTR Switch_NamedBufferSubData(GLuint buffer, GLintptr offset, GLsizeiptr size, const void * data);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLNAMEDFRAMEBUFFERDRAWBUFFERPROC)(GLuint, GLenum);
+static void CODEGEN_FUNCPTR Switch_NamedFramebufferDrawBuffer(GLuint framebuffer, GLenum buf);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLNAMEDFRAMEBUFFERDRAWBUFFERSPROC)(GLuint, GLsizei, const GLenum *);
+static void CODEGEN_FUNCPTR Switch_NamedFramebufferDrawBuffers(GLuint framebuffer, GLsizei n, const GLenum * bufs);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLNAMEDFRAMEBUFFERPARAMETERIPROC)(GLuint, GLenum, GLint);
+static void CODEGEN_FUNCPTR Switch_NamedFramebufferParameteri(GLuint framebuffer, GLenum pname, GLint param);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLNAMEDFRAMEBUFFERREADBUFFERPROC)(GLuint, GLenum);
+static void CODEGEN_FUNCPTR Switch_NamedFramebufferReadBuffer(GLuint framebuffer, GLenum src);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLNAMEDFRAMEBUFFERRENDERBUFFERPROC)(GLuint, GLenum, GLenum, GLuint);
+static void CODEGEN_FUNCPTR Switch_NamedFramebufferRenderbuffer(GLuint framebuffer, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLNAMEDFRAMEBUFFERTEXTUREPROC)(GLuint, GLenum, GLuint, GLint);
+static void CODEGEN_FUNCPTR Switch_NamedFramebufferTexture(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLNAMEDFRAMEBUFFERTEXTURELAYERPROC)(GLuint, GLenum, GLuint, GLint, GLint);
+static void CODEGEN_FUNCPTR Switch_NamedFramebufferTextureLayer(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level, GLint layer);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLNAMEDRENDERBUFFERSTORAGEPROC)(GLuint, GLenum, GLsizei, GLsizei);
+static void CODEGEN_FUNCPTR Switch_NamedRenderbufferStorage(GLuint renderbuffer, GLenum internalformat, GLsizei width, GLsizei height);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLNAMEDRENDERBUFFERSTORAGEMULTISAMPLEPROC)(GLuint, GLsizei, GLenum, GLsizei, GLsizei);
+static void CODEGEN_FUNCPTR Switch_NamedRenderbufferStorageMultisample(GLuint renderbuffer, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLREADNPIXELSPROC)(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLsizei, void *);
+static void CODEGEN_FUNCPTR Switch_ReadnPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLsizei bufSize, void * data);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTUREBARRIERPROC)(void);
+static void CODEGEN_FUNCPTR Switch_TextureBarrier(void);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTUREBUFFERPROC)(GLuint, GLenum, GLuint);
+static void CODEGEN_FUNCPTR Switch_TextureBuffer(GLuint texture, GLenum internalformat, GLuint buffer);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTUREBUFFERRANGEPROC)(GLuint, GLenum, GLuint, GLintptr, GLsizeiptr);
+static void CODEGEN_FUNCPTR Switch_TextureBufferRange(GLuint texture, GLenum internalformat, GLuint buffer, GLintptr offset, GLsizeiptr size);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTUREPARAMETERIIVPROC)(GLuint, GLenum, const GLint *);
+static void CODEGEN_FUNCPTR Switch_TextureParameterIiv(GLuint texture, GLenum pname, const GLint * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTUREPARAMETERIUIVPROC)(GLuint, GLenum, const GLuint *);
+static void CODEGEN_FUNCPTR Switch_TextureParameterIuiv(GLuint texture, GLenum pname, const GLuint * params);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTUREPARAMETERFPROC)(GLuint, GLenum, GLfloat);
+static void CODEGEN_FUNCPTR Switch_TextureParameterf(GLuint texture, GLenum pname, GLfloat param);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTUREPARAMETERFVPROC)(GLuint, GLenum, const GLfloat *);
+static void CODEGEN_FUNCPTR Switch_TextureParameterfv(GLuint texture, GLenum pname, const GLfloat * param);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTUREPARAMETERIPROC)(GLuint, GLenum, GLint);
+static void CODEGEN_FUNCPTR Switch_TextureParameteri(GLuint texture, GLenum pname, GLint param);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTUREPARAMETERIVPROC)(GLuint, GLenum, const GLint *);
+static void CODEGEN_FUNCPTR Switch_TextureParameteriv(GLuint texture, GLenum pname, const GLint * param);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTURESTORAGE1DPROC)(GLuint, GLsizei, GLenum, GLsizei);
+static void CODEGEN_FUNCPTR Switch_TextureStorage1D(GLuint texture, GLsizei levels, GLenum internalformat, GLsizei width);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTURESTORAGE2DPROC)(GLuint, GLsizei, GLenum, GLsizei, GLsizei);
+static void CODEGEN_FUNCPTR Switch_TextureStorage2D(GLuint texture, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTURESTORAGE2DMULTISAMPLEPROC)(GLuint, GLsizei, GLenum, GLsizei, GLsizei, GLboolean);
+static void CODEGEN_FUNCPTR Switch_TextureStorage2DMultisample(GLuint texture, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTURESTORAGE3DPROC)(GLuint, GLsizei, GLenum, GLsizei, GLsizei, GLsizei);
+static void CODEGEN_FUNCPTR Switch_TextureStorage3D(GLuint texture, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTURESTORAGE3DMULTISAMPLEPROC)(GLuint, GLsizei, GLenum, GLsizei, GLsizei, GLsizei, GLboolean);
+static void CODEGEN_FUNCPTR Switch_TextureStorage3DMultisample(GLuint texture, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTURESUBIMAGE1DPROC)(GLuint, GLint, GLint, GLsizei, GLenum, GLenum, const void *);
+static void CODEGEN_FUNCPTR Switch_TextureSubImage1D(GLuint texture, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, const void * pixels);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTURESUBIMAGE2DPROC)(GLuint, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const void *);
+static void CODEGEN_FUNCPTR Switch_TextureSubImage2D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void * pixels);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTEXTURESUBIMAGE3DPROC)(GLuint, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLsizei, GLenum, GLenum, const void *);
+static void CODEGEN_FUNCPTR Switch_TextureSubImage3D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void * pixels);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTRANSFORMFEEDBACKBUFFERBASEPROC)(GLuint, GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_TransformFeedbackBufferBase(GLuint xfb, GLuint index, GLuint buffer);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLTRANSFORMFEEDBACKBUFFERRANGEPROC)(GLuint, GLuint, GLuint, GLintptr, GLsizeiptr);
+static void CODEGEN_FUNCPTR Switch_TransformFeedbackBufferRange(GLuint xfb, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size);
+typedef GLboolean (CODEGEN_FUNCPTR *PFN_PTRC_GLUNMAPNAMEDBUFFERPROC)(GLuint);
+static GLboolean CODEGEN_FUNCPTR Switch_UnmapNamedBuffer(GLuint buffer);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXARRAYATTRIBBINDINGPROC)(GLuint, GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_VertexArrayAttribBinding(GLuint vaobj, GLuint attribindex, GLuint bindingindex);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXARRAYATTRIBFORMATPROC)(GLuint, GLuint, GLint, GLenum, GLboolean, GLuint);
+static void CODEGEN_FUNCPTR Switch_VertexArrayAttribFormat(GLuint vaobj, GLuint attribindex, GLint size, GLenum type, GLboolean normalized, GLuint relativeoffset);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXARRAYATTRIBIFORMATPROC)(GLuint, GLuint, GLint, GLenum, GLuint);
+static void CODEGEN_FUNCPTR Switch_VertexArrayAttribIFormat(GLuint vaobj, GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXARRAYATTRIBLFORMATPROC)(GLuint, GLuint, GLint, GLenum, GLuint);
+static void CODEGEN_FUNCPTR Switch_VertexArrayAttribLFormat(GLuint vaobj, GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXARRAYBINDINGDIVISORPROC)(GLuint, GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_VertexArrayBindingDivisor(GLuint vaobj, GLuint bindingindex, GLuint divisor);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXARRAYELEMENTBUFFERPROC)(GLuint, GLuint);
+static void CODEGEN_FUNCPTR Switch_VertexArrayElementBuffer(GLuint vaobj, GLuint buffer);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXARRAYVERTEXBUFFERPROC)(GLuint, GLuint, GLuint, GLintptr, GLsizei);
+static void CODEGEN_FUNCPTR Switch_VertexArrayVertexBuffer(GLuint vaobj, GLuint bindingindex, GLuint buffer, GLintptr offset, GLsizei stride);
+typedef void (CODEGEN_FUNCPTR *PFN_PTRC_GLVERTEXARRAYVERTEXBUFFERSPROC)(GLuint, GLuint, GLsizei, const GLuint *, const GLintptr *, const GLsizei *);
+static void CODEGEN_FUNCPTR Switch_VertexArrayVertexBuffers(GLuint vaobj, GLuint first, GLsizei count, const GLuint * buffers, const GLintptr * offsets, const GLsizei * strides);
+
 
 /* Extension: ARB_gpu_shader_fp64*/
 PFN_PTRC_GLGETUNIFORMDVPROC _ptrc_glGetUniformdv = Switch_GetUniformdv;
@@ -881,17 +1455,17 @@ PFN_PTRC_GLUNIFORMMATRIX4DVPROC _ptrc_glUniformMatrix4dv = Switch_UniformMatrix4
 PFN_PTRC_GLUNIFORMMATRIX4X2DVPROC _ptrc_glUniformMatrix4x2dv = Switch_UniformMatrix4x2dv;
 PFN_PTRC_GLUNIFORMMATRIX4X3DVPROC _ptrc_glUniformMatrix4x3dv = Switch_UniformMatrix4x3dv;
 
-/* Extension: EXT_vertex_attrib_64bit*/
-PFN_PTRC_GLGETVERTEXATTRIBLDVEXTPROC _ptrc_glGetVertexAttribLdvEXT = Switch_GetVertexAttribLdvEXT;
-PFN_PTRC_GLVERTEXATTRIBL1DEXTPROC _ptrc_glVertexAttribL1dEXT = Switch_VertexAttribL1dEXT;
-PFN_PTRC_GLVERTEXATTRIBL1DVEXTPROC _ptrc_glVertexAttribL1dvEXT = Switch_VertexAttribL1dvEXT;
-PFN_PTRC_GLVERTEXATTRIBL2DEXTPROC _ptrc_glVertexAttribL2dEXT = Switch_VertexAttribL2dEXT;
-PFN_PTRC_GLVERTEXATTRIBL2DVEXTPROC _ptrc_glVertexAttribL2dvEXT = Switch_VertexAttribL2dvEXT;
-PFN_PTRC_GLVERTEXATTRIBL3DEXTPROC _ptrc_glVertexAttribL3dEXT = Switch_VertexAttribL3dEXT;
-PFN_PTRC_GLVERTEXATTRIBL3DVEXTPROC _ptrc_glVertexAttribL3dvEXT = Switch_VertexAttribL3dvEXT;
-PFN_PTRC_GLVERTEXATTRIBL4DEXTPROC _ptrc_glVertexAttribL4dEXT = Switch_VertexAttribL4dEXT;
-PFN_PTRC_GLVERTEXATTRIBL4DVEXTPROC _ptrc_glVertexAttribL4dvEXT = Switch_VertexAttribL4dvEXT;
-PFN_PTRC_GLVERTEXATTRIBLPOINTEREXTPROC _ptrc_glVertexAttribLPointerEXT = Switch_VertexAttribLPointerEXT;
+/* Extension: ARB_vertex_attrib_64bit*/
+PFN_PTRC_GLGETVERTEXATTRIBLDVPROC _ptrc_glGetVertexAttribLdv = Switch_GetVertexAttribLdv;
+PFN_PTRC_GLVERTEXATTRIBL1DPROC _ptrc_glVertexAttribL1d = Switch_VertexAttribL1d;
+PFN_PTRC_GLVERTEXATTRIBL1DVPROC _ptrc_glVertexAttribL1dv = Switch_VertexAttribL1dv;
+PFN_PTRC_GLVERTEXATTRIBL2DPROC _ptrc_glVertexAttribL2d = Switch_VertexAttribL2d;
+PFN_PTRC_GLVERTEXATTRIBL2DVPROC _ptrc_glVertexAttribL2dv = Switch_VertexAttribL2dv;
+PFN_PTRC_GLVERTEXATTRIBL3DPROC _ptrc_glVertexAttribL3d = Switch_VertexAttribL3d;
+PFN_PTRC_GLVERTEXATTRIBL3DVPROC _ptrc_glVertexAttribL3dv = Switch_VertexAttribL3dv;
+PFN_PTRC_GLVERTEXATTRIBL4DPROC _ptrc_glVertexAttribL4d = Switch_VertexAttribL4d;
+PFN_PTRC_GLVERTEXATTRIBL4DVPROC _ptrc_glVertexAttribL4dv = Switch_VertexAttribL4dv;
+PFN_PTRC_GLVERTEXATTRIBLPOINTERPROC _ptrc_glVertexAttribLPointer = Switch_VertexAttribLPointer;
 
 /* Extension: 1.0*/
 PFN_PTRC_GLBLENDFUNCPROC _ptrc_glBlendFunc = Switch_BlendFunc;
@@ -953,6 +1527,7 @@ PFN_PTRC_GLDELETETEXTURESPROC _ptrc_glDeleteTextures = Switch_DeleteTextures;
 PFN_PTRC_GLDRAWARRAYSPROC _ptrc_glDrawArrays = Switch_DrawArrays;
 PFN_PTRC_GLDRAWELEMENTSPROC _ptrc_glDrawElements = Switch_DrawElements;
 PFN_PTRC_GLGENTEXTURESPROC _ptrc_glGenTextures = Switch_GenTextures;
+PFN_PTRC_GLGETPOINTERVPROC _ptrc_glGetPointerv = Switch_GetPointerv;
 PFN_PTRC_GLISTEXTUREPROC _ptrc_glIsTexture = Switch_IsTexture;
 PFN_PTRC_GLPOLYGONOFFSETPROC _ptrc_glPolygonOffset = Switch_PolygonOffset;
 PFN_PTRC_GLTEXSUBIMAGE1DPROC _ptrc_glTexSubImage1D = Switch_TexSubImage1D;
@@ -1261,6 +1836,298 @@ PFN_PTRC_GLVERTEXATTRIBP3UIVPROC _ptrc_glVertexAttribP3uiv = Switch_VertexAttrib
 PFN_PTRC_GLVERTEXATTRIBP4UIPROC _ptrc_glVertexAttribP4ui = Switch_VertexAttribP4ui;
 PFN_PTRC_GLVERTEXATTRIBP4UIVPROC _ptrc_glVertexAttribP4uiv = Switch_VertexAttribP4uiv;
 
+/* Extension: 4.0*/
+PFN_PTRC_GLBEGINQUERYINDEXEDPROC _ptrc_glBeginQueryIndexed = Switch_BeginQueryIndexed;
+PFN_PTRC_GLBINDTRANSFORMFEEDBACKPROC _ptrc_glBindTransformFeedback = Switch_BindTransformFeedback;
+PFN_PTRC_GLBLENDEQUATIONSEPARATEIPROC _ptrc_glBlendEquationSeparatei = Switch_BlendEquationSeparatei;
+PFN_PTRC_GLBLENDEQUATIONIPROC _ptrc_glBlendEquationi = Switch_BlendEquationi;
+PFN_PTRC_GLBLENDFUNCSEPARATEIPROC _ptrc_glBlendFuncSeparatei = Switch_BlendFuncSeparatei;
+PFN_PTRC_GLBLENDFUNCIPROC _ptrc_glBlendFunci = Switch_BlendFunci;
+PFN_PTRC_GLDELETETRANSFORMFEEDBACKSPROC _ptrc_glDeleteTransformFeedbacks = Switch_DeleteTransformFeedbacks;
+PFN_PTRC_GLDRAWARRAYSINDIRECTPROC _ptrc_glDrawArraysIndirect = Switch_DrawArraysIndirect;
+PFN_PTRC_GLDRAWELEMENTSINDIRECTPROC _ptrc_glDrawElementsIndirect = Switch_DrawElementsIndirect;
+PFN_PTRC_GLDRAWTRANSFORMFEEDBACKPROC _ptrc_glDrawTransformFeedback = Switch_DrawTransformFeedback;
+PFN_PTRC_GLDRAWTRANSFORMFEEDBACKSTREAMPROC _ptrc_glDrawTransformFeedbackStream = Switch_DrawTransformFeedbackStream;
+PFN_PTRC_GLENDQUERYINDEXEDPROC _ptrc_glEndQueryIndexed = Switch_EndQueryIndexed;
+PFN_PTRC_GLGENTRANSFORMFEEDBACKSPROC _ptrc_glGenTransformFeedbacks = Switch_GenTransformFeedbacks;
+PFN_PTRC_GLGETACTIVESUBROUTINENAMEPROC _ptrc_glGetActiveSubroutineName = Switch_GetActiveSubroutineName;
+PFN_PTRC_GLGETACTIVESUBROUTINEUNIFORMNAMEPROC _ptrc_glGetActiveSubroutineUniformName = Switch_GetActiveSubroutineUniformName;
+PFN_PTRC_GLGETACTIVESUBROUTINEUNIFORMIVPROC _ptrc_glGetActiveSubroutineUniformiv = Switch_GetActiveSubroutineUniformiv;
+PFN_PTRC_GLGETPROGRAMSTAGEIVPROC _ptrc_glGetProgramStageiv = Switch_GetProgramStageiv;
+PFN_PTRC_GLGETQUERYINDEXEDIVPROC _ptrc_glGetQueryIndexediv = Switch_GetQueryIndexediv;
+PFN_PTRC_GLGETSUBROUTINEINDEXPROC _ptrc_glGetSubroutineIndex = Switch_GetSubroutineIndex;
+PFN_PTRC_GLGETSUBROUTINEUNIFORMLOCATIONPROC _ptrc_glGetSubroutineUniformLocation = Switch_GetSubroutineUniformLocation;
+PFN_PTRC_GLGETUNIFORMSUBROUTINEUIVPROC _ptrc_glGetUniformSubroutineuiv = Switch_GetUniformSubroutineuiv;
+PFN_PTRC_GLISTRANSFORMFEEDBACKPROC _ptrc_glIsTransformFeedback = Switch_IsTransformFeedback;
+PFN_PTRC_GLMINSAMPLESHADINGPROC _ptrc_glMinSampleShading = Switch_MinSampleShading;
+PFN_PTRC_GLPATCHPARAMETERFVPROC _ptrc_glPatchParameterfv = Switch_PatchParameterfv;
+PFN_PTRC_GLPATCHPARAMETERIPROC _ptrc_glPatchParameteri = Switch_PatchParameteri;
+PFN_PTRC_GLPAUSETRANSFORMFEEDBACKPROC _ptrc_glPauseTransformFeedback = Switch_PauseTransformFeedback;
+PFN_PTRC_GLRESUMETRANSFORMFEEDBACKPROC _ptrc_glResumeTransformFeedback = Switch_ResumeTransformFeedback;
+PFN_PTRC_GLUNIFORMSUBROUTINESUIVPROC _ptrc_glUniformSubroutinesuiv = Switch_UniformSubroutinesuiv;
+
+/* Extension: 4.1*/
+PFN_PTRC_GLACTIVESHADERPROGRAMPROC _ptrc_glActiveShaderProgram = Switch_ActiveShaderProgram;
+PFN_PTRC_GLBINDPROGRAMPIPELINEPROC _ptrc_glBindProgramPipeline = Switch_BindProgramPipeline;
+PFN_PTRC_GLCLEARDEPTHFPROC _ptrc_glClearDepthf = Switch_ClearDepthf;
+PFN_PTRC_GLCREATESHADERPROGRAMVPROC _ptrc_glCreateShaderProgramv = Switch_CreateShaderProgramv;
+PFN_PTRC_GLDELETEPROGRAMPIPELINESPROC _ptrc_glDeleteProgramPipelines = Switch_DeleteProgramPipelines;
+PFN_PTRC_GLDEPTHRANGEARRAYVPROC _ptrc_glDepthRangeArrayv = Switch_DepthRangeArrayv;
+PFN_PTRC_GLDEPTHRANGEINDEXEDPROC _ptrc_glDepthRangeIndexed = Switch_DepthRangeIndexed;
+PFN_PTRC_GLDEPTHRANGEFPROC _ptrc_glDepthRangef = Switch_DepthRangef;
+PFN_PTRC_GLGENPROGRAMPIPELINESPROC _ptrc_glGenProgramPipelines = Switch_GenProgramPipelines;
+PFN_PTRC_GLGETDOUBLEI_VPROC _ptrc_glGetDoublei_v = Switch_GetDoublei_v;
+PFN_PTRC_GLGETFLOATI_VPROC _ptrc_glGetFloati_v = Switch_GetFloati_v;
+PFN_PTRC_GLGETPROGRAMBINARYPROC _ptrc_glGetProgramBinary = Switch_GetProgramBinary;
+PFN_PTRC_GLGETPROGRAMPIPELINEINFOLOGPROC _ptrc_glGetProgramPipelineInfoLog = Switch_GetProgramPipelineInfoLog;
+PFN_PTRC_GLGETPROGRAMPIPELINEIVPROC _ptrc_glGetProgramPipelineiv = Switch_GetProgramPipelineiv;
+PFN_PTRC_GLGETSHADERPRECISIONFORMATPROC _ptrc_glGetShaderPrecisionFormat = Switch_GetShaderPrecisionFormat;
+PFN_PTRC_GLISPROGRAMPIPELINEPROC _ptrc_glIsProgramPipeline = Switch_IsProgramPipeline;
+PFN_PTRC_GLPROGRAMBINARYPROC _ptrc_glProgramBinary = Switch_ProgramBinary;
+PFN_PTRC_GLPROGRAMPARAMETERIPROC _ptrc_glProgramParameteri = Switch_ProgramParameteri;
+PFN_PTRC_GLPROGRAMUNIFORM1DPROC _ptrc_glProgramUniform1d = Switch_ProgramUniform1d;
+PFN_PTRC_GLPROGRAMUNIFORM1DVPROC _ptrc_glProgramUniform1dv = Switch_ProgramUniform1dv;
+PFN_PTRC_GLPROGRAMUNIFORM1FPROC _ptrc_glProgramUniform1f = Switch_ProgramUniform1f;
+PFN_PTRC_GLPROGRAMUNIFORM1FVPROC _ptrc_glProgramUniform1fv = Switch_ProgramUniform1fv;
+PFN_PTRC_GLPROGRAMUNIFORM1IPROC _ptrc_glProgramUniform1i = Switch_ProgramUniform1i;
+PFN_PTRC_GLPROGRAMUNIFORM1IVPROC _ptrc_glProgramUniform1iv = Switch_ProgramUniform1iv;
+PFN_PTRC_GLPROGRAMUNIFORM1UIPROC _ptrc_glProgramUniform1ui = Switch_ProgramUniform1ui;
+PFN_PTRC_GLPROGRAMUNIFORM1UIVPROC _ptrc_glProgramUniform1uiv = Switch_ProgramUniform1uiv;
+PFN_PTRC_GLPROGRAMUNIFORM2DPROC _ptrc_glProgramUniform2d = Switch_ProgramUniform2d;
+PFN_PTRC_GLPROGRAMUNIFORM2DVPROC _ptrc_glProgramUniform2dv = Switch_ProgramUniform2dv;
+PFN_PTRC_GLPROGRAMUNIFORM2FPROC _ptrc_glProgramUniform2f = Switch_ProgramUniform2f;
+PFN_PTRC_GLPROGRAMUNIFORM2FVPROC _ptrc_glProgramUniform2fv = Switch_ProgramUniform2fv;
+PFN_PTRC_GLPROGRAMUNIFORM2IPROC _ptrc_glProgramUniform2i = Switch_ProgramUniform2i;
+PFN_PTRC_GLPROGRAMUNIFORM2IVPROC _ptrc_glProgramUniform2iv = Switch_ProgramUniform2iv;
+PFN_PTRC_GLPROGRAMUNIFORM2UIPROC _ptrc_glProgramUniform2ui = Switch_ProgramUniform2ui;
+PFN_PTRC_GLPROGRAMUNIFORM2UIVPROC _ptrc_glProgramUniform2uiv = Switch_ProgramUniform2uiv;
+PFN_PTRC_GLPROGRAMUNIFORM3DPROC _ptrc_glProgramUniform3d = Switch_ProgramUniform3d;
+PFN_PTRC_GLPROGRAMUNIFORM3DVPROC _ptrc_glProgramUniform3dv = Switch_ProgramUniform3dv;
+PFN_PTRC_GLPROGRAMUNIFORM3FPROC _ptrc_glProgramUniform3f = Switch_ProgramUniform3f;
+PFN_PTRC_GLPROGRAMUNIFORM3FVPROC _ptrc_glProgramUniform3fv = Switch_ProgramUniform3fv;
+PFN_PTRC_GLPROGRAMUNIFORM3IPROC _ptrc_glProgramUniform3i = Switch_ProgramUniform3i;
+PFN_PTRC_GLPROGRAMUNIFORM3IVPROC _ptrc_glProgramUniform3iv = Switch_ProgramUniform3iv;
+PFN_PTRC_GLPROGRAMUNIFORM3UIPROC _ptrc_glProgramUniform3ui = Switch_ProgramUniform3ui;
+PFN_PTRC_GLPROGRAMUNIFORM3UIVPROC _ptrc_glProgramUniform3uiv = Switch_ProgramUniform3uiv;
+PFN_PTRC_GLPROGRAMUNIFORM4DPROC _ptrc_glProgramUniform4d = Switch_ProgramUniform4d;
+PFN_PTRC_GLPROGRAMUNIFORM4DVPROC _ptrc_glProgramUniform4dv = Switch_ProgramUniform4dv;
+PFN_PTRC_GLPROGRAMUNIFORM4FPROC _ptrc_glProgramUniform4f = Switch_ProgramUniform4f;
+PFN_PTRC_GLPROGRAMUNIFORM4FVPROC _ptrc_glProgramUniform4fv = Switch_ProgramUniform4fv;
+PFN_PTRC_GLPROGRAMUNIFORM4IPROC _ptrc_glProgramUniform4i = Switch_ProgramUniform4i;
+PFN_PTRC_GLPROGRAMUNIFORM4IVPROC _ptrc_glProgramUniform4iv = Switch_ProgramUniform4iv;
+PFN_PTRC_GLPROGRAMUNIFORM4UIPROC _ptrc_glProgramUniform4ui = Switch_ProgramUniform4ui;
+PFN_PTRC_GLPROGRAMUNIFORM4UIVPROC _ptrc_glProgramUniform4uiv = Switch_ProgramUniform4uiv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX2DVPROC _ptrc_glProgramUniformMatrix2dv = Switch_ProgramUniformMatrix2dv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX2FVPROC _ptrc_glProgramUniformMatrix2fv = Switch_ProgramUniformMatrix2fv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX2X3DVPROC _ptrc_glProgramUniformMatrix2x3dv = Switch_ProgramUniformMatrix2x3dv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX2X3FVPROC _ptrc_glProgramUniformMatrix2x3fv = Switch_ProgramUniformMatrix2x3fv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX2X4DVPROC _ptrc_glProgramUniformMatrix2x4dv = Switch_ProgramUniformMatrix2x4dv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX2X4FVPROC _ptrc_glProgramUniformMatrix2x4fv = Switch_ProgramUniformMatrix2x4fv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX3DVPROC _ptrc_glProgramUniformMatrix3dv = Switch_ProgramUniformMatrix3dv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX3FVPROC _ptrc_glProgramUniformMatrix3fv = Switch_ProgramUniformMatrix3fv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX3X2DVPROC _ptrc_glProgramUniformMatrix3x2dv = Switch_ProgramUniformMatrix3x2dv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX3X2FVPROC _ptrc_glProgramUniformMatrix3x2fv = Switch_ProgramUniformMatrix3x2fv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX3X4DVPROC _ptrc_glProgramUniformMatrix3x4dv = Switch_ProgramUniformMatrix3x4dv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX3X4FVPROC _ptrc_glProgramUniformMatrix3x4fv = Switch_ProgramUniformMatrix3x4fv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX4DVPROC _ptrc_glProgramUniformMatrix4dv = Switch_ProgramUniformMatrix4dv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX4FVPROC _ptrc_glProgramUniformMatrix4fv = Switch_ProgramUniformMatrix4fv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX4X2DVPROC _ptrc_glProgramUniformMatrix4x2dv = Switch_ProgramUniformMatrix4x2dv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX4X2FVPROC _ptrc_glProgramUniformMatrix4x2fv = Switch_ProgramUniformMatrix4x2fv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX4X3DVPROC _ptrc_glProgramUniformMatrix4x3dv = Switch_ProgramUniformMatrix4x3dv;
+PFN_PTRC_GLPROGRAMUNIFORMMATRIX4X3FVPROC _ptrc_glProgramUniformMatrix4x3fv = Switch_ProgramUniformMatrix4x3fv;
+PFN_PTRC_GLRELEASESHADERCOMPILERPROC _ptrc_glReleaseShaderCompiler = Switch_ReleaseShaderCompiler;
+PFN_PTRC_GLSCISSORARRAYVPROC _ptrc_glScissorArrayv = Switch_ScissorArrayv;
+PFN_PTRC_GLSCISSORINDEXEDPROC _ptrc_glScissorIndexed = Switch_ScissorIndexed;
+PFN_PTRC_GLSCISSORINDEXEDVPROC _ptrc_glScissorIndexedv = Switch_ScissorIndexedv;
+PFN_PTRC_GLSHADERBINARYPROC _ptrc_glShaderBinary = Switch_ShaderBinary;
+PFN_PTRC_GLUSEPROGRAMSTAGESPROC _ptrc_glUseProgramStages = Switch_UseProgramStages;
+PFN_PTRC_GLVALIDATEPROGRAMPIPELINEPROC _ptrc_glValidateProgramPipeline = Switch_ValidateProgramPipeline;
+PFN_PTRC_GLVIEWPORTARRAYVPROC _ptrc_glViewportArrayv = Switch_ViewportArrayv;
+PFN_PTRC_GLVIEWPORTINDEXEDFPROC _ptrc_glViewportIndexedf = Switch_ViewportIndexedf;
+PFN_PTRC_GLVIEWPORTINDEXEDFVPROC _ptrc_glViewportIndexedfv = Switch_ViewportIndexedfv;
+
+/* Extension: 4.2*/
+PFN_PTRC_GLBINDIMAGETEXTUREPROC _ptrc_glBindImageTexture = Switch_BindImageTexture;
+PFN_PTRC_GLDRAWARRAYSINSTANCEDBASEINSTANCEPROC _ptrc_glDrawArraysInstancedBaseInstance = Switch_DrawArraysInstancedBaseInstance;
+PFN_PTRC_GLDRAWELEMENTSINSTANCEDBASEINSTANCEPROC _ptrc_glDrawElementsInstancedBaseInstance = Switch_DrawElementsInstancedBaseInstance;
+PFN_PTRC_GLDRAWELEMENTSINSTANCEDBASEVERTEXBASEINSTANCEPROC _ptrc_glDrawElementsInstancedBaseVertexBaseInstance = Switch_DrawElementsInstancedBaseVertexBaseInstance;
+PFN_PTRC_GLDRAWTRANSFORMFEEDBACKINSTANCEDPROC _ptrc_glDrawTransformFeedbackInstanced = Switch_DrawTransformFeedbackInstanced;
+PFN_PTRC_GLDRAWTRANSFORMFEEDBACKSTREAMINSTANCEDPROC _ptrc_glDrawTransformFeedbackStreamInstanced = Switch_DrawTransformFeedbackStreamInstanced;
+PFN_PTRC_GLGETACTIVEATOMICCOUNTERBUFFERIVPROC _ptrc_glGetActiveAtomicCounterBufferiv = Switch_GetActiveAtomicCounterBufferiv;
+PFN_PTRC_GLGETINTERNALFORMATIVPROC _ptrc_glGetInternalformativ = Switch_GetInternalformativ;
+PFN_PTRC_GLMEMORYBARRIERPROC _ptrc_glMemoryBarrier = Switch_MemoryBarrier;
+PFN_PTRC_GLTEXSTORAGE1DPROC _ptrc_glTexStorage1D = Switch_TexStorage1D;
+PFN_PTRC_GLTEXSTORAGE2DPROC _ptrc_glTexStorage2D = Switch_TexStorage2D;
+PFN_PTRC_GLTEXSTORAGE3DPROC _ptrc_glTexStorage3D = Switch_TexStorage3D;
+
+/* Extension: 4.3*/
+PFN_PTRC_GLBINDVERTEXBUFFERPROC _ptrc_glBindVertexBuffer = Switch_BindVertexBuffer;
+PFN_PTRC_GLCLEARBUFFERDATAPROC _ptrc_glClearBufferData = Switch_ClearBufferData;
+PFN_PTRC_GLCLEARBUFFERSUBDATAPROC _ptrc_glClearBufferSubData = Switch_ClearBufferSubData;
+PFN_PTRC_GLCOPYIMAGESUBDATAPROC _ptrc_glCopyImageSubData = Switch_CopyImageSubData;
+PFN_PTRC_GLDEBUGMESSAGECALLBACKPROC _ptrc_glDebugMessageCallback = Switch_DebugMessageCallback;
+PFN_PTRC_GLDEBUGMESSAGECONTROLPROC _ptrc_glDebugMessageControl = Switch_DebugMessageControl;
+PFN_PTRC_GLDEBUGMESSAGEINSERTPROC _ptrc_glDebugMessageInsert = Switch_DebugMessageInsert;
+PFN_PTRC_GLDISPATCHCOMPUTEPROC _ptrc_glDispatchCompute = Switch_DispatchCompute;
+PFN_PTRC_GLDISPATCHCOMPUTEINDIRECTPROC _ptrc_glDispatchComputeIndirect = Switch_DispatchComputeIndirect;
+PFN_PTRC_GLFRAMEBUFFERPARAMETERIPROC _ptrc_glFramebufferParameteri = Switch_FramebufferParameteri;
+PFN_PTRC_GLGETDEBUGMESSAGELOGPROC _ptrc_glGetDebugMessageLog = Switch_GetDebugMessageLog;
+PFN_PTRC_GLGETFRAMEBUFFERPARAMETERIVPROC _ptrc_glGetFramebufferParameteriv = Switch_GetFramebufferParameteriv;
+PFN_PTRC_GLGETINTERNALFORMATI64VPROC _ptrc_glGetInternalformati64v = Switch_GetInternalformati64v;
+PFN_PTRC_GLGETOBJECTLABELPROC _ptrc_glGetObjectLabel = Switch_GetObjectLabel;
+PFN_PTRC_GLGETOBJECTPTRLABELPROC _ptrc_glGetObjectPtrLabel = Switch_GetObjectPtrLabel;
+PFN_PTRC_GLGETPROGRAMINTERFACEIVPROC _ptrc_glGetProgramInterfaceiv = Switch_GetProgramInterfaceiv;
+PFN_PTRC_GLGETPROGRAMRESOURCEINDEXPROC _ptrc_glGetProgramResourceIndex = Switch_GetProgramResourceIndex;
+PFN_PTRC_GLGETPROGRAMRESOURCELOCATIONPROC _ptrc_glGetProgramResourceLocation = Switch_GetProgramResourceLocation;
+PFN_PTRC_GLGETPROGRAMRESOURCELOCATIONINDEXPROC _ptrc_glGetProgramResourceLocationIndex = Switch_GetProgramResourceLocationIndex;
+PFN_PTRC_GLGETPROGRAMRESOURCENAMEPROC _ptrc_glGetProgramResourceName = Switch_GetProgramResourceName;
+PFN_PTRC_GLGETPROGRAMRESOURCEIVPROC _ptrc_glGetProgramResourceiv = Switch_GetProgramResourceiv;
+PFN_PTRC_GLINVALIDATEBUFFERDATAPROC _ptrc_glInvalidateBufferData = Switch_InvalidateBufferData;
+PFN_PTRC_GLINVALIDATEBUFFERSUBDATAPROC _ptrc_glInvalidateBufferSubData = Switch_InvalidateBufferSubData;
+PFN_PTRC_GLINVALIDATEFRAMEBUFFERPROC _ptrc_glInvalidateFramebuffer = Switch_InvalidateFramebuffer;
+PFN_PTRC_GLINVALIDATESUBFRAMEBUFFERPROC _ptrc_glInvalidateSubFramebuffer = Switch_InvalidateSubFramebuffer;
+PFN_PTRC_GLINVALIDATETEXIMAGEPROC _ptrc_glInvalidateTexImage = Switch_InvalidateTexImage;
+PFN_PTRC_GLINVALIDATETEXSUBIMAGEPROC _ptrc_glInvalidateTexSubImage = Switch_InvalidateTexSubImage;
+PFN_PTRC_GLMULTIDRAWARRAYSINDIRECTPROC _ptrc_glMultiDrawArraysIndirect = Switch_MultiDrawArraysIndirect;
+PFN_PTRC_GLMULTIDRAWELEMENTSINDIRECTPROC _ptrc_glMultiDrawElementsIndirect = Switch_MultiDrawElementsIndirect;
+PFN_PTRC_GLOBJECTLABELPROC _ptrc_glObjectLabel = Switch_ObjectLabel;
+PFN_PTRC_GLOBJECTPTRLABELPROC _ptrc_glObjectPtrLabel = Switch_ObjectPtrLabel;
+PFN_PTRC_GLPOPDEBUGGROUPPROC _ptrc_glPopDebugGroup = Switch_PopDebugGroup;
+PFN_PTRC_GLPUSHDEBUGGROUPPROC _ptrc_glPushDebugGroup = Switch_PushDebugGroup;
+PFN_PTRC_GLSHADERSTORAGEBLOCKBINDINGPROC _ptrc_glShaderStorageBlockBinding = Switch_ShaderStorageBlockBinding;
+PFN_PTRC_GLTEXBUFFERRANGEPROC _ptrc_glTexBufferRange = Switch_TexBufferRange;
+PFN_PTRC_GLTEXSTORAGE2DMULTISAMPLEPROC _ptrc_glTexStorage2DMultisample = Switch_TexStorage2DMultisample;
+PFN_PTRC_GLTEXSTORAGE3DMULTISAMPLEPROC _ptrc_glTexStorage3DMultisample = Switch_TexStorage3DMultisample;
+PFN_PTRC_GLTEXTUREVIEWPROC _ptrc_glTextureView = Switch_TextureView;
+PFN_PTRC_GLVERTEXATTRIBBINDINGPROC _ptrc_glVertexAttribBinding = Switch_VertexAttribBinding;
+PFN_PTRC_GLVERTEXATTRIBFORMATPROC _ptrc_glVertexAttribFormat = Switch_VertexAttribFormat;
+PFN_PTRC_GLVERTEXATTRIBIFORMATPROC _ptrc_glVertexAttribIFormat = Switch_VertexAttribIFormat;
+PFN_PTRC_GLVERTEXATTRIBLFORMATPROC _ptrc_glVertexAttribLFormat = Switch_VertexAttribLFormat;
+PFN_PTRC_GLVERTEXBINDINGDIVISORPROC _ptrc_glVertexBindingDivisor = Switch_VertexBindingDivisor;
+
+/* Extension: 4.4*/
+PFN_PTRC_GLBINDBUFFERSBASEPROC _ptrc_glBindBuffersBase = Switch_BindBuffersBase;
+PFN_PTRC_GLBINDBUFFERSRANGEPROC _ptrc_glBindBuffersRange = Switch_BindBuffersRange;
+PFN_PTRC_GLBINDIMAGETEXTURESPROC _ptrc_glBindImageTextures = Switch_BindImageTextures;
+PFN_PTRC_GLBINDSAMPLERSPROC _ptrc_glBindSamplers = Switch_BindSamplers;
+PFN_PTRC_GLBINDTEXTURESPROC _ptrc_glBindTextures = Switch_BindTextures;
+PFN_PTRC_GLBINDVERTEXBUFFERSPROC _ptrc_glBindVertexBuffers = Switch_BindVertexBuffers;
+PFN_PTRC_GLBUFFERSTORAGEPROC _ptrc_glBufferStorage = Switch_BufferStorage;
+PFN_PTRC_GLCLEARTEXIMAGEPROC _ptrc_glClearTexImage = Switch_ClearTexImage;
+PFN_PTRC_GLCLEARTEXSUBIMAGEPROC _ptrc_glClearTexSubImage = Switch_ClearTexSubImage;
+
+/* Extension: 4.5*/
+PFN_PTRC_GLBINDTEXTUREUNITPROC _ptrc_glBindTextureUnit = Switch_BindTextureUnit;
+PFN_PTRC_GLBLITNAMEDFRAMEBUFFERPROC _ptrc_glBlitNamedFramebuffer = Switch_BlitNamedFramebuffer;
+PFN_PTRC_GLCHECKNAMEDFRAMEBUFFERSTATUSPROC _ptrc_glCheckNamedFramebufferStatus = Switch_CheckNamedFramebufferStatus;
+PFN_PTRC_GLCLEARNAMEDBUFFERDATAPROC _ptrc_glClearNamedBufferData = Switch_ClearNamedBufferData;
+PFN_PTRC_GLCLEARNAMEDBUFFERSUBDATAPROC _ptrc_glClearNamedBufferSubData = Switch_ClearNamedBufferSubData;
+PFN_PTRC_GLCLEARNAMEDFRAMEBUFFERFIPROC _ptrc_glClearNamedFramebufferfi = Switch_ClearNamedFramebufferfi;
+PFN_PTRC_GLCLEARNAMEDFRAMEBUFFERFVPROC _ptrc_glClearNamedFramebufferfv = Switch_ClearNamedFramebufferfv;
+PFN_PTRC_GLCLEARNAMEDFRAMEBUFFERIVPROC _ptrc_glClearNamedFramebufferiv = Switch_ClearNamedFramebufferiv;
+PFN_PTRC_GLCLEARNAMEDFRAMEBUFFERUIVPROC _ptrc_glClearNamedFramebufferuiv = Switch_ClearNamedFramebufferuiv;
+PFN_PTRC_GLCLIPCONTROLPROC _ptrc_glClipControl = Switch_ClipControl;
+PFN_PTRC_GLCOMPRESSEDTEXTURESUBIMAGE1DPROC _ptrc_glCompressedTextureSubImage1D = Switch_CompressedTextureSubImage1D;
+PFN_PTRC_GLCOMPRESSEDTEXTURESUBIMAGE2DPROC _ptrc_glCompressedTextureSubImage2D = Switch_CompressedTextureSubImage2D;
+PFN_PTRC_GLCOMPRESSEDTEXTURESUBIMAGE3DPROC _ptrc_glCompressedTextureSubImage3D = Switch_CompressedTextureSubImage3D;
+PFN_PTRC_GLCOPYNAMEDBUFFERSUBDATAPROC _ptrc_glCopyNamedBufferSubData = Switch_CopyNamedBufferSubData;
+PFN_PTRC_GLCOPYTEXTURESUBIMAGE1DPROC _ptrc_glCopyTextureSubImage1D = Switch_CopyTextureSubImage1D;
+PFN_PTRC_GLCOPYTEXTURESUBIMAGE2DPROC _ptrc_glCopyTextureSubImage2D = Switch_CopyTextureSubImage2D;
+PFN_PTRC_GLCOPYTEXTURESUBIMAGE3DPROC _ptrc_glCopyTextureSubImage3D = Switch_CopyTextureSubImage3D;
+PFN_PTRC_GLCREATEBUFFERSPROC _ptrc_glCreateBuffers = Switch_CreateBuffers;
+PFN_PTRC_GLCREATEFRAMEBUFFERSPROC _ptrc_glCreateFramebuffers = Switch_CreateFramebuffers;
+PFN_PTRC_GLCREATEPROGRAMPIPELINESPROC _ptrc_glCreateProgramPipelines = Switch_CreateProgramPipelines;
+PFN_PTRC_GLCREATEQUERIESPROC _ptrc_glCreateQueries = Switch_CreateQueries;
+PFN_PTRC_GLCREATERENDERBUFFERSPROC _ptrc_glCreateRenderbuffers = Switch_CreateRenderbuffers;
+PFN_PTRC_GLCREATESAMPLERSPROC _ptrc_glCreateSamplers = Switch_CreateSamplers;
+PFN_PTRC_GLCREATETEXTURESPROC _ptrc_glCreateTextures = Switch_CreateTextures;
+PFN_PTRC_GLCREATETRANSFORMFEEDBACKSPROC _ptrc_glCreateTransformFeedbacks = Switch_CreateTransformFeedbacks;
+PFN_PTRC_GLCREATEVERTEXARRAYSPROC _ptrc_glCreateVertexArrays = Switch_CreateVertexArrays;
+PFN_PTRC_GLDISABLEVERTEXARRAYATTRIBPROC _ptrc_glDisableVertexArrayAttrib = Switch_DisableVertexArrayAttrib;
+PFN_PTRC_GLENABLEVERTEXARRAYATTRIBPROC _ptrc_glEnableVertexArrayAttrib = Switch_EnableVertexArrayAttrib;
+PFN_PTRC_GLFLUSHMAPPEDNAMEDBUFFERRANGEPROC _ptrc_glFlushMappedNamedBufferRange = Switch_FlushMappedNamedBufferRange;
+PFN_PTRC_GLGENERATETEXTUREMIPMAPPROC _ptrc_glGenerateTextureMipmap = Switch_GenerateTextureMipmap;
+PFN_PTRC_GLGETCOMPRESSEDTEXTUREIMAGEPROC _ptrc_glGetCompressedTextureImage = Switch_GetCompressedTextureImage;
+PFN_PTRC_GLGETCOMPRESSEDTEXTURESUBIMAGEPROC _ptrc_glGetCompressedTextureSubImage = Switch_GetCompressedTextureSubImage;
+PFN_PTRC_GLGETGRAPHICSRESETSTATUSPROC _ptrc_glGetGraphicsResetStatus = Switch_GetGraphicsResetStatus;
+PFN_PTRC_GLGETNAMEDBUFFERPARAMETERI64VPROC _ptrc_glGetNamedBufferParameteri64v = Switch_GetNamedBufferParameteri64v;
+PFN_PTRC_GLGETNAMEDBUFFERPARAMETERIVPROC _ptrc_glGetNamedBufferParameteriv = Switch_GetNamedBufferParameteriv;
+PFN_PTRC_GLGETNAMEDBUFFERPOINTERVPROC _ptrc_glGetNamedBufferPointerv = Switch_GetNamedBufferPointerv;
+PFN_PTRC_GLGETNAMEDBUFFERSUBDATAPROC _ptrc_glGetNamedBufferSubData = Switch_GetNamedBufferSubData;
+PFN_PTRC_GLGETNAMEDFRAMEBUFFERATTACHMENTPARAMETERIVPROC _ptrc_glGetNamedFramebufferAttachmentParameteriv = Switch_GetNamedFramebufferAttachmentParameteriv;
+PFN_PTRC_GLGETNAMEDFRAMEBUFFERPARAMETERIVPROC _ptrc_glGetNamedFramebufferParameteriv = Switch_GetNamedFramebufferParameteriv;
+PFN_PTRC_GLGETNAMEDRENDERBUFFERPARAMETERIVPROC _ptrc_glGetNamedRenderbufferParameteriv = Switch_GetNamedRenderbufferParameteriv;
+PFN_PTRC_GLGETQUERYBUFFEROBJECTI64VPROC _ptrc_glGetQueryBufferObjecti64v = Switch_GetQueryBufferObjecti64v;
+PFN_PTRC_GLGETQUERYBUFFEROBJECTIVPROC _ptrc_glGetQueryBufferObjectiv = Switch_GetQueryBufferObjectiv;
+PFN_PTRC_GLGETQUERYBUFFEROBJECTUI64VPROC _ptrc_glGetQueryBufferObjectui64v = Switch_GetQueryBufferObjectui64v;
+PFN_PTRC_GLGETQUERYBUFFEROBJECTUIVPROC _ptrc_glGetQueryBufferObjectuiv = Switch_GetQueryBufferObjectuiv;
+PFN_PTRC_GLGETTEXTUREIMAGEPROC _ptrc_glGetTextureImage = Switch_GetTextureImage;
+PFN_PTRC_GLGETTEXTURELEVELPARAMETERFVPROC _ptrc_glGetTextureLevelParameterfv = Switch_GetTextureLevelParameterfv;
+PFN_PTRC_GLGETTEXTURELEVELPARAMETERIVPROC _ptrc_glGetTextureLevelParameteriv = Switch_GetTextureLevelParameteriv;
+PFN_PTRC_GLGETTEXTUREPARAMETERIIVPROC _ptrc_glGetTextureParameterIiv = Switch_GetTextureParameterIiv;
+PFN_PTRC_GLGETTEXTUREPARAMETERIUIVPROC _ptrc_glGetTextureParameterIuiv = Switch_GetTextureParameterIuiv;
+PFN_PTRC_GLGETTEXTUREPARAMETERFVPROC _ptrc_glGetTextureParameterfv = Switch_GetTextureParameterfv;
+PFN_PTRC_GLGETTEXTUREPARAMETERIVPROC _ptrc_glGetTextureParameteriv = Switch_GetTextureParameteriv;
+PFN_PTRC_GLGETTEXTURESUBIMAGEPROC _ptrc_glGetTextureSubImage = Switch_GetTextureSubImage;
+PFN_PTRC_GLGETTRANSFORMFEEDBACKI64_VPROC _ptrc_glGetTransformFeedbacki64_v = Switch_GetTransformFeedbacki64_v;
+PFN_PTRC_GLGETTRANSFORMFEEDBACKI_VPROC _ptrc_glGetTransformFeedbacki_v = Switch_GetTransformFeedbacki_v;
+PFN_PTRC_GLGETTRANSFORMFEEDBACKIVPROC _ptrc_glGetTransformFeedbackiv = Switch_GetTransformFeedbackiv;
+PFN_PTRC_GLGETVERTEXARRAYINDEXED64IVPROC _ptrc_glGetVertexArrayIndexed64iv = Switch_GetVertexArrayIndexed64iv;
+PFN_PTRC_GLGETVERTEXARRAYINDEXEDIVPROC _ptrc_glGetVertexArrayIndexediv = Switch_GetVertexArrayIndexediv;
+PFN_PTRC_GLGETVERTEXARRAYIVPROC _ptrc_glGetVertexArrayiv = Switch_GetVertexArrayiv;
+PFN_PTRC_GLGETNCOMPRESSEDTEXIMAGEPROC _ptrc_glGetnCompressedTexImage = Switch_GetnCompressedTexImage;
+PFN_PTRC_GLGETNTEXIMAGEPROC _ptrc_glGetnTexImage = Switch_GetnTexImage;
+PFN_PTRC_GLGETNUNIFORMDVPROC _ptrc_glGetnUniformdv = Switch_GetnUniformdv;
+PFN_PTRC_GLGETNUNIFORMFVPROC _ptrc_glGetnUniformfv = Switch_GetnUniformfv;
+PFN_PTRC_GLGETNUNIFORMIVPROC _ptrc_glGetnUniformiv = Switch_GetnUniformiv;
+PFN_PTRC_GLGETNUNIFORMUIVPROC _ptrc_glGetnUniformuiv = Switch_GetnUniformuiv;
+PFN_PTRC_GLINVALIDATENAMEDFRAMEBUFFERDATAPROC _ptrc_glInvalidateNamedFramebufferData = Switch_InvalidateNamedFramebufferData;
+PFN_PTRC_GLINVALIDATENAMEDFRAMEBUFFERSUBDATAPROC _ptrc_glInvalidateNamedFramebufferSubData = Switch_InvalidateNamedFramebufferSubData;
+PFN_PTRC_GLMAPNAMEDBUFFERPROC _ptrc_glMapNamedBuffer = Switch_MapNamedBuffer;
+PFN_PTRC_GLMAPNAMEDBUFFERRANGEPROC _ptrc_glMapNamedBufferRange = Switch_MapNamedBufferRange;
+PFN_PTRC_GLMEMORYBARRIERBYREGIONPROC _ptrc_glMemoryBarrierByRegion = Switch_MemoryBarrierByRegion;
+PFN_PTRC_GLNAMEDBUFFERDATAPROC _ptrc_glNamedBufferData = Switch_NamedBufferData;
+PFN_PTRC_GLNAMEDBUFFERSTORAGEPROC _ptrc_glNamedBufferStorage = Switch_NamedBufferStorage;
+PFN_PTRC_GLNAMEDBUFFERSUBDATAPROC _ptrc_glNamedBufferSubData = Switch_NamedBufferSubData;
+PFN_PTRC_GLNAMEDFRAMEBUFFERDRAWBUFFERPROC _ptrc_glNamedFramebufferDrawBuffer = Switch_NamedFramebufferDrawBuffer;
+PFN_PTRC_GLNAMEDFRAMEBUFFERDRAWBUFFERSPROC _ptrc_glNamedFramebufferDrawBuffers = Switch_NamedFramebufferDrawBuffers;
+PFN_PTRC_GLNAMEDFRAMEBUFFERPARAMETERIPROC _ptrc_glNamedFramebufferParameteri = Switch_NamedFramebufferParameteri;
+PFN_PTRC_GLNAMEDFRAMEBUFFERREADBUFFERPROC _ptrc_glNamedFramebufferReadBuffer = Switch_NamedFramebufferReadBuffer;
+PFN_PTRC_GLNAMEDFRAMEBUFFERRENDERBUFFERPROC _ptrc_glNamedFramebufferRenderbuffer = Switch_NamedFramebufferRenderbuffer;
+PFN_PTRC_GLNAMEDFRAMEBUFFERTEXTUREPROC _ptrc_glNamedFramebufferTexture = Switch_NamedFramebufferTexture;
+PFN_PTRC_GLNAMEDFRAMEBUFFERTEXTURELAYERPROC _ptrc_glNamedFramebufferTextureLayer = Switch_NamedFramebufferTextureLayer;
+PFN_PTRC_GLNAMEDRENDERBUFFERSTORAGEPROC _ptrc_glNamedRenderbufferStorage = Switch_NamedRenderbufferStorage;
+PFN_PTRC_GLNAMEDRENDERBUFFERSTORAGEMULTISAMPLEPROC _ptrc_glNamedRenderbufferStorageMultisample = Switch_NamedRenderbufferStorageMultisample;
+PFN_PTRC_GLREADNPIXELSPROC _ptrc_glReadnPixels = Switch_ReadnPixels;
+PFN_PTRC_GLTEXTUREBARRIERPROC _ptrc_glTextureBarrier = Switch_TextureBarrier;
+PFN_PTRC_GLTEXTUREBUFFERPROC _ptrc_glTextureBuffer = Switch_TextureBuffer;
+PFN_PTRC_GLTEXTUREBUFFERRANGEPROC _ptrc_glTextureBufferRange = Switch_TextureBufferRange;
+PFN_PTRC_GLTEXTUREPARAMETERIIVPROC _ptrc_glTextureParameterIiv = Switch_TextureParameterIiv;
+PFN_PTRC_GLTEXTUREPARAMETERIUIVPROC _ptrc_glTextureParameterIuiv = Switch_TextureParameterIuiv;
+PFN_PTRC_GLTEXTUREPARAMETERFPROC _ptrc_glTextureParameterf = Switch_TextureParameterf;
+PFN_PTRC_GLTEXTUREPARAMETERFVPROC _ptrc_glTextureParameterfv = Switch_TextureParameterfv;
+PFN_PTRC_GLTEXTUREPARAMETERIPROC _ptrc_glTextureParameteri = Switch_TextureParameteri;
+PFN_PTRC_GLTEXTUREPARAMETERIVPROC _ptrc_glTextureParameteriv = Switch_TextureParameteriv;
+PFN_PTRC_GLTEXTURESTORAGE1DPROC _ptrc_glTextureStorage1D = Switch_TextureStorage1D;
+PFN_PTRC_GLTEXTURESTORAGE2DPROC _ptrc_glTextureStorage2D = Switch_TextureStorage2D;
+PFN_PTRC_GLTEXTURESTORAGE2DMULTISAMPLEPROC _ptrc_glTextureStorage2DMultisample = Switch_TextureStorage2DMultisample;
+PFN_PTRC_GLTEXTURESTORAGE3DPROC _ptrc_glTextureStorage3D = Switch_TextureStorage3D;
+PFN_PTRC_GLTEXTURESTORAGE3DMULTISAMPLEPROC _ptrc_glTextureStorage3DMultisample = Switch_TextureStorage3DMultisample;
+PFN_PTRC_GLTEXTURESUBIMAGE1DPROC _ptrc_glTextureSubImage1D = Switch_TextureSubImage1D;
+PFN_PTRC_GLTEXTURESUBIMAGE2DPROC _ptrc_glTextureSubImage2D = Switch_TextureSubImage2D;
+PFN_PTRC_GLTEXTURESUBIMAGE3DPROC _ptrc_glTextureSubImage3D = Switch_TextureSubImage3D;
+PFN_PTRC_GLTRANSFORMFEEDBACKBUFFERBASEPROC _ptrc_glTransformFeedbackBufferBase = Switch_TransformFeedbackBufferBase;
+PFN_PTRC_GLTRANSFORMFEEDBACKBUFFERRANGEPROC _ptrc_glTransformFeedbackBufferRange = Switch_TransformFeedbackBufferRange;
+PFN_PTRC_GLUNMAPNAMEDBUFFERPROC _ptrc_glUnmapNamedBuffer = Switch_UnmapNamedBuffer;
+PFN_PTRC_GLVERTEXARRAYATTRIBBINDINGPROC _ptrc_glVertexArrayAttribBinding = Switch_VertexArrayAttribBinding;
+PFN_PTRC_GLVERTEXARRAYATTRIBFORMATPROC _ptrc_glVertexArrayAttribFormat = Switch_VertexArrayAttribFormat;
+PFN_PTRC_GLVERTEXARRAYATTRIBIFORMATPROC _ptrc_glVertexArrayAttribIFormat = Switch_VertexArrayAttribIFormat;
+PFN_PTRC_GLVERTEXARRAYATTRIBLFORMATPROC _ptrc_glVertexArrayAttribLFormat = Switch_VertexArrayAttribLFormat;
+PFN_PTRC_GLVERTEXARRAYBINDINGDIVISORPROC _ptrc_glVertexArrayBindingDivisor = Switch_VertexArrayBindingDivisor;
+PFN_PTRC_GLVERTEXARRAYELEMENTBUFFERPROC _ptrc_glVertexArrayElementBuffer = Switch_VertexArrayElementBuffer;
+PFN_PTRC_GLVERTEXARRAYVERTEXBUFFERPROC _ptrc_glVertexArrayVertexBuffer = Switch_VertexArrayVertexBuffer;
+PFN_PTRC_GLVERTEXARRAYVERTEXBUFFERSPROC _ptrc_glVertexArrayVertexBuffers = Switch_VertexArrayVertexBuffers;
+
 
 /* Extension: ARB_gpu_shader_fp64*/
 static void CODEGEN_FUNCPTR Switch_GetUniformdv(GLuint program, GLint location, GLdouble * params)
@@ -1372,65 +2239,65 @@ static void CODEGEN_FUNCPTR Switch_UniformMatrix4x3dv(GLint location, GLsizei co
 }
 
 
-/* Extension: EXT_vertex_attrib_64bit*/
-static void CODEGEN_FUNCPTR Switch_GetVertexAttribLdvEXT(GLuint index, GLenum pname, GLdouble * params)
+/* Extension: ARB_vertex_attrib_64bit*/
+static void CODEGEN_FUNCPTR Switch_GetVertexAttribLdv(GLuint index, GLenum pname, GLdouble * params)
 {
-	_ptrc_glGetVertexAttribLdvEXT = (PFN_PTRC_GLGETVERTEXATTRIBLDVEXTPROC)IntGetProcAddress("glGetVertexAttribLdvEXT");
-	_ptrc_glGetVertexAttribLdvEXT(index, pname, params);
+	_ptrc_glGetVertexAttribLdv = (PFN_PTRC_GLGETVERTEXATTRIBLDVPROC)IntGetProcAddress("glGetVertexAttribLdv");
+	_ptrc_glGetVertexAttribLdv(index, pname, params);
 }
 
-static void CODEGEN_FUNCPTR Switch_VertexAttribL1dEXT(GLuint index, GLdouble x)
+static void CODEGEN_FUNCPTR Switch_VertexAttribL1d(GLuint index, GLdouble x)
 {
-	_ptrc_glVertexAttribL1dEXT = (PFN_PTRC_GLVERTEXATTRIBL1DEXTPROC)IntGetProcAddress("glVertexAttribL1dEXT");
-	_ptrc_glVertexAttribL1dEXT(index, x);
+	_ptrc_glVertexAttribL1d = (PFN_PTRC_GLVERTEXATTRIBL1DPROC)IntGetProcAddress("glVertexAttribL1d");
+	_ptrc_glVertexAttribL1d(index, x);
 }
 
-static void CODEGEN_FUNCPTR Switch_VertexAttribL1dvEXT(GLuint index, const GLdouble * v)
+static void CODEGEN_FUNCPTR Switch_VertexAttribL1dv(GLuint index, const GLdouble * v)
 {
-	_ptrc_glVertexAttribL1dvEXT = (PFN_PTRC_GLVERTEXATTRIBL1DVEXTPROC)IntGetProcAddress("glVertexAttribL1dvEXT");
-	_ptrc_glVertexAttribL1dvEXT(index, v);
+	_ptrc_glVertexAttribL1dv = (PFN_PTRC_GLVERTEXATTRIBL1DVPROC)IntGetProcAddress("glVertexAttribL1dv");
+	_ptrc_glVertexAttribL1dv(index, v);
 }
 
-static void CODEGEN_FUNCPTR Switch_VertexAttribL2dEXT(GLuint index, GLdouble x, GLdouble y)
+static void CODEGEN_FUNCPTR Switch_VertexAttribL2d(GLuint index, GLdouble x, GLdouble y)
 {
-	_ptrc_glVertexAttribL2dEXT = (PFN_PTRC_GLVERTEXATTRIBL2DEXTPROC)IntGetProcAddress("glVertexAttribL2dEXT");
-	_ptrc_glVertexAttribL2dEXT(index, x, y);
+	_ptrc_glVertexAttribL2d = (PFN_PTRC_GLVERTEXATTRIBL2DPROC)IntGetProcAddress("glVertexAttribL2d");
+	_ptrc_glVertexAttribL2d(index, x, y);
 }
 
-static void CODEGEN_FUNCPTR Switch_VertexAttribL2dvEXT(GLuint index, const GLdouble * v)
+static void CODEGEN_FUNCPTR Switch_VertexAttribL2dv(GLuint index, const GLdouble * v)
 {
-	_ptrc_glVertexAttribL2dvEXT = (PFN_PTRC_GLVERTEXATTRIBL2DVEXTPROC)IntGetProcAddress("glVertexAttribL2dvEXT");
-	_ptrc_glVertexAttribL2dvEXT(index, v);
+	_ptrc_glVertexAttribL2dv = (PFN_PTRC_GLVERTEXATTRIBL2DVPROC)IntGetProcAddress("glVertexAttribL2dv");
+	_ptrc_glVertexAttribL2dv(index, v);
 }
 
-static void CODEGEN_FUNCPTR Switch_VertexAttribL3dEXT(GLuint index, GLdouble x, GLdouble y, GLdouble z)
+static void CODEGEN_FUNCPTR Switch_VertexAttribL3d(GLuint index, GLdouble x, GLdouble y, GLdouble z)
 {
-	_ptrc_glVertexAttribL3dEXT = (PFN_PTRC_GLVERTEXATTRIBL3DEXTPROC)IntGetProcAddress("glVertexAttribL3dEXT");
-	_ptrc_glVertexAttribL3dEXT(index, x, y, z);
+	_ptrc_glVertexAttribL3d = (PFN_PTRC_GLVERTEXATTRIBL3DPROC)IntGetProcAddress("glVertexAttribL3d");
+	_ptrc_glVertexAttribL3d(index, x, y, z);
 }
 
-static void CODEGEN_FUNCPTR Switch_VertexAttribL3dvEXT(GLuint index, const GLdouble * v)
+static void CODEGEN_FUNCPTR Switch_VertexAttribL3dv(GLuint index, const GLdouble * v)
 {
-	_ptrc_glVertexAttribL3dvEXT = (PFN_PTRC_GLVERTEXATTRIBL3DVEXTPROC)IntGetProcAddress("glVertexAttribL3dvEXT");
-	_ptrc_glVertexAttribL3dvEXT(index, v);
+	_ptrc_glVertexAttribL3dv = (PFN_PTRC_GLVERTEXATTRIBL3DVPROC)IntGetProcAddress("glVertexAttribL3dv");
+	_ptrc_glVertexAttribL3dv(index, v);
 }
 
-static void CODEGEN_FUNCPTR Switch_VertexAttribL4dEXT(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w)
+static void CODEGEN_FUNCPTR Switch_VertexAttribL4d(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w)
 {
-	_ptrc_glVertexAttribL4dEXT = (PFN_PTRC_GLVERTEXATTRIBL4DEXTPROC)IntGetProcAddress("glVertexAttribL4dEXT");
-	_ptrc_glVertexAttribL4dEXT(index, x, y, z, w);
+	_ptrc_glVertexAttribL4d = (PFN_PTRC_GLVERTEXATTRIBL4DPROC)IntGetProcAddress("glVertexAttribL4d");
+	_ptrc_glVertexAttribL4d(index, x, y, z, w);
 }
 
-static void CODEGEN_FUNCPTR Switch_VertexAttribL4dvEXT(GLuint index, const GLdouble * v)
+static void CODEGEN_FUNCPTR Switch_VertexAttribL4dv(GLuint index, const GLdouble * v)
 {
-	_ptrc_glVertexAttribL4dvEXT = (PFN_PTRC_GLVERTEXATTRIBL4DVEXTPROC)IntGetProcAddress("glVertexAttribL4dvEXT");
-	_ptrc_glVertexAttribL4dvEXT(index, v);
+	_ptrc_glVertexAttribL4dv = (PFN_PTRC_GLVERTEXATTRIBL4DVPROC)IntGetProcAddress("glVertexAttribL4dv");
+	_ptrc_glVertexAttribL4dv(index, v);
 }
 
-static void CODEGEN_FUNCPTR Switch_VertexAttribLPointerEXT(GLuint index, GLint size, GLenum type, GLsizei stride, const void * pointer)
+static void CODEGEN_FUNCPTR Switch_VertexAttribLPointer(GLuint index, GLint size, GLenum type, GLsizei stride, const void * pointer)
 {
-	_ptrc_glVertexAttribLPointerEXT = (PFN_PTRC_GLVERTEXATTRIBLPOINTEREXTPROC)IntGetProcAddress("glVertexAttribLPointerEXT");
-	_ptrc_glVertexAttribLPointerEXT(index, size, type, stride, pointer);
+	_ptrc_glVertexAttribLPointer = (PFN_PTRC_GLVERTEXATTRIBLPOINTERPROC)IntGetProcAddress("glVertexAttribLPointer");
+	_ptrc_glVertexAttribLPointer(index, size, type, stride, pointer);
 }
 
 
@@ -1777,6 +2644,12 @@ static void CODEGEN_FUNCPTR Switch_GenTextures(GLsizei n, GLuint * textures)
 {
 	_ptrc_glGenTextures = (PFN_PTRC_GLGENTEXTURESPROC)IntGetProcAddress("glGenTextures");
 	_ptrc_glGenTextures(n, textures);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetPointerv(GLenum pname, void ** params)
+{
+	_ptrc_glGetPointerv = (PFN_PTRC_GLGETPOINTERVPROC)IntGetProcAddress("glGetPointerv");
+	_ptrc_glGetPointerv(pname, params);
 }
 
 static GLboolean CODEGEN_FUNCPTR Switch_IsTexture(GLuint texture)
@@ -3522,11 +4395,1703 @@ static void CODEGEN_FUNCPTR Switch_VertexAttribP4uiv(GLuint index, GLenum type, 
 }
 
 
+/* Extension: 4.0*/
+static void CODEGEN_FUNCPTR Switch_BeginQueryIndexed(GLenum target, GLuint index, GLuint id)
+{
+	_ptrc_glBeginQueryIndexed = (PFN_PTRC_GLBEGINQUERYINDEXEDPROC)IntGetProcAddress("glBeginQueryIndexed");
+	_ptrc_glBeginQueryIndexed(target, index, id);
+}
+
+static void CODEGEN_FUNCPTR Switch_BindTransformFeedback(GLenum target, GLuint id)
+{
+	_ptrc_glBindTransformFeedback = (PFN_PTRC_GLBINDTRANSFORMFEEDBACKPROC)IntGetProcAddress("glBindTransformFeedback");
+	_ptrc_glBindTransformFeedback(target, id);
+}
+
+static void CODEGEN_FUNCPTR Switch_BlendEquationSeparatei(GLuint buf, GLenum modeRGB, GLenum modeAlpha)
+{
+	_ptrc_glBlendEquationSeparatei = (PFN_PTRC_GLBLENDEQUATIONSEPARATEIPROC)IntGetProcAddress("glBlendEquationSeparatei");
+	_ptrc_glBlendEquationSeparatei(buf, modeRGB, modeAlpha);
+}
+
+static void CODEGEN_FUNCPTR Switch_BlendEquationi(GLuint buf, GLenum mode)
+{
+	_ptrc_glBlendEquationi = (PFN_PTRC_GLBLENDEQUATIONIPROC)IntGetProcAddress("glBlendEquationi");
+	_ptrc_glBlendEquationi(buf, mode);
+}
+
+static void CODEGEN_FUNCPTR Switch_BlendFuncSeparatei(GLuint buf, GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
+{
+	_ptrc_glBlendFuncSeparatei = (PFN_PTRC_GLBLENDFUNCSEPARATEIPROC)IntGetProcAddress("glBlendFuncSeparatei");
+	_ptrc_glBlendFuncSeparatei(buf, srcRGB, dstRGB, srcAlpha, dstAlpha);
+}
+
+static void CODEGEN_FUNCPTR Switch_BlendFunci(GLuint buf, GLenum src, GLenum dst)
+{
+	_ptrc_glBlendFunci = (PFN_PTRC_GLBLENDFUNCIPROC)IntGetProcAddress("glBlendFunci");
+	_ptrc_glBlendFunci(buf, src, dst);
+}
+
+static void CODEGEN_FUNCPTR Switch_DeleteTransformFeedbacks(GLsizei n, const GLuint * ids)
+{
+	_ptrc_glDeleteTransformFeedbacks = (PFN_PTRC_GLDELETETRANSFORMFEEDBACKSPROC)IntGetProcAddress("glDeleteTransformFeedbacks");
+	_ptrc_glDeleteTransformFeedbacks(n, ids);
+}
+
+static void CODEGEN_FUNCPTR Switch_DrawArraysIndirect(GLenum mode, const void * indirect)
+{
+	_ptrc_glDrawArraysIndirect = (PFN_PTRC_GLDRAWARRAYSINDIRECTPROC)IntGetProcAddress("glDrawArraysIndirect");
+	_ptrc_glDrawArraysIndirect(mode, indirect);
+}
+
+static void CODEGEN_FUNCPTR Switch_DrawElementsIndirect(GLenum mode, GLenum type, const void * indirect)
+{
+	_ptrc_glDrawElementsIndirect = (PFN_PTRC_GLDRAWELEMENTSINDIRECTPROC)IntGetProcAddress("glDrawElementsIndirect");
+	_ptrc_glDrawElementsIndirect(mode, type, indirect);
+}
+
+static void CODEGEN_FUNCPTR Switch_DrawTransformFeedback(GLenum mode, GLuint id)
+{
+	_ptrc_glDrawTransformFeedback = (PFN_PTRC_GLDRAWTRANSFORMFEEDBACKPROC)IntGetProcAddress("glDrawTransformFeedback");
+	_ptrc_glDrawTransformFeedback(mode, id);
+}
+
+static void CODEGEN_FUNCPTR Switch_DrawTransformFeedbackStream(GLenum mode, GLuint id, GLuint stream)
+{
+	_ptrc_glDrawTransformFeedbackStream = (PFN_PTRC_GLDRAWTRANSFORMFEEDBACKSTREAMPROC)IntGetProcAddress("glDrawTransformFeedbackStream");
+	_ptrc_glDrawTransformFeedbackStream(mode, id, stream);
+}
+
+static void CODEGEN_FUNCPTR Switch_EndQueryIndexed(GLenum target, GLuint index)
+{
+	_ptrc_glEndQueryIndexed = (PFN_PTRC_GLENDQUERYINDEXEDPROC)IntGetProcAddress("glEndQueryIndexed");
+	_ptrc_glEndQueryIndexed(target, index);
+}
+
+static void CODEGEN_FUNCPTR Switch_GenTransformFeedbacks(GLsizei n, GLuint * ids)
+{
+	_ptrc_glGenTransformFeedbacks = (PFN_PTRC_GLGENTRANSFORMFEEDBACKSPROC)IntGetProcAddress("glGenTransformFeedbacks");
+	_ptrc_glGenTransformFeedbacks(n, ids);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetActiveSubroutineName(GLuint program, GLenum shadertype, GLuint index, GLsizei bufsize, GLsizei * length, GLchar * name)
+{
+	_ptrc_glGetActiveSubroutineName = (PFN_PTRC_GLGETACTIVESUBROUTINENAMEPROC)IntGetProcAddress("glGetActiveSubroutineName");
+	_ptrc_glGetActiveSubroutineName(program, shadertype, index, bufsize, length, name);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetActiveSubroutineUniformName(GLuint program, GLenum shadertype, GLuint index, GLsizei bufsize, GLsizei * length, GLchar * name)
+{
+	_ptrc_glGetActiveSubroutineUniformName = (PFN_PTRC_GLGETACTIVESUBROUTINEUNIFORMNAMEPROC)IntGetProcAddress("glGetActiveSubroutineUniformName");
+	_ptrc_glGetActiveSubroutineUniformName(program, shadertype, index, bufsize, length, name);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetActiveSubroutineUniformiv(GLuint program, GLenum shadertype, GLuint index, GLenum pname, GLint * values)
+{
+	_ptrc_glGetActiveSubroutineUniformiv = (PFN_PTRC_GLGETACTIVESUBROUTINEUNIFORMIVPROC)IntGetProcAddress("glGetActiveSubroutineUniformiv");
+	_ptrc_glGetActiveSubroutineUniformiv(program, shadertype, index, pname, values);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetProgramStageiv(GLuint program, GLenum shadertype, GLenum pname, GLint * values)
+{
+	_ptrc_glGetProgramStageiv = (PFN_PTRC_GLGETPROGRAMSTAGEIVPROC)IntGetProcAddress("glGetProgramStageiv");
+	_ptrc_glGetProgramStageiv(program, shadertype, pname, values);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetQueryIndexediv(GLenum target, GLuint index, GLenum pname, GLint * params)
+{
+	_ptrc_glGetQueryIndexediv = (PFN_PTRC_GLGETQUERYINDEXEDIVPROC)IntGetProcAddress("glGetQueryIndexediv");
+	_ptrc_glGetQueryIndexediv(target, index, pname, params);
+}
+
+static GLuint CODEGEN_FUNCPTR Switch_GetSubroutineIndex(GLuint program, GLenum shadertype, const GLchar * name)
+{
+	_ptrc_glGetSubroutineIndex = (PFN_PTRC_GLGETSUBROUTINEINDEXPROC)IntGetProcAddress("glGetSubroutineIndex");
+	return _ptrc_glGetSubroutineIndex(program, shadertype, name);
+}
+
+static GLint CODEGEN_FUNCPTR Switch_GetSubroutineUniformLocation(GLuint program, GLenum shadertype, const GLchar * name)
+{
+	_ptrc_glGetSubroutineUniformLocation = (PFN_PTRC_GLGETSUBROUTINEUNIFORMLOCATIONPROC)IntGetProcAddress("glGetSubroutineUniformLocation");
+	return _ptrc_glGetSubroutineUniformLocation(program, shadertype, name);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetUniformSubroutineuiv(GLenum shadertype, GLint location, GLuint * params)
+{
+	_ptrc_glGetUniformSubroutineuiv = (PFN_PTRC_GLGETUNIFORMSUBROUTINEUIVPROC)IntGetProcAddress("glGetUniformSubroutineuiv");
+	_ptrc_glGetUniformSubroutineuiv(shadertype, location, params);
+}
+
+static GLboolean CODEGEN_FUNCPTR Switch_IsTransformFeedback(GLuint id)
+{
+	_ptrc_glIsTransformFeedback = (PFN_PTRC_GLISTRANSFORMFEEDBACKPROC)IntGetProcAddress("glIsTransformFeedback");
+	return _ptrc_glIsTransformFeedback(id);
+}
+
+static void CODEGEN_FUNCPTR Switch_MinSampleShading(GLfloat value)
+{
+	_ptrc_glMinSampleShading = (PFN_PTRC_GLMINSAMPLESHADINGPROC)IntGetProcAddress("glMinSampleShading");
+	_ptrc_glMinSampleShading(value);
+}
+
+static void CODEGEN_FUNCPTR Switch_PatchParameterfv(GLenum pname, const GLfloat * values)
+{
+	_ptrc_glPatchParameterfv = (PFN_PTRC_GLPATCHPARAMETERFVPROC)IntGetProcAddress("glPatchParameterfv");
+	_ptrc_glPatchParameterfv(pname, values);
+}
+
+static void CODEGEN_FUNCPTR Switch_PatchParameteri(GLenum pname, GLint value)
+{
+	_ptrc_glPatchParameteri = (PFN_PTRC_GLPATCHPARAMETERIPROC)IntGetProcAddress("glPatchParameteri");
+	_ptrc_glPatchParameteri(pname, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_PauseTransformFeedback(void)
+{
+	_ptrc_glPauseTransformFeedback = (PFN_PTRC_GLPAUSETRANSFORMFEEDBACKPROC)IntGetProcAddress("glPauseTransformFeedback");
+	_ptrc_glPauseTransformFeedback();
+}
+
+static void CODEGEN_FUNCPTR Switch_ResumeTransformFeedback(void)
+{
+	_ptrc_glResumeTransformFeedback = (PFN_PTRC_GLRESUMETRANSFORMFEEDBACKPROC)IntGetProcAddress("glResumeTransformFeedback");
+	_ptrc_glResumeTransformFeedback();
+}
+
+static void CODEGEN_FUNCPTR Switch_UniformSubroutinesuiv(GLenum shadertype, GLsizei count, const GLuint * indices)
+{
+	_ptrc_glUniformSubroutinesuiv = (PFN_PTRC_GLUNIFORMSUBROUTINESUIVPROC)IntGetProcAddress("glUniformSubroutinesuiv");
+	_ptrc_glUniformSubroutinesuiv(shadertype, count, indices);
+}
+
+
+/* Extension: 4.1*/
+static void CODEGEN_FUNCPTR Switch_ActiveShaderProgram(GLuint pipeline, GLuint program)
+{
+	_ptrc_glActiveShaderProgram = (PFN_PTRC_GLACTIVESHADERPROGRAMPROC)IntGetProcAddress("glActiveShaderProgram");
+	_ptrc_glActiveShaderProgram(pipeline, program);
+}
+
+static void CODEGEN_FUNCPTR Switch_BindProgramPipeline(GLuint pipeline)
+{
+	_ptrc_glBindProgramPipeline = (PFN_PTRC_GLBINDPROGRAMPIPELINEPROC)IntGetProcAddress("glBindProgramPipeline");
+	_ptrc_glBindProgramPipeline(pipeline);
+}
+
+static void CODEGEN_FUNCPTR Switch_ClearDepthf(GLfloat d)
+{
+	_ptrc_glClearDepthf = (PFN_PTRC_GLCLEARDEPTHFPROC)IntGetProcAddress("glClearDepthf");
+	_ptrc_glClearDepthf(d);
+}
+
+static GLuint CODEGEN_FUNCPTR Switch_CreateShaderProgramv(GLenum type, GLsizei count, const GLchar *const* strings)
+{
+	_ptrc_glCreateShaderProgramv = (PFN_PTRC_GLCREATESHADERPROGRAMVPROC)IntGetProcAddress("glCreateShaderProgramv");
+	return _ptrc_glCreateShaderProgramv(type, count, strings);
+}
+
+static void CODEGEN_FUNCPTR Switch_DeleteProgramPipelines(GLsizei n, const GLuint * pipelines)
+{
+	_ptrc_glDeleteProgramPipelines = (PFN_PTRC_GLDELETEPROGRAMPIPELINESPROC)IntGetProcAddress("glDeleteProgramPipelines");
+	_ptrc_glDeleteProgramPipelines(n, pipelines);
+}
+
+static void CODEGEN_FUNCPTR Switch_DepthRangeArrayv(GLuint first, GLsizei count, const GLdouble * v)
+{
+	_ptrc_glDepthRangeArrayv = (PFN_PTRC_GLDEPTHRANGEARRAYVPROC)IntGetProcAddress("glDepthRangeArrayv");
+	_ptrc_glDepthRangeArrayv(first, count, v);
+}
+
+static void CODEGEN_FUNCPTR Switch_DepthRangeIndexed(GLuint index, GLdouble n, GLdouble f)
+{
+	_ptrc_glDepthRangeIndexed = (PFN_PTRC_GLDEPTHRANGEINDEXEDPROC)IntGetProcAddress("glDepthRangeIndexed");
+	_ptrc_glDepthRangeIndexed(index, n, f);
+}
+
+static void CODEGEN_FUNCPTR Switch_DepthRangef(GLfloat n, GLfloat f)
+{
+	_ptrc_glDepthRangef = (PFN_PTRC_GLDEPTHRANGEFPROC)IntGetProcAddress("glDepthRangef");
+	_ptrc_glDepthRangef(n, f);
+}
+
+static void CODEGEN_FUNCPTR Switch_GenProgramPipelines(GLsizei n, GLuint * pipelines)
+{
+	_ptrc_glGenProgramPipelines = (PFN_PTRC_GLGENPROGRAMPIPELINESPROC)IntGetProcAddress("glGenProgramPipelines");
+	_ptrc_glGenProgramPipelines(n, pipelines);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetDoublei_v(GLenum target, GLuint index, GLdouble * data)
+{
+	_ptrc_glGetDoublei_v = (PFN_PTRC_GLGETDOUBLEI_VPROC)IntGetProcAddress("glGetDoublei_v");
+	_ptrc_glGetDoublei_v(target, index, data);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetFloati_v(GLenum target, GLuint index, GLfloat * data)
+{
+	_ptrc_glGetFloati_v = (PFN_PTRC_GLGETFLOATI_VPROC)IntGetProcAddress("glGetFloati_v");
+	_ptrc_glGetFloati_v(target, index, data);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetProgramBinary(GLuint program, GLsizei bufSize, GLsizei * length, GLenum * binaryFormat, void * binary)
+{
+	_ptrc_glGetProgramBinary = (PFN_PTRC_GLGETPROGRAMBINARYPROC)IntGetProcAddress("glGetProgramBinary");
+	_ptrc_glGetProgramBinary(program, bufSize, length, binaryFormat, binary);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetProgramPipelineInfoLog(GLuint pipeline, GLsizei bufSize, GLsizei * length, GLchar * infoLog)
+{
+	_ptrc_glGetProgramPipelineInfoLog = (PFN_PTRC_GLGETPROGRAMPIPELINEINFOLOGPROC)IntGetProcAddress("glGetProgramPipelineInfoLog");
+	_ptrc_glGetProgramPipelineInfoLog(pipeline, bufSize, length, infoLog);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetProgramPipelineiv(GLuint pipeline, GLenum pname, GLint * params)
+{
+	_ptrc_glGetProgramPipelineiv = (PFN_PTRC_GLGETPROGRAMPIPELINEIVPROC)IntGetProcAddress("glGetProgramPipelineiv");
+	_ptrc_glGetProgramPipelineiv(pipeline, pname, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype, GLint * range, GLint * precision)
+{
+	_ptrc_glGetShaderPrecisionFormat = (PFN_PTRC_GLGETSHADERPRECISIONFORMATPROC)IntGetProcAddress("glGetShaderPrecisionFormat");
+	_ptrc_glGetShaderPrecisionFormat(shadertype, precisiontype, range, precision);
+}
+
+static GLboolean CODEGEN_FUNCPTR Switch_IsProgramPipeline(GLuint pipeline)
+{
+	_ptrc_glIsProgramPipeline = (PFN_PTRC_GLISPROGRAMPIPELINEPROC)IntGetProcAddress("glIsProgramPipeline");
+	return _ptrc_glIsProgramPipeline(pipeline);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramBinary(GLuint program, GLenum binaryFormat, const void * binary, GLsizei length)
+{
+	_ptrc_glProgramBinary = (PFN_PTRC_GLPROGRAMBINARYPROC)IntGetProcAddress("glProgramBinary");
+	_ptrc_glProgramBinary(program, binaryFormat, binary, length);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramParameteri(GLuint program, GLenum pname, GLint value)
+{
+	_ptrc_glProgramParameteri = (PFN_PTRC_GLPROGRAMPARAMETERIPROC)IntGetProcAddress("glProgramParameteri");
+	_ptrc_glProgramParameteri(program, pname, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform1d(GLuint program, GLint location, GLdouble v0)
+{
+	_ptrc_glProgramUniform1d = (PFN_PTRC_GLPROGRAMUNIFORM1DPROC)IntGetProcAddress("glProgramUniform1d");
+	_ptrc_glProgramUniform1d(program, location, v0);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform1dv(GLuint program, GLint location, GLsizei count, const GLdouble * value)
+{
+	_ptrc_glProgramUniform1dv = (PFN_PTRC_GLPROGRAMUNIFORM1DVPROC)IntGetProcAddress("glProgramUniform1dv");
+	_ptrc_glProgramUniform1dv(program, location, count, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform1f(GLuint program, GLint location, GLfloat v0)
+{
+	_ptrc_glProgramUniform1f = (PFN_PTRC_GLPROGRAMUNIFORM1FPROC)IntGetProcAddress("glProgramUniform1f");
+	_ptrc_glProgramUniform1f(program, location, v0);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform1fv(GLuint program, GLint location, GLsizei count, const GLfloat * value)
+{
+	_ptrc_glProgramUniform1fv = (PFN_PTRC_GLPROGRAMUNIFORM1FVPROC)IntGetProcAddress("glProgramUniform1fv");
+	_ptrc_glProgramUniform1fv(program, location, count, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform1i(GLuint program, GLint location, GLint v0)
+{
+	_ptrc_glProgramUniform1i = (PFN_PTRC_GLPROGRAMUNIFORM1IPROC)IntGetProcAddress("glProgramUniform1i");
+	_ptrc_glProgramUniform1i(program, location, v0);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform1iv(GLuint program, GLint location, GLsizei count, const GLint * value)
+{
+	_ptrc_glProgramUniform1iv = (PFN_PTRC_GLPROGRAMUNIFORM1IVPROC)IntGetProcAddress("glProgramUniform1iv");
+	_ptrc_glProgramUniform1iv(program, location, count, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform1ui(GLuint program, GLint location, GLuint v0)
+{
+	_ptrc_glProgramUniform1ui = (PFN_PTRC_GLPROGRAMUNIFORM1UIPROC)IntGetProcAddress("glProgramUniform1ui");
+	_ptrc_glProgramUniform1ui(program, location, v0);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform1uiv(GLuint program, GLint location, GLsizei count, const GLuint * value)
+{
+	_ptrc_glProgramUniform1uiv = (PFN_PTRC_GLPROGRAMUNIFORM1UIVPROC)IntGetProcAddress("glProgramUniform1uiv");
+	_ptrc_glProgramUniform1uiv(program, location, count, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform2d(GLuint program, GLint location, GLdouble v0, GLdouble v1)
+{
+	_ptrc_glProgramUniform2d = (PFN_PTRC_GLPROGRAMUNIFORM2DPROC)IntGetProcAddress("glProgramUniform2d");
+	_ptrc_glProgramUniform2d(program, location, v0, v1);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform2dv(GLuint program, GLint location, GLsizei count, const GLdouble * value)
+{
+	_ptrc_glProgramUniform2dv = (PFN_PTRC_GLPROGRAMUNIFORM2DVPROC)IntGetProcAddress("glProgramUniform2dv");
+	_ptrc_glProgramUniform2dv(program, location, count, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform2f(GLuint program, GLint location, GLfloat v0, GLfloat v1)
+{
+	_ptrc_glProgramUniform2f = (PFN_PTRC_GLPROGRAMUNIFORM2FPROC)IntGetProcAddress("glProgramUniform2f");
+	_ptrc_glProgramUniform2f(program, location, v0, v1);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform2fv(GLuint program, GLint location, GLsizei count, const GLfloat * value)
+{
+	_ptrc_glProgramUniform2fv = (PFN_PTRC_GLPROGRAMUNIFORM2FVPROC)IntGetProcAddress("glProgramUniform2fv");
+	_ptrc_glProgramUniform2fv(program, location, count, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform2i(GLuint program, GLint location, GLint v0, GLint v1)
+{
+	_ptrc_glProgramUniform2i = (PFN_PTRC_GLPROGRAMUNIFORM2IPROC)IntGetProcAddress("glProgramUniform2i");
+	_ptrc_glProgramUniform2i(program, location, v0, v1);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform2iv(GLuint program, GLint location, GLsizei count, const GLint * value)
+{
+	_ptrc_glProgramUniform2iv = (PFN_PTRC_GLPROGRAMUNIFORM2IVPROC)IntGetProcAddress("glProgramUniform2iv");
+	_ptrc_glProgramUniform2iv(program, location, count, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform2ui(GLuint program, GLint location, GLuint v0, GLuint v1)
+{
+	_ptrc_glProgramUniform2ui = (PFN_PTRC_GLPROGRAMUNIFORM2UIPROC)IntGetProcAddress("glProgramUniform2ui");
+	_ptrc_glProgramUniform2ui(program, location, v0, v1);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform2uiv(GLuint program, GLint location, GLsizei count, const GLuint * value)
+{
+	_ptrc_glProgramUniform2uiv = (PFN_PTRC_GLPROGRAMUNIFORM2UIVPROC)IntGetProcAddress("glProgramUniform2uiv");
+	_ptrc_glProgramUniform2uiv(program, location, count, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform3d(GLuint program, GLint location, GLdouble v0, GLdouble v1, GLdouble v2)
+{
+	_ptrc_glProgramUniform3d = (PFN_PTRC_GLPROGRAMUNIFORM3DPROC)IntGetProcAddress("glProgramUniform3d");
+	_ptrc_glProgramUniform3d(program, location, v0, v1, v2);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform3dv(GLuint program, GLint location, GLsizei count, const GLdouble * value)
+{
+	_ptrc_glProgramUniform3dv = (PFN_PTRC_GLPROGRAMUNIFORM3DVPROC)IntGetProcAddress("glProgramUniform3dv");
+	_ptrc_glProgramUniform3dv(program, location, count, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform3f(GLuint program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2)
+{
+	_ptrc_glProgramUniform3f = (PFN_PTRC_GLPROGRAMUNIFORM3FPROC)IntGetProcAddress("glProgramUniform3f");
+	_ptrc_glProgramUniform3f(program, location, v0, v1, v2);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform3fv(GLuint program, GLint location, GLsizei count, const GLfloat * value)
+{
+	_ptrc_glProgramUniform3fv = (PFN_PTRC_GLPROGRAMUNIFORM3FVPROC)IntGetProcAddress("glProgramUniform3fv");
+	_ptrc_glProgramUniform3fv(program, location, count, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform3i(GLuint program, GLint location, GLint v0, GLint v1, GLint v2)
+{
+	_ptrc_glProgramUniform3i = (PFN_PTRC_GLPROGRAMUNIFORM3IPROC)IntGetProcAddress("glProgramUniform3i");
+	_ptrc_glProgramUniform3i(program, location, v0, v1, v2);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform3iv(GLuint program, GLint location, GLsizei count, const GLint * value)
+{
+	_ptrc_glProgramUniform3iv = (PFN_PTRC_GLPROGRAMUNIFORM3IVPROC)IntGetProcAddress("glProgramUniform3iv");
+	_ptrc_glProgramUniform3iv(program, location, count, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform3ui(GLuint program, GLint location, GLuint v0, GLuint v1, GLuint v2)
+{
+	_ptrc_glProgramUniform3ui = (PFN_PTRC_GLPROGRAMUNIFORM3UIPROC)IntGetProcAddress("glProgramUniform3ui");
+	_ptrc_glProgramUniform3ui(program, location, v0, v1, v2);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform3uiv(GLuint program, GLint location, GLsizei count, const GLuint * value)
+{
+	_ptrc_glProgramUniform3uiv = (PFN_PTRC_GLPROGRAMUNIFORM3UIVPROC)IntGetProcAddress("glProgramUniform3uiv");
+	_ptrc_glProgramUniform3uiv(program, location, count, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform4d(GLuint program, GLint location, GLdouble v0, GLdouble v1, GLdouble v2, GLdouble v3)
+{
+	_ptrc_glProgramUniform4d = (PFN_PTRC_GLPROGRAMUNIFORM4DPROC)IntGetProcAddress("glProgramUniform4d");
+	_ptrc_glProgramUniform4d(program, location, v0, v1, v2, v3);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform4dv(GLuint program, GLint location, GLsizei count, const GLdouble * value)
+{
+	_ptrc_glProgramUniform4dv = (PFN_PTRC_GLPROGRAMUNIFORM4DVPROC)IntGetProcAddress("glProgramUniform4dv");
+	_ptrc_glProgramUniform4dv(program, location, count, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform4f(GLuint program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)
+{
+	_ptrc_glProgramUniform4f = (PFN_PTRC_GLPROGRAMUNIFORM4FPROC)IntGetProcAddress("glProgramUniform4f");
+	_ptrc_glProgramUniform4f(program, location, v0, v1, v2, v3);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform4fv(GLuint program, GLint location, GLsizei count, const GLfloat * value)
+{
+	_ptrc_glProgramUniform4fv = (PFN_PTRC_GLPROGRAMUNIFORM4FVPROC)IntGetProcAddress("glProgramUniform4fv");
+	_ptrc_glProgramUniform4fv(program, location, count, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform4i(GLuint program, GLint location, GLint v0, GLint v1, GLint v2, GLint v3)
+{
+	_ptrc_glProgramUniform4i = (PFN_PTRC_GLPROGRAMUNIFORM4IPROC)IntGetProcAddress("glProgramUniform4i");
+	_ptrc_glProgramUniform4i(program, location, v0, v1, v2, v3);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform4iv(GLuint program, GLint location, GLsizei count, const GLint * value)
+{
+	_ptrc_glProgramUniform4iv = (PFN_PTRC_GLPROGRAMUNIFORM4IVPROC)IntGetProcAddress("glProgramUniform4iv");
+	_ptrc_glProgramUniform4iv(program, location, count, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform4ui(GLuint program, GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3)
+{
+	_ptrc_glProgramUniform4ui = (PFN_PTRC_GLPROGRAMUNIFORM4UIPROC)IntGetProcAddress("glProgramUniform4ui");
+	_ptrc_glProgramUniform4ui(program, location, v0, v1, v2, v3);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniform4uiv(GLuint program, GLint location, GLsizei count, const GLuint * value)
+{
+	_ptrc_glProgramUniform4uiv = (PFN_PTRC_GLPROGRAMUNIFORM4UIVPROC)IntGetProcAddress("glProgramUniform4uiv");
+	_ptrc_glProgramUniform4uiv(program, location, count, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix2dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+{
+	_ptrc_glProgramUniformMatrix2dv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX2DVPROC)IntGetProcAddress("glProgramUniformMatrix2dv");
+	_ptrc_glProgramUniformMatrix2dv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix2fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+{
+	_ptrc_glProgramUniformMatrix2fv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX2FVPROC)IntGetProcAddress("glProgramUniformMatrix2fv");
+	_ptrc_glProgramUniformMatrix2fv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix2x3dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+{
+	_ptrc_glProgramUniformMatrix2x3dv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX2X3DVPROC)IntGetProcAddress("glProgramUniformMatrix2x3dv");
+	_ptrc_glProgramUniformMatrix2x3dv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix2x3fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+{
+	_ptrc_glProgramUniformMatrix2x3fv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX2X3FVPROC)IntGetProcAddress("glProgramUniformMatrix2x3fv");
+	_ptrc_glProgramUniformMatrix2x3fv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix2x4dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+{
+	_ptrc_glProgramUniformMatrix2x4dv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX2X4DVPROC)IntGetProcAddress("glProgramUniformMatrix2x4dv");
+	_ptrc_glProgramUniformMatrix2x4dv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix2x4fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+{
+	_ptrc_glProgramUniformMatrix2x4fv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX2X4FVPROC)IntGetProcAddress("glProgramUniformMatrix2x4fv");
+	_ptrc_glProgramUniformMatrix2x4fv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix3dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+{
+	_ptrc_glProgramUniformMatrix3dv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX3DVPROC)IntGetProcAddress("glProgramUniformMatrix3dv");
+	_ptrc_glProgramUniformMatrix3dv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix3fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+{
+	_ptrc_glProgramUniformMatrix3fv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX3FVPROC)IntGetProcAddress("glProgramUniformMatrix3fv");
+	_ptrc_glProgramUniformMatrix3fv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix3x2dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+{
+	_ptrc_glProgramUniformMatrix3x2dv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX3X2DVPROC)IntGetProcAddress("glProgramUniformMatrix3x2dv");
+	_ptrc_glProgramUniformMatrix3x2dv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix3x2fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+{
+	_ptrc_glProgramUniformMatrix3x2fv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX3X2FVPROC)IntGetProcAddress("glProgramUniformMatrix3x2fv");
+	_ptrc_glProgramUniformMatrix3x2fv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix3x4dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+{
+	_ptrc_glProgramUniformMatrix3x4dv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX3X4DVPROC)IntGetProcAddress("glProgramUniformMatrix3x4dv");
+	_ptrc_glProgramUniformMatrix3x4dv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix3x4fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+{
+	_ptrc_glProgramUniformMatrix3x4fv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX3X4FVPROC)IntGetProcAddress("glProgramUniformMatrix3x4fv");
+	_ptrc_glProgramUniformMatrix3x4fv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix4dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+{
+	_ptrc_glProgramUniformMatrix4dv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX4DVPROC)IntGetProcAddress("glProgramUniformMatrix4dv");
+	_ptrc_glProgramUniformMatrix4dv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix4fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+{
+	_ptrc_glProgramUniformMatrix4fv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX4FVPROC)IntGetProcAddress("glProgramUniformMatrix4fv");
+	_ptrc_glProgramUniformMatrix4fv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix4x2dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+{
+	_ptrc_glProgramUniformMatrix4x2dv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX4X2DVPROC)IntGetProcAddress("glProgramUniformMatrix4x2dv");
+	_ptrc_glProgramUniformMatrix4x2dv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix4x2fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+{
+	_ptrc_glProgramUniformMatrix4x2fv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX4X2FVPROC)IntGetProcAddress("glProgramUniformMatrix4x2fv");
+	_ptrc_glProgramUniformMatrix4x2fv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix4x3dv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLdouble * value)
+{
+	_ptrc_glProgramUniformMatrix4x3dv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX4X3DVPROC)IntGetProcAddress("glProgramUniformMatrix4x3dv");
+	_ptrc_glProgramUniformMatrix4x3dv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ProgramUniformMatrix4x3fv(GLuint program, GLint location, GLsizei count, GLboolean transpose, const GLfloat * value)
+{
+	_ptrc_glProgramUniformMatrix4x3fv = (PFN_PTRC_GLPROGRAMUNIFORMMATRIX4X3FVPROC)IntGetProcAddress("glProgramUniformMatrix4x3fv");
+	_ptrc_glProgramUniformMatrix4x3fv(program, location, count, transpose, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ReleaseShaderCompiler(void)
+{
+	_ptrc_glReleaseShaderCompiler = (PFN_PTRC_GLRELEASESHADERCOMPILERPROC)IntGetProcAddress("glReleaseShaderCompiler");
+	_ptrc_glReleaseShaderCompiler();
+}
+
+static void CODEGEN_FUNCPTR Switch_ScissorArrayv(GLuint first, GLsizei count, const GLint * v)
+{
+	_ptrc_glScissorArrayv = (PFN_PTRC_GLSCISSORARRAYVPROC)IntGetProcAddress("glScissorArrayv");
+	_ptrc_glScissorArrayv(first, count, v);
+}
+
+static void CODEGEN_FUNCPTR Switch_ScissorIndexed(GLuint index, GLint left, GLint bottom, GLsizei width, GLsizei height)
+{
+	_ptrc_glScissorIndexed = (PFN_PTRC_GLSCISSORINDEXEDPROC)IntGetProcAddress("glScissorIndexed");
+	_ptrc_glScissorIndexed(index, left, bottom, width, height);
+}
+
+static void CODEGEN_FUNCPTR Switch_ScissorIndexedv(GLuint index, const GLint * v)
+{
+	_ptrc_glScissorIndexedv = (PFN_PTRC_GLSCISSORINDEXEDVPROC)IntGetProcAddress("glScissorIndexedv");
+	_ptrc_glScissorIndexedv(index, v);
+}
+
+static void CODEGEN_FUNCPTR Switch_ShaderBinary(GLsizei count, const GLuint * shaders, GLenum binaryformat, const void * binary, GLsizei length)
+{
+	_ptrc_glShaderBinary = (PFN_PTRC_GLSHADERBINARYPROC)IntGetProcAddress("glShaderBinary");
+	_ptrc_glShaderBinary(count, shaders, binaryformat, binary, length);
+}
+
+static void CODEGEN_FUNCPTR Switch_UseProgramStages(GLuint pipeline, GLbitfield stages, GLuint program)
+{
+	_ptrc_glUseProgramStages = (PFN_PTRC_GLUSEPROGRAMSTAGESPROC)IntGetProcAddress("glUseProgramStages");
+	_ptrc_glUseProgramStages(pipeline, stages, program);
+}
+
+static void CODEGEN_FUNCPTR Switch_ValidateProgramPipeline(GLuint pipeline)
+{
+	_ptrc_glValidateProgramPipeline = (PFN_PTRC_GLVALIDATEPROGRAMPIPELINEPROC)IntGetProcAddress("glValidateProgramPipeline");
+	_ptrc_glValidateProgramPipeline(pipeline);
+}
+
+static void CODEGEN_FUNCPTR Switch_ViewportArrayv(GLuint first, GLsizei count, const GLfloat * v)
+{
+	_ptrc_glViewportArrayv = (PFN_PTRC_GLVIEWPORTARRAYVPROC)IntGetProcAddress("glViewportArrayv");
+	_ptrc_glViewportArrayv(first, count, v);
+}
+
+static void CODEGEN_FUNCPTR Switch_ViewportIndexedf(GLuint index, GLfloat x, GLfloat y, GLfloat w, GLfloat h)
+{
+	_ptrc_glViewportIndexedf = (PFN_PTRC_GLVIEWPORTINDEXEDFPROC)IntGetProcAddress("glViewportIndexedf");
+	_ptrc_glViewportIndexedf(index, x, y, w, h);
+}
+
+static void CODEGEN_FUNCPTR Switch_ViewportIndexedfv(GLuint index, const GLfloat * v)
+{
+	_ptrc_glViewportIndexedfv = (PFN_PTRC_GLVIEWPORTINDEXEDFVPROC)IntGetProcAddress("glViewportIndexedfv");
+	_ptrc_glViewportIndexedfv(index, v);
+}
+
+
+/* Extension: 4.2*/
+static void CODEGEN_FUNCPTR Switch_BindImageTexture(GLuint unit, GLuint texture, GLint level, GLboolean layered, GLint layer, GLenum access, GLenum format)
+{
+	_ptrc_glBindImageTexture = (PFN_PTRC_GLBINDIMAGETEXTUREPROC)IntGetProcAddress("glBindImageTexture");
+	_ptrc_glBindImageTexture(unit, texture, level, layered, layer, access, format);
+}
+
+static void CODEGEN_FUNCPTR Switch_DrawArraysInstancedBaseInstance(GLenum mode, GLint first, GLsizei count, GLsizei instancecount, GLuint baseinstance)
+{
+	_ptrc_glDrawArraysInstancedBaseInstance = (PFN_PTRC_GLDRAWARRAYSINSTANCEDBASEINSTANCEPROC)IntGetProcAddress("glDrawArraysInstancedBaseInstance");
+	_ptrc_glDrawArraysInstancedBaseInstance(mode, first, count, instancecount, baseinstance);
+}
+
+static void CODEGEN_FUNCPTR Switch_DrawElementsInstancedBaseInstance(GLenum mode, GLsizei count, GLenum type, const void * indices, GLsizei instancecount, GLuint baseinstance)
+{
+	_ptrc_glDrawElementsInstancedBaseInstance = (PFN_PTRC_GLDRAWELEMENTSINSTANCEDBASEINSTANCEPROC)IntGetProcAddress("glDrawElementsInstancedBaseInstance");
+	_ptrc_glDrawElementsInstancedBaseInstance(mode, count, type, indices, instancecount, baseinstance);
+}
+
+static void CODEGEN_FUNCPTR Switch_DrawElementsInstancedBaseVertexBaseInstance(GLenum mode, GLsizei count, GLenum type, const void * indices, GLsizei instancecount, GLint basevertex, GLuint baseinstance)
+{
+	_ptrc_glDrawElementsInstancedBaseVertexBaseInstance = (PFN_PTRC_GLDRAWELEMENTSINSTANCEDBASEVERTEXBASEINSTANCEPROC)IntGetProcAddress("glDrawElementsInstancedBaseVertexBaseInstance");
+	_ptrc_glDrawElementsInstancedBaseVertexBaseInstance(mode, count, type, indices, instancecount, basevertex, baseinstance);
+}
+
+static void CODEGEN_FUNCPTR Switch_DrawTransformFeedbackInstanced(GLenum mode, GLuint id, GLsizei instancecount)
+{
+	_ptrc_glDrawTransformFeedbackInstanced = (PFN_PTRC_GLDRAWTRANSFORMFEEDBACKINSTANCEDPROC)IntGetProcAddress("glDrawTransformFeedbackInstanced");
+	_ptrc_glDrawTransformFeedbackInstanced(mode, id, instancecount);
+}
+
+static void CODEGEN_FUNCPTR Switch_DrawTransformFeedbackStreamInstanced(GLenum mode, GLuint id, GLuint stream, GLsizei instancecount)
+{
+	_ptrc_glDrawTransformFeedbackStreamInstanced = (PFN_PTRC_GLDRAWTRANSFORMFEEDBACKSTREAMINSTANCEDPROC)IntGetProcAddress("glDrawTransformFeedbackStreamInstanced");
+	_ptrc_glDrawTransformFeedbackStreamInstanced(mode, id, stream, instancecount);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetActiveAtomicCounterBufferiv(GLuint program, GLuint bufferIndex, GLenum pname, GLint * params)
+{
+	_ptrc_glGetActiveAtomicCounterBufferiv = (PFN_PTRC_GLGETACTIVEATOMICCOUNTERBUFFERIVPROC)IntGetProcAddress("glGetActiveAtomicCounterBufferiv");
+	_ptrc_glGetActiveAtomicCounterBufferiv(program, bufferIndex, pname, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetInternalformativ(GLenum target, GLenum internalformat, GLenum pname, GLsizei bufSize, GLint * params)
+{
+	_ptrc_glGetInternalformativ = (PFN_PTRC_GLGETINTERNALFORMATIVPROC)IntGetProcAddress("glGetInternalformativ");
+	_ptrc_glGetInternalformativ(target, internalformat, pname, bufSize, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_MemoryBarrier(GLbitfield barriers)
+{
+	_ptrc_glMemoryBarrier = (PFN_PTRC_GLMEMORYBARRIERPROC)IntGetProcAddress("glMemoryBarrier");
+	_ptrc_glMemoryBarrier(barriers);
+}
+
+static void CODEGEN_FUNCPTR Switch_TexStorage1D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width)
+{
+	_ptrc_glTexStorage1D = (PFN_PTRC_GLTEXSTORAGE1DPROC)IntGetProcAddress("glTexStorage1D");
+	_ptrc_glTexStorage1D(target, levels, internalformat, width);
+}
+
+static void CODEGEN_FUNCPTR Switch_TexStorage2D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height)
+{
+	_ptrc_glTexStorage2D = (PFN_PTRC_GLTEXSTORAGE2DPROC)IntGetProcAddress("glTexStorage2D");
+	_ptrc_glTexStorage2D(target, levels, internalformat, width, height);
+}
+
+static void CODEGEN_FUNCPTR Switch_TexStorage3D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth)
+{
+	_ptrc_glTexStorage3D = (PFN_PTRC_GLTEXSTORAGE3DPROC)IntGetProcAddress("glTexStorage3D");
+	_ptrc_glTexStorage3D(target, levels, internalformat, width, height, depth);
+}
+
+
+/* Extension: 4.3*/
+static void CODEGEN_FUNCPTR Switch_BindVertexBuffer(GLuint bindingindex, GLuint buffer, GLintptr offset, GLsizei stride)
+{
+	_ptrc_glBindVertexBuffer = (PFN_PTRC_GLBINDVERTEXBUFFERPROC)IntGetProcAddress("glBindVertexBuffer");
+	_ptrc_glBindVertexBuffer(bindingindex, buffer, offset, stride);
+}
+
+static void CODEGEN_FUNCPTR Switch_ClearBufferData(GLenum target, GLenum internalformat, GLenum format, GLenum type, const void * data)
+{
+	_ptrc_glClearBufferData = (PFN_PTRC_GLCLEARBUFFERDATAPROC)IntGetProcAddress("glClearBufferData");
+	_ptrc_glClearBufferData(target, internalformat, format, type, data);
+}
+
+static void CODEGEN_FUNCPTR Switch_ClearBufferSubData(GLenum target, GLenum internalformat, GLintptr offset, GLsizeiptr size, GLenum format, GLenum type, const void * data)
+{
+	_ptrc_glClearBufferSubData = (PFN_PTRC_GLCLEARBUFFERSUBDATAPROC)IntGetProcAddress("glClearBufferSubData");
+	_ptrc_glClearBufferSubData(target, internalformat, offset, size, format, type, data);
+}
+
+static void CODEGEN_FUNCPTR Switch_CopyImageSubData(GLuint srcName, GLenum srcTarget, GLint srcLevel, GLint srcX, GLint srcY, GLint srcZ, GLuint dstName, GLenum dstTarget, GLint dstLevel, GLint dstX, GLint dstY, GLint dstZ, GLsizei srcWidth, GLsizei srcHeight, GLsizei srcDepth)
+{
+	_ptrc_glCopyImageSubData = (PFN_PTRC_GLCOPYIMAGESUBDATAPROC)IntGetProcAddress("glCopyImageSubData");
+	_ptrc_glCopyImageSubData(srcName, srcTarget, srcLevel, srcX, srcY, srcZ, dstName, dstTarget, dstLevel, dstX, dstY, dstZ, srcWidth, srcHeight, srcDepth);
+}
+
+static void CODEGEN_FUNCPTR Switch_DebugMessageCallback(GLDEBUGPROC callback, const void * userParam)
+{
+	_ptrc_glDebugMessageCallback = (PFN_PTRC_GLDEBUGMESSAGECALLBACKPROC)IntGetProcAddress("glDebugMessageCallback");
+	_ptrc_glDebugMessageCallback(callback, userParam);
+}
+
+static void CODEGEN_FUNCPTR Switch_DebugMessageControl(GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint * ids, GLboolean enabled)
+{
+	_ptrc_glDebugMessageControl = (PFN_PTRC_GLDEBUGMESSAGECONTROLPROC)IntGetProcAddress("glDebugMessageControl");
+	_ptrc_glDebugMessageControl(source, type, severity, count, ids, enabled);
+}
+
+static void CODEGEN_FUNCPTR Switch_DebugMessageInsert(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar * buf)
+{
+	_ptrc_glDebugMessageInsert = (PFN_PTRC_GLDEBUGMESSAGEINSERTPROC)IntGetProcAddress("glDebugMessageInsert");
+	_ptrc_glDebugMessageInsert(source, type, id, severity, length, buf);
+}
+
+static void CODEGEN_FUNCPTR Switch_DispatchCompute(GLuint num_groups_x, GLuint num_groups_y, GLuint num_groups_z)
+{
+	_ptrc_glDispatchCompute = (PFN_PTRC_GLDISPATCHCOMPUTEPROC)IntGetProcAddress("glDispatchCompute");
+	_ptrc_glDispatchCompute(num_groups_x, num_groups_y, num_groups_z);
+}
+
+static void CODEGEN_FUNCPTR Switch_DispatchComputeIndirect(GLintptr indirect)
+{
+	_ptrc_glDispatchComputeIndirect = (PFN_PTRC_GLDISPATCHCOMPUTEINDIRECTPROC)IntGetProcAddress("glDispatchComputeIndirect");
+	_ptrc_glDispatchComputeIndirect(indirect);
+}
+
+static void CODEGEN_FUNCPTR Switch_FramebufferParameteri(GLenum target, GLenum pname, GLint param)
+{
+	_ptrc_glFramebufferParameteri = (PFN_PTRC_GLFRAMEBUFFERPARAMETERIPROC)IntGetProcAddress("glFramebufferParameteri");
+	_ptrc_glFramebufferParameteri(target, pname, param);
+}
+
+static GLuint CODEGEN_FUNCPTR Switch_GetDebugMessageLog(GLuint count, GLsizei bufSize, GLenum * sources, GLenum * types, GLuint * ids, GLenum * severities, GLsizei * lengths, GLchar * messageLog)
+{
+	_ptrc_glGetDebugMessageLog = (PFN_PTRC_GLGETDEBUGMESSAGELOGPROC)IntGetProcAddress("glGetDebugMessageLog");
+	return _ptrc_glGetDebugMessageLog(count, bufSize, sources, types, ids, severities, lengths, messageLog);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetFramebufferParameteriv(GLenum target, GLenum pname, GLint * params)
+{
+	_ptrc_glGetFramebufferParameteriv = (PFN_PTRC_GLGETFRAMEBUFFERPARAMETERIVPROC)IntGetProcAddress("glGetFramebufferParameteriv");
+	_ptrc_glGetFramebufferParameteriv(target, pname, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetInternalformati64v(GLenum target, GLenum internalformat, GLenum pname, GLsizei bufSize, GLint64 * params)
+{
+	_ptrc_glGetInternalformati64v = (PFN_PTRC_GLGETINTERNALFORMATI64VPROC)IntGetProcAddress("glGetInternalformati64v");
+	_ptrc_glGetInternalformati64v(target, internalformat, pname, bufSize, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetObjectLabel(GLenum identifier, GLuint name, GLsizei bufSize, GLsizei * length, GLchar * label)
+{
+	_ptrc_glGetObjectLabel = (PFN_PTRC_GLGETOBJECTLABELPROC)IntGetProcAddress("glGetObjectLabel");
+	_ptrc_glGetObjectLabel(identifier, name, bufSize, length, label);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetObjectPtrLabel(const void * ptr, GLsizei bufSize, GLsizei * length, GLchar * label)
+{
+	_ptrc_glGetObjectPtrLabel = (PFN_PTRC_GLGETOBJECTPTRLABELPROC)IntGetProcAddress("glGetObjectPtrLabel");
+	_ptrc_glGetObjectPtrLabel(ptr, bufSize, length, label);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetProgramInterfaceiv(GLuint program, GLenum programInterface, GLenum pname, GLint * params)
+{
+	_ptrc_glGetProgramInterfaceiv = (PFN_PTRC_GLGETPROGRAMINTERFACEIVPROC)IntGetProcAddress("glGetProgramInterfaceiv");
+	_ptrc_glGetProgramInterfaceiv(program, programInterface, pname, params);
+}
+
+static GLuint CODEGEN_FUNCPTR Switch_GetProgramResourceIndex(GLuint program, GLenum programInterface, const GLchar * name)
+{
+	_ptrc_glGetProgramResourceIndex = (PFN_PTRC_GLGETPROGRAMRESOURCEINDEXPROC)IntGetProcAddress("glGetProgramResourceIndex");
+	return _ptrc_glGetProgramResourceIndex(program, programInterface, name);
+}
+
+static GLint CODEGEN_FUNCPTR Switch_GetProgramResourceLocation(GLuint program, GLenum programInterface, const GLchar * name)
+{
+	_ptrc_glGetProgramResourceLocation = (PFN_PTRC_GLGETPROGRAMRESOURCELOCATIONPROC)IntGetProcAddress("glGetProgramResourceLocation");
+	return _ptrc_glGetProgramResourceLocation(program, programInterface, name);
+}
+
+static GLint CODEGEN_FUNCPTR Switch_GetProgramResourceLocationIndex(GLuint program, GLenum programInterface, const GLchar * name)
+{
+	_ptrc_glGetProgramResourceLocationIndex = (PFN_PTRC_GLGETPROGRAMRESOURCELOCATIONINDEXPROC)IntGetProcAddress("glGetProgramResourceLocationIndex");
+	return _ptrc_glGetProgramResourceLocationIndex(program, programInterface, name);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetProgramResourceName(GLuint program, GLenum programInterface, GLuint index, GLsizei bufSize, GLsizei * length, GLchar * name)
+{
+	_ptrc_glGetProgramResourceName = (PFN_PTRC_GLGETPROGRAMRESOURCENAMEPROC)IntGetProcAddress("glGetProgramResourceName");
+	_ptrc_glGetProgramResourceName(program, programInterface, index, bufSize, length, name);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetProgramResourceiv(GLuint program, GLenum programInterface, GLuint index, GLsizei propCount, const GLenum * props, GLsizei bufSize, GLsizei * length, GLint * params)
+{
+	_ptrc_glGetProgramResourceiv = (PFN_PTRC_GLGETPROGRAMRESOURCEIVPROC)IntGetProcAddress("glGetProgramResourceiv");
+	_ptrc_glGetProgramResourceiv(program, programInterface, index, propCount, props, bufSize, length, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_InvalidateBufferData(GLuint buffer)
+{
+	_ptrc_glInvalidateBufferData = (PFN_PTRC_GLINVALIDATEBUFFERDATAPROC)IntGetProcAddress("glInvalidateBufferData");
+	_ptrc_glInvalidateBufferData(buffer);
+}
+
+static void CODEGEN_FUNCPTR Switch_InvalidateBufferSubData(GLuint buffer, GLintptr offset, GLsizeiptr length)
+{
+	_ptrc_glInvalidateBufferSubData = (PFN_PTRC_GLINVALIDATEBUFFERSUBDATAPROC)IntGetProcAddress("glInvalidateBufferSubData");
+	_ptrc_glInvalidateBufferSubData(buffer, offset, length);
+}
+
+static void CODEGEN_FUNCPTR Switch_InvalidateFramebuffer(GLenum target, GLsizei numAttachments, const GLenum * attachments)
+{
+	_ptrc_glInvalidateFramebuffer = (PFN_PTRC_GLINVALIDATEFRAMEBUFFERPROC)IntGetProcAddress("glInvalidateFramebuffer");
+	_ptrc_glInvalidateFramebuffer(target, numAttachments, attachments);
+}
+
+static void CODEGEN_FUNCPTR Switch_InvalidateSubFramebuffer(GLenum target, GLsizei numAttachments, const GLenum * attachments, GLint x, GLint y, GLsizei width, GLsizei height)
+{
+	_ptrc_glInvalidateSubFramebuffer = (PFN_PTRC_GLINVALIDATESUBFRAMEBUFFERPROC)IntGetProcAddress("glInvalidateSubFramebuffer");
+	_ptrc_glInvalidateSubFramebuffer(target, numAttachments, attachments, x, y, width, height);
+}
+
+static void CODEGEN_FUNCPTR Switch_InvalidateTexImage(GLuint texture, GLint level)
+{
+	_ptrc_glInvalidateTexImage = (PFN_PTRC_GLINVALIDATETEXIMAGEPROC)IntGetProcAddress("glInvalidateTexImage");
+	_ptrc_glInvalidateTexImage(texture, level);
+}
+
+static void CODEGEN_FUNCPTR Switch_InvalidateTexSubImage(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth)
+{
+	_ptrc_glInvalidateTexSubImage = (PFN_PTRC_GLINVALIDATETEXSUBIMAGEPROC)IntGetProcAddress("glInvalidateTexSubImage");
+	_ptrc_glInvalidateTexSubImage(texture, level, xoffset, yoffset, zoffset, width, height, depth);
+}
+
+static void CODEGEN_FUNCPTR Switch_MultiDrawArraysIndirect(GLenum mode, const void * indirect, GLsizei drawcount, GLsizei stride)
+{
+	_ptrc_glMultiDrawArraysIndirect = (PFN_PTRC_GLMULTIDRAWARRAYSINDIRECTPROC)IntGetProcAddress("glMultiDrawArraysIndirect");
+	_ptrc_glMultiDrawArraysIndirect(mode, indirect, drawcount, stride);
+}
+
+static void CODEGEN_FUNCPTR Switch_MultiDrawElementsIndirect(GLenum mode, GLenum type, const void * indirect, GLsizei drawcount, GLsizei stride)
+{
+	_ptrc_glMultiDrawElementsIndirect = (PFN_PTRC_GLMULTIDRAWELEMENTSINDIRECTPROC)IntGetProcAddress("glMultiDrawElementsIndirect");
+	_ptrc_glMultiDrawElementsIndirect(mode, type, indirect, drawcount, stride);
+}
+
+static void CODEGEN_FUNCPTR Switch_ObjectLabel(GLenum identifier, GLuint name, GLsizei length, const GLchar * label)
+{
+	_ptrc_glObjectLabel = (PFN_PTRC_GLOBJECTLABELPROC)IntGetProcAddress("glObjectLabel");
+	_ptrc_glObjectLabel(identifier, name, length, label);
+}
+
+static void CODEGEN_FUNCPTR Switch_ObjectPtrLabel(const void * ptr, GLsizei length, const GLchar * label)
+{
+	_ptrc_glObjectPtrLabel = (PFN_PTRC_GLOBJECTPTRLABELPROC)IntGetProcAddress("glObjectPtrLabel");
+	_ptrc_glObjectPtrLabel(ptr, length, label);
+}
+
+static void CODEGEN_FUNCPTR Switch_PopDebugGroup(void)
+{
+	_ptrc_glPopDebugGroup = (PFN_PTRC_GLPOPDEBUGGROUPPROC)IntGetProcAddress("glPopDebugGroup");
+	_ptrc_glPopDebugGroup();
+}
+
+static void CODEGEN_FUNCPTR Switch_PushDebugGroup(GLenum source, GLuint id, GLsizei length, const GLchar * message)
+{
+	_ptrc_glPushDebugGroup = (PFN_PTRC_GLPUSHDEBUGGROUPPROC)IntGetProcAddress("glPushDebugGroup");
+	_ptrc_glPushDebugGroup(source, id, length, message);
+}
+
+static void CODEGEN_FUNCPTR Switch_ShaderStorageBlockBinding(GLuint program, GLuint storageBlockIndex, GLuint storageBlockBinding)
+{
+	_ptrc_glShaderStorageBlockBinding = (PFN_PTRC_GLSHADERSTORAGEBLOCKBINDINGPROC)IntGetProcAddress("glShaderStorageBlockBinding");
+	_ptrc_glShaderStorageBlockBinding(program, storageBlockIndex, storageBlockBinding);
+}
+
+static void CODEGEN_FUNCPTR Switch_TexBufferRange(GLenum target, GLenum internalformat, GLuint buffer, GLintptr offset, GLsizeiptr size)
+{
+	_ptrc_glTexBufferRange = (PFN_PTRC_GLTEXBUFFERRANGEPROC)IntGetProcAddress("glTexBufferRange");
+	_ptrc_glTexBufferRange(target, internalformat, buffer, offset, size);
+}
+
+static void CODEGEN_FUNCPTR Switch_TexStorage2DMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations)
+{
+	_ptrc_glTexStorage2DMultisample = (PFN_PTRC_GLTEXSTORAGE2DMULTISAMPLEPROC)IntGetProcAddress("glTexStorage2DMultisample");
+	_ptrc_glTexStorage2DMultisample(target, samples, internalformat, width, height, fixedsamplelocations);
+}
+
+static void CODEGEN_FUNCPTR Switch_TexStorage3DMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations)
+{
+	_ptrc_glTexStorage3DMultisample = (PFN_PTRC_GLTEXSTORAGE3DMULTISAMPLEPROC)IntGetProcAddress("glTexStorage3DMultisample");
+	_ptrc_glTexStorage3DMultisample(target, samples, internalformat, width, height, depth, fixedsamplelocations);
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureView(GLuint texture, GLenum target, GLuint origtexture, GLenum internalformat, GLuint minlevel, GLuint numlevels, GLuint minlayer, GLuint numlayers)
+{
+	_ptrc_glTextureView = (PFN_PTRC_GLTEXTUREVIEWPROC)IntGetProcAddress("glTextureView");
+	_ptrc_glTextureView(texture, target, origtexture, internalformat, minlevel, numlevels, minlayer, numlayers);
+}
+
+static void CODEGEN_FUNCPTR Switch_VertexAttribBinding(GLuint attribindex, GLuint bindingindex)
+{
+	_ptrc_glVertexAttribBinding = (PFN_PTRC_GLVERTEXATTRIBBINDINGPROC)IntGetProcAddress("glVertexAttribBinding");
+	_ptrc_glVertexAttribBinding(attribindex, bindingindex);
+}
+
+static void CODEGEN_FUNCPTR Switch_VertexAttribFormat(GLuint attribindex, GLint size, GLenum type, GLboolean normalized, GLuint relativeoffset)
+{
+	_ptrc_glVertexAttribFormat = (PFN_PTRC_GLVERTEXATTRIBFORMATPROC)IntGetProcAddress("glVertexAttribFormat");
+	_ptrc_glVertexAttribFormat(attribindex, size, type, normalized, relativeoffset);
+}
+
+static void CODEGEN_FUNCPTR Switch_VertexAttribIFormat(GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset)
+{
+	_ptrc_glVertexAttribIFormat = (PFN_PTRC_GLVERTEXATTRIBIFORMATPROC)IntGetProcAddress("glVertexAttribIFormat");
+	_ptrc_glVertexAttribIFormat(attribindex, size, type, relativeoffset);
+}
+
+static void CODEGEN_FUNCPTR Switch_VertexAttribLFormat(GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset)
+{
+	_ptrc_glVertexAttribLFormat = (PFN_PTRC_GLVERTEXATTRIBLFORMATPROC)IntGetProcAddress("glVertexAttribLFormat");
+	_ptrc_glVertexAttribLFormat(attribindex, size, type, relativeoffset);
+}
+
+static void CODEGEN_FUNCPTR Switch_VertexBindingDivisor(GLuint bindingindex, GLuint divisor)
+{
+	_ptrc_glVertexBindingDivisor = (PFN_PTRC_GLVERTEXBINDINGDIVISORPROC)IntGetProcAddress("glVertexBindingDivisor");
+	_ptrc_glVertexBindingDivisor(bindingindex, divisor);
+}
+
+
+/* Extension: 4.4*/
+static void CODEGEN_FUNCPTR Switch_BindBuffersBase(GLenum target, GLuint first, GLsizei count, const GLuint * buffers)
+{
+	_ptrc_glBindBuffersBase = (PFN_PTRC_GLBINDBUFFERSBASEPROC)IntGetProcAddress("glBindBuffersBase");
+	_ptrc_glBindBuffersBase(target, first, count, buffers);
+}
+
+static void CODEGEN_FUNCPTR Switch_BindBuffersRange(GLenum target, GLuint first, GLsizei count, const GLuint * buffers, const GLintptr * offsets, const GLsizeiptr * sizes)
+{
+	_ptrc_glBindBuffersRange = (PFN_PTRC_GLBINDBUFFERSRANGEPROC)IntGetProcAddress("glBindBuffersRange");
+	_ptrc_glBindBuffersRange(target, first, count, buffers, offsets, sizes);
+}
+
+static void CODEGEN_FUNCPTR Switch_BindImageTextures(GLuint first, GLsizei count, const GLuint * textures)
+{
+	_ptrc_glBindImageTextures = (PFN_PTRC_GLBINDIMAGETEXTURESPROC)IntGetProcAddress("glBindImageTextures");
+	_ptrc_glBindImageTextures(first, count, textures);
+}
+
+static void CODEGEN_FUNCPTR Switch_BindSamplers(GLuint first, GLsizei count, const GLuint * samplers)
+{
+	_ptrc_glBindSamplers = (PFN_PTRC_GLBINDSAMPLERSPROC)IntGetProcAddress("glBindSamplers");
+	_ptrc_glBindSamplers(first, count, samplers);
+}
+
+static void CODEGEN_FUNCPTR Switch_BindTextures(GLuint first, GLsizei count, const GLuint * textures)
+{
+	_ptrc_glBindTextures = (PFN_PTRC_GLBINDTEXTURESPROC)IntGetProcAddress("glBindTextures");
+	_ptrc_glBindTextures(first, count, textures);
+}
+
+static void CODEGEN_FUNCPTR Switch_BindVertexBuffers(GLuint first, GLsizei count, const GLuint * buffers, const GLintptr * offsets, const GLsizei * strides)
+{
+	_ptrc_glBindVertexBuffers = (PFN_PTRC_GLBINDVERTEXBUFFERSPROC)IntGetProcAddress("glBindVertexBuffers");
+	_ptrc_glBindVertexBuffers(first, count, buffers, offsets, strides);
+}
+
+static void CODEGEN_FUNCPTR Switch_BufferStorage(GLenum target, GLsizeiptr size, const void * data, GLbitfield flags)
+{
+	_ptrc_glBufferStorage = (PFN_PTRC_GLBUFFERSTORAGEPROC)IntGetProcAddress("glBufferStorage");
+	_ptrc_glBufferStorage(target, size, data, flags);
+}
+
+static void CODEGEN_FUNCPTR Switch_ClearTexImage(GLuint texture, GLint level, GLenum format, GLenum type, const void * data)
+{
+	_ptrc_glClearTexImage = (PFN_PTRC_GLCLEARTEXIMAGEPROC)IntGetProcAddress("glClearTexImage");
+	_ptrc_glClearTexImage(texture, level, format, type, data);
+}
+
+static void CODEGEN_FUNCPTR Switch_ClearTexSubImage(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void * data)
+{
+	_ptrc_glClearTexSubImage = (PFN_PTRC_GLCLEARTEXSUBIMAGEPROC)IntGetProcAddress("glClearTexSubImage");
+	_ptrc_glClearTexSubImage(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, type, data);
+}
+
+
+/* Extension: 4.5*/
+static void CODEGEN_FUNCPTR Switch_BindTextureUnit(GLuint unit, GLuint texture)
+{
+	_ptrc_glBindTextureUnit = (PFN_PTRC_GLBINDTEXTUREUNITPROC)IntGetProcAddress("glBindTextureUnit");
+	_ptrc_glBindTextureUnit(unit, texture);
+}
+
+static void CODEGEN_FUNCPTR Switch_BlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)
+{
+	_ptrc_glBlitNamedFramebuffer = (PFN_PTRC_GLBLITNAMEDFRAMEBUFFERPROC)IntGetProcAddress("glBlitNamedFramebuffer");
+	_ptrc_glBlitNamedFramebuffer(readFramebuffer, drawFramebuffer, srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+}
+
+static GLenum CODEGEN_FUNCPTR Switch_CheckNamedFramebufferStatus(GLuint framebuffer, GLenum target)
+{
+	_ptrc_glCheckNamedFramebufferStatus = (PFN_PTRC_GLCHECKNAMEDFRAMEBUFFERSTATUSPROC)IntGetProcAddress("glCheckNamedFramebufferStatus");
+	return _ptrc_glCheckNamedFramebufferStatus(framebuffer, target);
+}
+
+static void CODEGEN_FUNCPTR Switch_ClearNamedBufferData(GLuint buffer, GLenum internalformat, GLenum format, GLenum type, const void * data)
+{
+	_ptrc_glClearNamedBufferData = (PFN_PTRC_GLCLEARNAMEDBUFFERDATAPROC)IntGetProcAddress("glClearNamedBufferData");
+	_ptrc_glClearNamedBufferData(buffer, internalformat, format, type, data);
+}
+
+static void CODEGEN_FUNCPTR Switch_ClearNamedBufferSubData(GLuint buffer, GLenum internalformat, GLintptr offset, GLsizeiptr size, GLenum format, GLenum type, const void * data)
+{
+	_ptrc_glClearNamedBufferSubData = (PFN_PTRC_GLCLEARNAMEDBUFFERSUBDATAPROC)IntGetProcAddress("glClearNamedBufferSubData");
+	_ptrc_glClearNamedBufferSubData(buffer, internalformat, offset, size, format, type, data);
+}
+
+static void CODEGEN_FUNCPTR Switch_ClearNamedFramebufferfi(GLuint framebuffer, GLenum buffer, GLint drawbuffer, const GLfloat depth, GLint stencil)
+{
+	_ptrc_glClearNamedFramebufferfi = (PFN_PTRC_GLCLEARNAMEDFRAMEBUFFERFIPROC)IntGetProcAddress("glClearNamedFramebufferfi");
+	_ptrc_glClearNamedFramebufferfi(framebuffer, buffer, drawbuffer, depth, stencil);
+}
+
+static void CODEGEN_FUNCPTR Switch_ClearNamedFramebufferfv(GLuint framebuffer, GLenum buffer, GLint drawbuffer, const GLfloat * value)
+{
+	_ptrc_glClearNamedFramebufferfv = (PFN_PTRC_GLCLEARNAMEDFRAMEBUFFERFVPROC)IntGetProcAddress("glClearNamedFramebufferfv");
+	_ptrc_glClearNamedFramebufferfv(framebuffer, buffer, drawbuffer, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ClearNamedFramebufferiv(GLuint framebuffer, GLenum buffer, GLint drawbuffer, const GLint * value)
+{
+	_ptrc_glClearNamedFramebufferiv = (PFN_PTRC_GLCLEARNAMEDFRAMEBUFFERIVPROC)IntGetProcAddress("glClearNamedFramebufferiv");
+	_ptrc_glClearNamedFramebufferiv(framebuffer, buffer, drawbuffer, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ClearNamedFramebufferuiv(GLuint framebuffer, GLenum buffer, GLint drawbuffer, const GLuint * value)
+{
+	_ptrc_glClearNamedFramebufferuiv = (PFN_PTRC_GLCLEARNAMEDFRAMEBUFFERUIVPROC)IntGetProcAddress("glClearNamedFramebufferuiv");
+	_ptrc_glClearNamedFramebufferuiv(framebuffer, buffer, drawbuffer, value);
+}
+
+static void CODEGEN_FUNCPTR Switch_ClipControl(GLenum origin, GLenum depth)
+{
+	_ptrc_glClipControl = (PFN_PTRC_GLCLIPCONTROLPROC)IntGetProcAddress("glClipControl");
+	_ptrc_glClipControl(origin, depth);
+}
+
+static void CODEGEN_FUNCPTR Switch_CompressedTextureSubImage1D(GLuint texture, GLint level, GLint xoffset, GLsizei width, GLenum format, GLsizei imageSize, const void * data)
+{
+	_ptrc_glCompressedTextureSubImage1D = (PFN_PTRC_GLCOMPRESSEDTEXTURESUBIMAGE1DPROC)IntGetProcAddress("glCompressedTextureSubImage1D");
+	_ptrc_glCompressedTextureSubImage1D(texture, level, xoffset, width, format, imageSize, data);
+}
+
+static void CODEGEN_FUNCPTR Switch_CompressedTextureSubImage2D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void * data)
+{
+	_ptrc_glCompressedTextureSubImage2D = (PFN_PTRC_GLCOMPRESSEDTEXTURESUBIMAGE2DPROC)IntGetProcAddress("glCompressedTextureSubImage2D");
+	_ptrc_glCompressedTextureSubImage2D(texture, level, xoffset, yoffset, width, height, format, imageSize, data);
+}
+
+static void CODEGEN_FUNCPTR Switch_CompressedTextureSubImage3D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void * data)
+{
+	_ptrc_glCompressedTextureSubImage3D = (PFN_PTRC_GLCOMPRESSEDTEXTURESUBIMAGE3DPROC)IntGetProcAddress("glCompressedTextureSubImage3D");
+	_ptrc_glCompressedTextureSubImage3D(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data);
+}
+
+static void CODEGEN_FUNCPTR Switch_CopyNamedBufferSubData(GLuint readBuffer, GLuint writeBuffer, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size)
+{
+	_ptrc_glCopyNamedBufferSubData = (PFN_PTRC_GLCOPYNAMEDBUFFERSUBDATAPROC)IntGetProcAddress("glCopyNamedBufferSubData");
+	_ptrc_glCopyNamedBufferSubData(readBuffer, writeBuffer, readOffset, writeOffset, size);
+}
+
+static void CODEGEN_FUNCPTR Switch_CopyTextureSubImage1D(GLuint texture, GLint level, GLint xoffset, GLint x, GLint y, GLsizei width)
+{
+	_ptrc_glCopyTextureSubImage1D = (PFN_PTRC_GLCOPYTEXTURESUBIMAGE1DPROC)IntGetProcAddress("glCopyTextureSubImage1D");
+	_ptrc_glCopyTextureSubImage1D(texture, level, xoffset, x, y, width);
+}
+
+static void CODEGEN_FUNCPTR Switch_CopyTextureSubImage2D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height)
+{
+	_ptrc_glCopyTextureSubImage2D = (PFN_PTRC_GLCOPYTEXTURESUBIMAGE2DPROC)IntGetProcAddress("glCopyTextureSubImage2D");
+	_ptrc_glCopyTextureSubImage2D(texture, level, xoffset, yoffset, x, y, width, height);
+}
+
+static void CODEGEN_FUNCPTR Switch_CopyTextureSubImage3D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height)
+{
+	_ptrc_glCopyTextureSubImage3D = (PFN_PTRC_GLCOPYTEXTURESUBIMAGE3DPROC)IntGetProcAddress("glCopyTextureSubImage3D");
+	_ptrc_glCopyTextureSubImage3D(texture, level, xoffset, yoffset, zoffset, x, y, width, height);
+}
+
+static void CODEGEN_FUNCPTR Switch_CreateBuffers(GLsizei n, GLuint * buffers)
+{
+	_ptrc_glCreateBuffers = (PFN_PTRC_GLCREATEBUFFERSPROC)IntGetProcAddress("glCreateBuffers");
+	_ptrc_glCreateBuffers(n, buffers);
+}
+
+static void CODEGEN_FUNCPTR Switch_CreateFramebuffers(GLsizei n, GLuint * framebuffers)
+{
+	_ptrc_glCreateFramebuffers = (PFN_PTRC_GLCREATEFRAMEBUFFERSPROC)IntGetProcAddress("glCreateFramebuffers");
+	_ptrc_glCreateFramebuffers(n, framebuffers);
+}
+
+static void CODEGEN_FUNCPTR Switch_CreateProgramPipelines(GLsizei n, GLuint * pipelines)
+{
+	_ptrc_glCreateProgramPipelines = (PFN_PTRC_GLCREATEPROGRAMPIPELINESPROC)IntGetProcAddress("glCreateProgramPipelines");
+	_ptrc_glCreateProgramPipelines(n, pipelines);
+}
+
+static void CODEGEN_FUNCPTR Switch_CreateQueries(GLenum target, GLsizei n, GLuint * ids)
+{
+	_ptrc_glCreateQueries = (PFN_PTRC_GLCREATEQUERIESPROC)IntGetProcAddress("glCreateQueries");
+	_ptrc_glCreateQueries(target, n, ids);
+}
+
+static void CODEGEN_FUNCPTR Switch_CreateRenderbuffers(GLsizei n, GLuint * renderbuffers)
+{
+	_ptrc_glCreateRenderbuffers = (PFN_PTRC_GLCREATERENDERBUFFERSPROC)IntGetProcAddress("glCreateRenderbuffers");
+	_ptrc_glCreateRenderbuffers(n, renderbuffers);
+}
+
+static void CODEGEN_FUNCPTR Switch_CreateSamplers(GLsizei n, GLuint * samplers)
+{
+	_ptrc_glCreateSamplers = (PFN_PTRC_GLCREATESAMPLERSPROC)IntGetProcAddress("glCreateSamplers");
+	_ptrc_glCreateSamplers(n, samplers);
+}
+
+static void CODEGEN_FUNCPTR Switch_CreateTextures(GLenum target, GLsizei n, GLuint * textures)
+{
+	_ptrc_glCreateTextures = (PFN_PTRC_GLCREATETEXTURESPROC)IntGetProcAddress("glCreateTextures");
+	_ptrc_glCreateTextures(target, n, textures);
+}
+
+static void CODEGEN_FUNCPTR Switch_CreateTransformFeedbacks(GLsizei n, GLuint * ids)
+{
+	_ptrc_glCreateTransformFeedbacks = (PFN_PTRC_GLCREATETRANSFORMFEEDBACKSPROC)IntGetProcAddress("glCreateTransformFeedbacks");
+	_ptrc_glCreateTransformFeedbacks(n, ids);
+}
+
+static void CODEGEN_FUNCPTR Switch_CreateVertexArrays(GLsizei n, GLuint * arrays)
+{
+	_ptrc_glCreateVertexArrays = (PFN_PTRC_GLCREATEVERTEXARRAYSPROC)IntGetProcAddress("glCreateVertexArrays");
+	_ptrc_glCreateVertexArrays(n, arrays);
+}
+
+static void CODEGEN_FUNCPTR Switch_DisableVertexArrayAttrib(GLuint vaobj, GLuint index)
+{
+	_ptrc_glDisableVertexArrayAttrib = (PFN_PTRC_GLDISABLEVERTEXARRAYATTRIBPROC)IntGetProcAddress("glDisableVertexArrayAttrib");
+	_ptrc_glDisableVertexArrayAttrib(vaobj, index);
+}
+
+static void CODEGEN_FUNCPTR Switch_EnableVertexArrayAttrib(GLuint vaobj, GLuint index)
+{
+	_ptrc_glEnableVertexArrayAttrib = (PFN_PTRC_GLENABLEVERTEXARRAYATTRIBPROC)IntGetProcAddress("glEnableVertexArrayAttrib");
+	_ptrc_glEnableVertexArrayAttrib(vaobj, index);
+}
+
+static void CODEGEN_FUNCPTR Switch_FlushMappedNamedBufferRange(GLuint buffer, GLintptr offset, GLsizeiptr length)
+{
+	_ptrc_glFlushMappedNamedBufferRange = (PFN_PTRC_GLFLUSHMAPPEDNAMEDBUFFERRANGEPROC)IntGetProcAddress("glFlushMappedNamedBufferRange");
+	_ptrc_glFlushMappedNamedBufferRange(buffer, offset, length);
+}
+
+static void CODEGEN_FUNCPTR Switch_GenerateTextureMipmap(GLuint texture)
+{
+	_ptrc_glGenerateTextureMipmap = (PFN_PTRC_GLGENERATETEXTUREMIPMAPPROC)IntGetProcAddress("glGenerateTextureMipmap");
+	_ptrc_glGenerateTextureMipmap(texture);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetCompressedTextureImage(GLuint texture, GLint level, GLsizei bufSize, void * pixels)
+{
+	_ptrc_glGetCompressedTextureImage = (PFN_PTRC_GLGETCOMPRESSEDTEXTUREIMAGEPROC)IntGetProcAddress("glGetCompressedTextureImage");
+	_ptrc_glGetCompressedTextureImage(texture, level, bufSize, pixels);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetCompressedTextureSubImage(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei bufSize, void * pixels)
+{
+	_ptrc_glGetCompressedTextureSubImage = (PFN_PTRC_GLGETCOMPRESSEDTEXTURESUBIMAGEPROC)IntGetProcAddress("glGetCompressedTextureSubImage");
+	_ptrc_glGetCompressedTextureSubImage(texture, level, xoffset, yoffset, zoffset, width, height, depth, bufSize, pixels);
+}
+
+static GLenum CODEGEN_FUNCPTR Switch_GetGraphicsResetStatus(void)
+{
+	_ptrc_glGetGraphicsResetStatus = (PFN_PTRC_GLGETGRAPHICSRESETSTATUSPROC)IntGetProcAddress("glGetGraphicsResetStatus");
+	return _ptrc_glGetGraphicsResetStatus();
+}
+
+static void CODEGEN_FUNCPTR Switch_GetNamedBufferParameteri64v(GLuint buffer, GLenum pname, GLint64 * params)
+{
+	_ptrc_glGetNamedBufferParameteri64v = (PFN_PTRC_GLGETNAMEDBUFFERPARAMETERI64VPROC)IntGetProcAddress("glGetNamedBufferParameteri64v");
+	_ptrc_glGetNamedBufferParameteri64v(buffer, pname, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetNamedBufferParameteriv(GLuint buffer, GLenum pname, GLint * params)
+{
+	_ptrc_glGetNamedBufferParameteriv = (PFN_PTRC_GLGETNAMEDBUFFERPARAMETERIVPROC)IntGetProcAddress("glGetNamedBufferParameteriv");
+	_ptrc_glGetNamedBufferParameteriv(buffer, pname, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetNamedBufferPointerv(GLuint buffer, GLenum pname, void ** params)
+{
+	_ptrc_glGetNamedBufferPointerv = (PFN_PTRC_GLGETNAMEDBUFFERPOINTERVPROC)IntGetProcAddress("glGetNamedBufferPointerv");
+	_ptrc_glGetNamedBufferPointerv(buffer, pname, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetNamedBufferSubData(GLuint buffer, GLintptr offset, GLsizeiptr size, void * data)
+{
+	_ptrc_glGetNamedBufferSubData = (PFN_PTRC_GLGETNAMEDBUFFERSUBDATAPROC)IntGetProcAddress("glGetNamedBufferSubData");
+	_ptrc_glGetNamedBufferSubData(buffer, offset, size, data);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetNamedFramebufferAttachmentParameteriv(GLuint framebuffer, GLenum attachment, GLenum pname, GLint * params)
+{
+	_ptrc_glGetNamedFramebufferAttachmentParameteriv = (PFN_PTRC_GLGETNAMEDFRAMEBUFFERATTACHMENTPARAMETERIVPROC)IntGetProcAddress("glGetNamedFramebufferAttachmentParameteriv");
+	_ptrc_glGetNamedFramebufferAttachmentParameteriv(framebuffer, attachment, pname, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetNamedFramebufferParameteriv(GLuint framebuffer, GLenum pname, GLint * param)
+{
+	_ptrc_glGetNamedFramebufferParameteriv = (PFN_PTRC_GLGETNAMEDFRAMEBUFFERPARAMETERIVPROC)IntGetProcAddress("glGetNamedFramebufferParameteriv");
+	_ptrc_glGetNamedFramebufferParameteriv(framebuffer, pname, param);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetNamedRenderbufferParameteriv(GLuint renderbuffer, GLenum pname, GLint * params)
+{
+	_ptrc_glGetNamedRenderbufferParameteriv = (PFN_PTRC_GLGETNAMEDRENDERBUFFERPARAMETERIVPROC)IntGetProcAddress("glGetNamedRenderbufferParameteriv");
+	_ptrc_glGetNamedRenderbufferParameteriv(renderbuffer, pname, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetQueryBufferObjecti64v(GLuint id, GLuint buffer, GLenum pname, GLintptr offset)
+{
+	_ptrc_glGetQueryBufferObjecti64v = (PFN_PTRC_GLGETQUERYBUFFEROBJECTI64VPROC)IntGetProcAddress("glGetQueryBufferObjecti64v");
+	_ptrc_glGetQueryBufferObjecti64v(id, buffer, pname, offset);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetQueryBufferObjectiv(GLuint id, GLuint buffer, GLenum pname, GLintptr offset)
+{
+	_ptrc_glGetQueryBufferObjectiv = (PFN_PTRC_GLGETQUERYBUFFEROBJECTIVPROC)IntGetProcAddress("glGetQueryBufferObjectiv");
+	_ptrc_glGetQueryBufferObjectiv(id, buffer, pname, offset);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetQueryBufferObjectui64v(GLuint id, GLuint buffer, GLenum pname, GLintptr offset)
+{
+	_ptrc_glGetQueryBufferObjectui64v = (PFN_PTRC_GLGETQUERYBUFFEROBJECTUI64VPROC)IntGetProcAddress("glGetQueryBufferObjectui64v");
+	_ptrc_glGetQueryBufferObjectui64v(id, buffer, pname, offset);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetQueryBufferObjectuiv(GLuint id, GLuint buffer, GLenum pname, GLintptr offset)
+{
+	_ptrc_glGetQueryBufferObjectuiv = (PFN_PTRC_GLGETQUERYBUFFEROBJECTUIVPROC)IntGetProcAddress("glGetQueryBufferObjectuiv");
+	_ptrc_glGetQueryBufferObjectuiv(id, buffer, pname, offset);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetTextureImage(GLuint texture, GLint level, GLenum format, GLenum type, GLsizei bufSize, void * pixels)
+{
+	_ptrc_glGetTextureImage = (PFN_PTRC_GLGETTEXTUREIMAGEPROC)IntGetProcAddress("glGetTextureImage");
+	_ptrc_glGetTextureImage(texture, level, format, type, bufSize, pixels);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetTextureLevelParameterfv(GLuint texture, GLint level, GLenum pname, GLfloat * params)
+{
+	_ptrc_glGetTextureLevelParameterfv = (PFN_PTRC_GLGETTEXTURELEVELPARAMETERFVPROC)IntGetProcAddress("glGetTextureLevelParameterfv");
+	_ptrc_glGetTextureLevelParameterfv(texture, level, pname, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetTextureLevelParameteriv(GLuint texture, GLint level, GLenum pname, GLint * params)
+{
+	_ptrc_glGetTextureLevelParameteriv = (PFN_PTRC_GLGETTEXTURELEVELPARAMETERIVPROC)IntGetProcAddress("glGetTextureLevelParameteriv");
+	_ptrc_glGetTextureLevelParameteriv(texture, level, pname, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetTextureParameterIiv(GLuint texture, GLenum pname, GLint * params)
+{
+	_ptrc_glGetTextureParameterIiv = (PFN_PTRC_GLGETTEXTUREPARAMETERIIVPROC)IntGetProcAddress("glGetTextureParameterIiv");
+	_ptrc_glGetTextureParameterIiv(texture, pname, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetTextureParameterIuiv(GLuint texture, GLenum pname, GLuint * params)
+{
+	_ptrc_glGetTextureParameterIuiv = (PFN_PTRC_GLGETTEXTUREPARAMETERIUIVPROC)IntGetProcAddress("glGetTextureParameterIuiv");
+	_ptrc_glGetTextureParameterIuiv(texture, pname, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetTextureParameterfv(GLuint texture, GLenum pname, GLfloat * params)
+{
+	_ptrc_glGetTextureParameterfv = (PFN_PTRC_GLGETTEXTUREPARAMETERFVPROC)IntGetProcAddress("glGetTextureParameterfv");
+	_ptrc_glGetTextureParameterfv(texture, pname, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetTextureParameteriv(GLuint texture, GLenum pname, GLint * params)
+{
+	_ptrc_glGetTextureParameteriv = (PFN_PTRC_GLGETTEXTUREPARAMETERIVPROC)IntGetProcAddress("glGetTextureParameteriv");
+	_ptrc_glGetTextureParameteriv(texture, pname, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetTextureSubImage(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLsizei bufSize, void * pixels)
+{
+	_ptrc_glGetTextureSubImage = (PFN_PTRC_GLGETTEXTURESUBIMAGEPROC)IntGetProcAddress("glGetTextureSubImage");
+	_ptrc_glGetTextureSubImage(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, type, bufSize, pixels);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetTransformFeedbacki64_v(GLuint xfb, GLenum pname, GLuint index, GLint64 * param)
+{
+	_ptrc_glGetTransformFeedbacki64_v = (PFN_PTRC_GLGETTRANSFORMFEEDBACKI64_VPROC)IntGetProcAddress("glGetTransformFeedbacki64_v");
+	_ptrc_glGetTransformFeedbacki64_v(xfb, pname, index, param);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetTransformFeedbacki_v(GLuint xfb, GLenum pname, GLuint index, GLint * param)
+{
+	_ptrc_glGetTransformFeedbacki_v = (PFN_PTRC_GLGETTRANSFORMFEEDBACKI_VPROC)IntGetProcAddress("glGetTransformFeedbacki_v");
+	_ptrc_glGetTransformFeedbacki_v(xfb, pname, index, param);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetTransformFeedbackiv(GLuint xfb, GLenum pname, GLint * param)
+{
+	_ptrc_glGetTransformFeedbackiv = (PFN_PTRC_GLGETTRANSFORMFEEDBACKIVPROC)IntGetProcAddress("glGetTransformFeedbackiv");
+	_ptrc_glGetTransformFeedbackiv(xfb, pname, param);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetVertexArrayIndexed64iv(GLuint vaobj, GLuint index, GLenum pname, GLint64 * param)
+{
+	_ptrc_glGetVertexArrayIndexed64iv = (PFN_PTRC_GLGETVERTEXARRAYINDEXED64IVPROC)IntGetProcAddress("glGetVertexArrayIndexed64iv");
+	_ptrc_glGetVertexArrayIndexed64iv(vaobj, index, pname, param);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetVertexArrayIndexediv(GLuint vaobj, GLuint index, GLenum pname, GLint * param)
+{
+	_ptrc_glGetVertexArrayIndexediv = (PFN_PTRC_GLGETVERTEXARRAYINDEXEDIVPROC)IntGetProcAddress("glGetVertexArrayIndexediv");
+	_ptrc_glGetVertexArrayIndexediv(vaobj, index, pname, param);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetVertexArrayiv(GLuint vaobj, GLenum pname, GLint * param)
+{
+	_ptrc_glGetVertexArrayiv = (PFN_PTRC_GLGETVERTEXARRAYIVPROC)IntGetProcAddress("glGetVertexArrayiv");
+	_ptrc_glGetVertexArrayiv(vaobj, pname, param);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetnCompressedTexImage(GLenum target, GLint lod, GLsizei bufSize, void * pixels)
+{
+	_ptrc_glGetnCompressedTexImage = (PFN_PTRC_GLGETNCOMPRESSEDTEXIMAGEPROC)IntGetProcAddress("glGetnCompressedTexImage");
+	_ptrc_glGetnCompressedTexImage(target, lod, bufSize, pixels);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetnTexImage(GLenum target, GLint level, GLenum format, GLenum type, GLsizei bufSize, void * pixels)
+{
+	_ptrc_glGetnTexImage = (PFN_PTRC_GLGETNTEXIMAGEPROC)IntGetProcAddress("glGetnTexImage");
+	_ptrc_glGetnTexImage(target, level, format, type, bufSize, pixels);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetnUniformdv(GLuint program, GLint location, GLsizei bufSize, GLdouble * params)
+{
+	_ptrc_glGetnUniformdv = (PFN_PTRC_GLGETNUNIFORMDVPROC)IntGetProcAddress("glGetnUniformdv");
+	_ptrc_glGetnUniformdv(program, location, bufSize, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetnUniformfv(GLuint program, GLint location, GLsizei bufSize, GLfloat * params)
+{
+	_ptrc_glGetnUniformfv = (PFN_PTRC_GLGETNUNIFORMFVPROC)IntGetProcAddress("glGetnUniformfv");
+	_ptrc_glGetnUniformfv(program, location, bufSize, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetnUniformiv(GLuint program, GLint location, GLsizei bufSize, GLint * params)
+{
+	_ptrc_glGetnUniformiv = (PFN_PTRC_GLGETNUNIFORMIVPROC)IntGetProcAddress("glGetnUniformiv");
+	_ptrc_glGetnUniformiv(program, location, bufSize, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_GetnUniformuiv(GLuint program, GLint location, GLsizei bufSize, GLuint * params)
+{
+	_ptrc_glGetnUniformuiv = (PFN_PTRC_GLGETNUNIFORMUIVPROC)IntGetProcAddress("glGetnUniformuiv");
+	_ptrc_glGetnUniformuiv(program, location, bufSize, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_InvalidateNamedFramebufferData(GLuint framebuffer, GLsizei numAttachments, const GLenum * attachments)
+{
+	_ptrc_glInvalidateNamedFramebufferData = (PFN_PTRC_GLINVALIDATENAMEDFRAMEBUFFERDATAPROC)IntGetProcAddress("glInvalidateNamedFramebufferData");
+	_ptrc_glInvalidateNamedFramebufferData(framebuffer, numAttachments, attachments);
+}
+
+static void CODEGEN_FUNCPTR Switch_InvalidateNamedFramebufferSubData(GLuint framebuffer, GLsizei numAttachments, const GLenum * attachments, GLint x, GLint y, GLsizei width, GLsizei height)
+{
+	_ptrc_glInvalidateNamedFramebufferSubData = (PFN_PTRC_GLINVALIDATENAMEDFRAMEBUFFERSUBDATAPROC)IntGetProcAddress("glInvalidateNamedFramebufferSubData");
+	_ptrc_glInvalidateNamedFramebufferSubData(framebuffer, numAttachments, attachments, x, y, width, height);
+}
+
+static void * CODEGEN_FUNCPTR Switch_MapNamedBuffer(GLuint buffer, GLenum access)
+{
+	_ptrc_glMapNamedBuffer = (PFN_PTRC_GLMAPNAMEDBUFFERPROC)IntGetProcAddress("glMapNamedBuffer");
+	return _ptrc_glMapNamedBuffer(buffer, access);
+}
+
+static void * CODEGEN_FUNCPTR Switch_MapNamedBufferRange(GLuint buffer, GLintptr offset, GLsizeiptr length, GLbitfield access)
+{
+	_ptrc_glMapNamedBufferRange = (PFN_PTRC_GLMAPNAMEDBUFFERRANGEPROC)IntGetProcAddress("glMapNamedBufferRange");
+	return _ptrc_glMapNamedBufferRange(buffer, offset, length, access);
+}
+
+static void CODEGEN_FUNCPTR Switch_MemoryBarrierByRegion(GLbitfield barriers)
+{
+	_ptrc_glMemoryBarrierByRegion = (PFN_PTRC_GLMEMORYBARRIERBYREGIONPROC)IntGetProcAddress("glMemoryBarrierByRegion");
+	_ptrc_glMemoryBarrierByRegion(barriers);
+}
+
+static void CODEGEN_FUNCPTR Switch_NamedBufferData(GLuint buffer, GLsizeiptr size, const void * data, GLenum usage)
+{
+	_ptrc_glNamedBufferData = (PFN_PTRC_GLNAMEDBUFFERDATAPROC)IntGetProcAddress("glNamedBufferData");
+	_ptrc_glNamedBufferData(buffer, size, data, usage);
+}
+
+static void CODEGEN_FUNCPTR Switch_NamedBufferStorage(GLuint buffer, GLsizeiptr size, const void * data, GLbitfield flags)
+{
+	_ptrc_glNamedBufferStorage = (PFN_PTRC_GLNAMEDBUFFERSTORAGEPROC)IntGetProcAddress("glNamedBufferStorage");
+	_ptrc_glNamedBufferStorage(buffer, size, data, flags);
+}
+
+static void CODEGEN_FUNCPTR Switch_NamedBufferSubData(GLuint buffer, GLintptr offset, GLsizeiptr size, const void * data)
+{
+	_ptrc_glNamedBufferSubData = (PFN_PTRC_GLNAMEDBUFFERSUBDATAPROC)IntGetProcAddress("glNamedBufferSubData");
+	_ptrc_glNamedBufferSubData(buffer, offset, size, data);
+}
+
+static void CODEGEN_FUNCPTR Switch_NamedFramebufferDrawBuffer(GLuint framebuffer, GLenum buf)
+{
+	_ptrc_glNamedFramebufferDrawBuffer = (PFN_PTRC_GLNAMEDFRAMEBUFFERDRAWBUFFERPROC)IntGetProcAddress("glNamedFramebufferDrawBuffer");
+	_ptrc_glNamedFramebufferDrawBuffer(framebuffer, buf);
+}
+
+static void CODEGEN_FUNCPTR Switch_NamedFramebufferDrawBuffers(GLuint framebuffer, GLsizei n, const GLenum * bufs)
+{
+	_ptrc_glNamedFramebufferDrawBuffers = (PFN_PTRC_GLNAMEDFRAMEBUFFERDRAWBUFFERSPROC)IntGetProcAddress("glNamedFramebufferDrawBuffers");
+	_ptrc_glNamedFramebufferDrawBuffers(framebuffer, n, bufs);
+}
+
+static void CODEGEN_FUNCPTR Switch_NamedFramebufferParameteri(GLuint framebuffer, GLenum pname, GLint param)
+{
+	_ptrc_glNamedFramebufferParameteri = (PFN_PTRC_GLNAMEDFRAMEBUFFERPARAMETERIPROC)IntGetProcAddress("glNamedFramebufferParameteri");
+	_ptrc_glNamedFramebufferParameteri(framebuffer, pname, param);
+}
+
+static void CODEGEN_FUNCPTR Switch_NamedFramebufferReadBuffer(GLuint framebuffer, GLenum src)
+{
+	_ptrc_glNamedFramebufferReadBuffer = (PFN_PTRC_GLNAMEDFRAMEBUFFERREADBUFFERPROC)IntGetProcAddress("glNamedFramebufferReadBuffer");
+	_ptrc_glNamedFramebufferReadBuffer(framebuffer, src);
+}
+
+static void CODEGEN_FUNCPTR Switch_NamedFramebufferRenderbuffer(GLuint framebuffer, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer)
+{
+	_ptrc_glNamedFramebufferRenderbuffer = (PFN_PTRC_GLNAMEDFRAMEBUFFERRENDERBUFFERPROC)IntGetProcAddress("glNamedFramebufferRenderbuffer");
+	_ptrc_glNamedFramebufferRenderbuffer(framebuffer, attachment, renderbuffertarget, renderbuffer);
+}
+
+static void CODEGEN_FUNCPTR Switch_NamedFramebufferTexture(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level)
+{
+	_ptrc_glNamedFramebufferTexture = (PFN_PTRC_GLNAMEDFRAMEBUFFERTEXTUREPROC)IntGetProcAddress("glNamedFramebufferTexture");
+	_ptrc_glNamedFramebufferTexture(framebuffer, attachment, texture, level);
+}
+
+static void CODEGEN_FUNCPTR Switch_NamedFramebufferTextureLayer(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level, GLint layer)
+{
+	_ptrc_glNamedFramebufferTextureLayer = (PFN_PTRC_GLNAMEDFRAMEBUFFERTEXTURELAYERPROC)IntGetProcAddress("glNamedFramebufferTextureLayer");
+	_ptrc_glNamedFramebufferTextureLayer(framebuffer, attachment, texture, level, layer);
+}
+
+static void CODEGEN_FUNCPTR Switch_NamedRenderbufferStorage(GLuint renderbuffer, GLenum internalformat, GLsizei width, GLsizei height)
+{
+	_ptrc_glNamedRenderbufferStorage = (PFN_PTRC_GLNAMEDRENDERBUFFERSTORAGEPROC)IntGetProcAddress("glNamedRenderbufferStorage");
+	_ptrc_glNamedRenderbufferStorage(renderbuffer, internalformat, width, height);
+}
+
+static void CODEGEN_FUNCPTR Switch_NamedRenderbufferStorageMultisample(GLuint renderbuffer, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height)
+{
+	_ptrc_glNamedRenderbufferStorageMultisample = (PFN_PTRC_GLNAMEDRENDERBUFFERSTORAGEMULTISAMPLEPROC)IntGetProcAddress("glNamedRenderbufferStorageMultisample");
+	_ptrc_glNamedRenderbufferStorageMultisample(renderbuffer, samples, internalformat, width, height);
+}
+
+static void CODEGEN_FUNCPTR Switch_ReadnPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLsizei bufSize, void * data)
+{
+	_ptrc_glReadnPixels = (PFN_PTRC_GLREADNPIXELSPROC)IntGetProcAddress("glReadnPixels");
+	_ptrc_glReadnPixels(x, y, width, height, format, type, bufSize, data);
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureBarrier(void)
+{
+	_ptrc_glTextureBarrier = (PFN_PTRC_GLTEXTUREBARRIERPROC)IntGetProcAddress("glTextureBarrier");
+	_ptrc_glTextureBarrier();
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureBuffer(GLuint texture, GLenum internalformat, GLuint buffer)
+{
+	_ptrc_glTextureBuffer = (PFN_PTRC_GLTEXTUREBUFFERPROC)IntGetProcAddress("glTextureBuffer");
+	_ptrc_glTextureBuffer(texture, internalformat, buffer);
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureBufferRange(GLuint texture, GLenum internalformat, GLuint buffer, GLintptr offset, GLsizeiptr size)
+{
+	_ptrc_glTextureBufferRange = (PFN_PTRC_GLTEXTUREBUFFERRANGEPROC)IntGetProcAddress("glTextureBufferRange");
+	_ptrc_glTextureBufferRange(texture, internalformat, buffer, offset, size);
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureParameterIiv(GLuint texture, GLenum pname, const GLint * params)
+{
+	_ptrc_glTextureParameterIiv = (PFN_PTRC_GLTEXTUREPARAMETERIIVPROC)IntGetProcAddress("glTextureParameterIiv");
+	_ptrc_glTextureParameterIiv(texture, pname, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureParameterIuiv(GLuint texture, GLenum pname, const GLuint * params)
+{
+	_ptrc_glTextureParameterIuiv = (PFN_PTRC_GLTEXTUREPARAMETERIUIVPROC)IntGetProcAddress("glTextureParameterIuiv");
+	_ptrc_glTextureParameterIuiv(texture, pname, params);
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureParameterf(GLuint texture, GLenum pname, GLfloat param)
+{
+	_ptrc_glTextureParameterf = (PFN_PTRC_GLTEXTUREPARAMETERFPROC)IntGetProcAddress("glTextureParameterf");
+	_ptrc_glTextureParameterf(texture, pname, param);
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureParameterfv(GLuint texture, GLenum pname, const GLfloat * param)
+{
+	_ptrc_glTextureParameterfv = (PFN_PTRC_GLTEXTUREPARAMETERFVPROC)IntGetProcAddress("glTextureParameterfv");
+	_ptrc_glTextureParameterfv(texture, pname, param);
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureParameteri(GLuint texture, GLenum pname, GLint param)
+{
+	_ptrc_glTextureParameteri = (PFN_PTRC_GLTEXTUREPARAMETERIPROC)IntGetProcAddress("glTextureParameteri");
+	_ptrc_glTextureParameteri(texture, pname, param);
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureParameteriv(GLuint texture, GLenum pname, const GLint * param)
+{
+	_ptrc_glTextureParameteriv = (PFN_PTRC_GLTEXTUREPARAMETERIVPROC)IntGetProcAddress("glTextureParameteriv");
+	_ptrc_glTextureParameteriv(texture, pname, param);
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureStorage1D(GLuint texture, GLsizei levels, GLenum internalformat, GLsizei width)
+{
+	_ptrc_glTextureStorage1D = (PFN_PTRC_GLTEXTURESTORAGE1DPROC)IntGetProcAddress("glTextureStorage1D");
+	_ptrc_glTextureStorage1D(texture, levels, internalformat, width);
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureStorage2D(GLuint texture, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height)
+{
+	_ptrc_glTextureStorage2D = (PFN_PTRC_GLTEXTURESTORAGE2DPROC)IntGetProcAddress("glTextureStorage2D");
+	_ptrc_glTextureStorage2D(texture, levels, internalformat, width, height);
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureStorage2DMultisample(GLuint texture, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations)
+{
+	_ptrc_glTextureStorage2DMultisample = (PFN_PTRC_GLTEXTURESTORAGE2DMULTISAMPLEPROC)IntGetProcAddress("glTextureStorage2DMultisample");
+	_ptrc_glTextureStorage2DMultisample(texture, samples, internalformat, width, height, fixedsamplelocations);
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureStorage3D(GLuint texture, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth)
+{
+	_ptrc_glTextureStorage3D = (PFN_PTRC_GLTEXTURESTORAGE3DPROC)IntGetProcAddress("glTextureStorage3D");
+	_ptrc_glTextureStorage3D(texture, levels, internalformat, width, height, depth);
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureStorage3DMultisample(GLuint texture, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations)
+{
+	_ptrc_glTextureStorage3DMultisample = (PFN_PTRC_GLTEXTURESTORAGE3DMULTISAMPLEPROC)IntGetProcAddress("glTextureStorage3DMultisample");
+	_ptrc_glTextureStorage3DMultisample(texture, samples, internalformat, width, height, depth, fixedsamplelocations);
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureSubImage1D(GLuint texture, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, const void * pixels)
+{
+	_ptrc_glTextureSubImage1D = (PFN_PTRC_GLTEXTURESUBIMAGE1DPROC)IntGetProcAddress("glTextureSubImage1D");
+	_ptrc_glTextureSubImage1D(texture, level, xoffset, width, format, type, pixels);
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureSubImage2D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const void * pixels)
+{
+	_ptrc_glTextureSubImage2D = (PFN_PTRC_GLTEXTURESUBIMAGE2DPROC)IntGetProcAddress("glTextureSubImage2D");
+	_ptrc_glTextureSubImage2D(texture, level, xoffset, yoffset, width, height, format, type, pixels);
+}
+
+static void CODEGEN_FUNCPTR Switch_TextureSubImage3D(GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void * pixels)
+{
+	_ptrc_glTextureSubImage3D = (PFN_PTRC_GLTEXTURESUBIMAGE3DPROC)IntGetProcAddress("glTextureSubImage3D");
+	_ptrc_glTextureSubImage3D(texture, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
+}
+
+static void CODEGEN_FUNCPTR Switch_TransformFeedbackBufferBase(GLuint xfb, GLuint index, GLuint buffer)
+{
+	_ptrc_glTransformFeedbackBufferBase = (PFN_PTRC_GLTRANSFORMFEEDBACKBUFFERBASEPROC)IntGetProcAddress("glTransformFeedbackBufferBase");
+	_ptrc_glTransformFeedbackBufferBase(xfb, index, buffer);
+}
+
+static void CODEGEN_FUNCPTR Switch_TransformFeedbackBufferRange(GLuint xfb, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size)
+{
+	_ptrc_glTransformFeedbackBufferRange = (PFN_PTRC_GLTRANSFORMFEEDBACKBUFFERRANGEPROC)IntGetProcAddress("glTransformFeedbackBufferRange");
+	_ptrc_glTransformFeedbackBufferRange(xfb, index, buffer, offset, size);
+}
+
+static GLboolean CODEGEN_FUNCPTR Switch_UnmapNamedBuffer(GLuint buffer)
+{
+	_ptrc_glUnmapNamedBuffer = (PFN_PTRC_GLUNMAPNAMEDBUFFERPROC)IntGetProcAddress("glUnmapNamedBuffer");
+	return _ptrc_glUnmapNamedBuffer(buffer);
+}
+
+static void CODEGEN_FUNCPTR Switch_VertexArrayAttribBinding(GLuint vaobj, GLuint attribindex, GLuint bindingindex)
+{
+	_ptrc_glVertexArrayAttribBinding = (PFN_PTRC_GLVERTEXARRAYATTRIBBINDINGPROC)IntGetProcAddress("glVertexArrayAttribBinding");
+	_ptrc_glVertexArrayAttribBinding(vaobj, attribindex, bindingindex);
+}
+
+static void CODEGEN_FUNCPTR Switch_VertexArrayAttribFormat(GLuint vaobj, GLuint attribindex, GLint size, GLenum type, GLboolean normalized, GLuint relativeoffset)
+{
+	_ptrc_glVertexArrayAttribFormat = (PFN_PTRC_GLVERTEXARRAYATTRIBFORMATPROC)IntGetProcAddress("glVertexArrayAttribFormat");
+	_ptrc_glVertexArrayAttribFormat(vaobj, attribindex, size, type, normalized, relativeoffset);
+}
+
+static void CODEGEN_FUNCPTR Switch_VertexArrayAttribIFormat(GLuint vaobj, GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset)
+{
+	_ptrc_glVertexArrayAttribIFormat = (PFN_PTRC_GLVERTEXARRAYATTRIBIFORMATPROC)IntGetProcAddress("glVertexArrayAttribIFormat");
+	_ptrc_glVertexArrayAttribIFormat(vaobj, attribindex, size, type, relativeoffset);
+}
+
+static void CODEGEN_FUNCPTR Switch_VertexArrayAttribLFormat(GLuint vaobj, GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset)
+{
+	_ptrc_glVertexArrayAttribLFormat = (PFN_PTRC_GLVERTEXARRAYATTRIBLFORMATPROC)IntGetProcAddress("glVertexArrayAttribLFormat");
+	_ptrc_glVertexArrayAttribLFormat(vaobj, attribindex, size, type, relativeoffset);
+}
+
+static void CODEGEN_FUNCPTR Switch_VertexArrayBindingDivisor(GLuint vaobj, GLuint bindingindex, GLuint divisor)
+{
+	_ptrc_glVertexArrayBindingDivisor = (PFN_PTRC_GLVERTEXARRAYBINDINGDIVISORPROC)IntGetProcAddress("glVertexArrayBindingDivisor");
+	_ptrc_glVertexArrayBindingDivisor(vaobj, bindingindex, divisor);
+}
+
+static void CODEGEN_FUNCPTR Switch_VertexArrayElementBuffer(GLuint vaobj, GLuint buffer)
+{
+	_ptrc_glVertexArrayElementBuffer = (PFN_PTRC_GLVERTEXARRAYELEMENTBUFFERPROC)IntGetProcAddress("glVertexArrayElementBuffer");
+	_ptrc_glVertexArrayElementBuffer(vaobj, buffer);
+}
+
+static void CODEGEN_FUNCPTR Switch_VertexArrayVertexBuffer(GLuint vaobj, GLuint bindingindex, GLuint buffer, GLintptr offset, GLsizei stride)
+{
+	_ptrc_glVertexArrayVertexBuffer = (PFN_PTRC_GLVERTEXARRAYVERTEXBUFFERPROC)IntGetProcAddress("glVertexArrayVertexBuffer");
+	_ptrc_glVertexArrayVertexBuffer(vaobj, bindingindex, buffer, offset, stride);
+}
+
+static void CODEGEN_FUNCPTR Switch_VertexArrayVertexBuffers(GLuint vaobj, GLuint first, GLsizei count, const GLuint * buffers, const GLintptr * offsets, const GLsizei * strides)
+{
+	_ptrc_glVertexArrayVertexBuffers = (PFN_PTRC_GLVERTEXARRAYVERTEXBUFFERSPROC)IntGetProcAddress("glVertexArrayVertexBuffers");
+	_ptrc_glVertexArrayVertexBuffers(vaobj, first, count, buffers, offsets, strides);
+}
+
+
 
 static void ClearExtensionVariables(void)
 {
 	ogl_ext_ARB_gpu_shader_fp64 = 0;
-	ogl_ext_EXT_vertex_attrib_64bit = 0;
+	ogl_ext_ARB_vertex_attrib_64bit = 0;
 }
 
 typedef struct ogl_MapTable_s
@@ -3538,7 +6103,7 @@ typedef struct ogl_MapTable_s
 static ogl_MapTable g_mappingTable[2] = 
 {
 	{"GL_ARB_gpu_shader_fp64", &ogl_ext_ARB_gpu_shader_fp64},
-	{"GL_EXT_vertex_attrib_64bit", &ogl_ext_EXT_vertex_attrib_64bit},
+	{"GL_ARB_vertex_attrib_64bit", &ogl_ext_ARB_vertex_attrib_64bit},
 };
 
 static void LoadExtByName(const char *extensionName)

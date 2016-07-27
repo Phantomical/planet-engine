@@ -55,7 +55,6 @@ namespace planet_engine
 		};
 		struct mesh
 		{
-			mesh_vertex* data;            // Vertex data
 			double farthest_vertex;       // Distance from pos to the farthest vertex (Not set when the mesh is generated
 			glm::dvec3 pos;               // Position on the sphere
 			std::shared_ptr<patch> patch; // Patch that this mesh was generated for
