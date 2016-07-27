@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<noise>
+  <source name="simplex1">
+    <type>simplex</type>
+  </source>
+  <source name="voronoi1">
+    <type>voronoi</type>
+  </source>
+  <source name="fbm1">
+    <type>fbm</type>
+    <base>simplex1</base>
+    <lacunarity>simplex1</lacunarity>
+    <persistance>simplex1</persistance>
+    <frequency>1.0</frequency>
+    <octaves>8</octaves>
+  </source>
+</noise>

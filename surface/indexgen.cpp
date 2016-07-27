@@ -3,15 +3,16 @@
 namespace planet_engine
 {
 	template<typename vTy>
-	vTy* gen_indices(std::size_t side_len)
+	vTy* gen_indices(std::size_t _side_len)
 	{
+		vTy side_len = static_cast<vTy>(_side_len);
 		vTy* indices = new vTy[num_indices(side_len)];
 
-		size_t idx = 0;
+		vTy idx = 0;
 
-		for (size_t y = 0; y < side_len - 1; y++)
+		for (vTy y = 0; y < side_len - 1; y++)
 		{
-			for (size_t x = 0; x < side_len - 1; x++)
+			for (vTy x = 0; x < side_len - 1; x++)
 			{
 				//First triangle
 				indices[idx++] = y * side_len + x;
@@ -27,7 +28,7 @@ namespace planet_engine
 
 		//Generate indices for skirt
 
-		for (size_t i = 0; i < side_len - 1; i++)
+		for (vTy i = 0; i < side_len - 1; i++)
 		{
 			//Top side
 			indices[idx++] = side_len * side_len + i;
