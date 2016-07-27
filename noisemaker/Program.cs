@@ -17,7 +17,7 @@ namespace noisemaker
 			public Params()
 			{
 				ScalarType = "float";
-				VectorPrefix = "f";
+				VectorPrefix = "";
 			}
 		}
 

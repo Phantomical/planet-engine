@@ -29,11 +29,9 @@ namespace planet_engine
 	struct mesh_vertex
 	{
 		// Vertex position
-		glm::fvec3 vertex;
+		glm::dvec3 vertex;
 		// Vector pointing outward from the centre of the planet
-		glm::fvec3 texcoord;
-		// How far this point was displaced by the noise function
-		float displacement;
+		glm::dvec3 texcoord;
 	};
 
 
@@ -57,9 +55,9 @@ namespace planet_engine
 		};
 		struct mesh
 		{
-			mesh_vertex* data;                 // Vertex data
-			double farthest_vertex;       // Distance from adj_pos to the farthest vertex
-			glm::dvec3 adj_pos;           // Position adjusted for terrain height
+			mesh_vertex* data;            // Vertex data
+			double farthest_vertex;       // Distance from pos to the farthest vertex (Not set when the mesh is generated
+			glm::dvec3 pos;               // Position on the sphere
 			std::shared_ptr<patch> patch; // Patch that this mesh was generated for
 
 			bool should_subdivide(const glm::dvec3& cam_pos)
@@ -128,7 +126,6 @@ namespace planet_engine
 	struct planet_data
 	{
 		double planet_radius;
-		std::function<double(double, double, double)> noise_func;
 		contig_vector<std::shared_ptr<patch::mesh>> leaf_patches;
 		contig_vector<std::shared_ptr<patch::mesh>> leaf_parents;
 		std::queue<std::shared_ptr<patch>> to_subdivide;

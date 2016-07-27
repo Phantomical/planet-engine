@@ -12,11 +12,10 @@ namespace planet_engine
 		info.sec = sec;
 	}
 
-	planet::planet(double radius, const std::function<double(double, double, double)>& noise_func)
+	planet::planet(double radius)
 	{
 		data = std::make_shared<planet_data>();
 		data->planet_radius = radius;
-		data->noise_func = noise_func;
 
 		patch::info info;
 		info.level = 0;

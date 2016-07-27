@@ -16,7 +16,7 @@ namespace planet_engine
 
 		mesh_ptr->data = new mesh_vertex[NUM_VERTICES];
 		mesh_ptr->patch = this->shared_from_this();
-		mesh_ptr->adj_pos = glm::normalize(pos) * data->noise_func(pos.x, pos.y, pos.z) + pos;
+		mesh_ptr->pos = pos;
 		mesh_ptr->farthest_vertex = std::numeric_limits<float>::max();
 
 		for (size_t x = 0; x < SIDE_LEN; x++)
@@ -32,19 +32,14 @@ namespace planet_engine
 				//Map to sphere
 				vtx = to_sphere(vtx, data->planet_radius);
 				dvec3 nvtx = glm::normalize(vtx);
-				// Evaluate noise function
-				double displacement = data->noise_func(vtx.x, vtx.y, vtx.z);
-				vtx += nvtx * displacement;
 				//Assign vertex position
-				mesh_ptr->data[x * SIDE_LEN + y].vertex = (fvec3)(vtx - mesh_ptr->adj_pos);
+				mesh_ptr->data[x * SIDE_LEN + y].vertex = vtx;
 				// Texture coordinate is for cubemap textures only
-				mesh_ptr->data[x * SIDE_LEN + y].texcoord = (fvec3)nvtx;
-				// Assign displacement value
-				mesh_ptr->data[x * SIDE_LEN + y].displacement = (float)displacement;
+				mesh_ptr->data[x * SIDE_LEN + y].texcoord = nvtx;
 
-				mesh_ptr->farthest_vertex = std::max<double>(
-					length2(mesh_ptr->data[x * SIDE_LEN + y].vertex),
-					mesh_ptr->farthest_vertex);
+				float tmp = length2<float>(vtx - pos);
+				if (tmp > mesh_ptr->farthest_vertex)
+					mesh_ptr->farthest_vertex = tmp;
 			}
 		}
 
@@ -65,36 +60,30 @@ namespace planet_engine
 		{
 
 			vnrm = normalize(lerp(nwc, swc, INTERP * (double)i));
-			mesh_ptr->data[data_size + i].vertex = (fvec3)((vnrm * data->planet_radius - vnrm * SKIRT_DEPTH) - pos);
-			mesh_ptr->data[data_size + i].texcoord = (fvec3)vnrm;
-			mesh_ptr->data[data_size + i].displacement = -SKIRT_DEPTH;
+			mesh_ptr->data[data_size + i].vertex = ((vnrm * data->planet_radius - vnrm * SKIRT_DEPTH) - pos);
+			mesh_ptr->data[data_size + i].texcoord = vnrm;
 		}
 		data_size += SIDE_LEN;
 		for (size_t i = 0; i < SIDE_LEN; i++)
 		{
 			vnrm = normalize(lerp(swc, sec, INTERP * (double)i));
-			mesh_ptr->data[data_size + i].vertex = (fvec3)((vnrm * data->planet_radius - vnrm * SKIRT_DEPTH) - pos);
-			mesh_ptr->data[data_size + i].texcoord = (fvec3)vnrm;
-			mesh_ptr->data[data_size + i].displacement = -SKIRT_DEPTH;
+			mesh_ptr->data[data_size + i].vertex = ((vnrm * data->planet_radius - vnrm * SKIRT_DEPTH) - pos);
+			mesh_ptr->data[data_size + i].texcoord = vnrm;
 		}
 		data_size += SIDE_LEN;
 		for (size_t i = 0; i < SIDE_LEN; i++)
 		{
 			vnrm = normalize(lerp(nec, sec, INTERP * (double)i));
-			mesh_ptr->data[data_size + i].vertex = (fvec3)((vnrm * data->planet_radius - vnrm * SKIRT_DEPTH) - pos);
-			mesh_ptr->data[data_size + i].texcoord = (fvec3)vnrm;
-			mesh_ptr->data[data_size + i].displacement = -SKIRT_DEPTH;
+			mesh_ptr->data[data_size + i].vertex = ((vnrm * data->planet_radius - vnrm * SKIRT_DEPTH) - pos);
+			mesh_ptr->data[data_size + i].texcoord = vnrm;
 		}
 		data_size += SIDE_LEN;
 		for (size_t i = 0; i < SIDE_LEN; i++)
 		{
 			vnrm = normalize(lerp(nwc, nec, INTERP * (double)i));
-			mesh_ptr->data[data_size + i].vertex = (fvec3)((vnrm * data->planet_radius - vnrm * SKIRT_DEPTH) - pos);
-			mesh_ptr->data[data_size + i].texcoord = (fvec3)vnrm;
-			mesh_ptr->data[data_size + i].displacement = -SKIRT_DEPTH;
+			mesh_ptr->data[data_size + i].vertex = ((vnrm * data->planet_radius - vnrm * SKIRT_DEPTH) - pos);
+			mesh_ptr->data[data_size + i].texcoord = vnrm;
 		}
-
-		//TODO: Normal calculations for lighting
 
 		return std::shared_ptr<mesh>(mesh_ptr);
 	}
