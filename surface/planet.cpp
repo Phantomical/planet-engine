@@ -38,9 +38,6 @@ namespace planet_engine
 
 		set_info(info, dvec3(radius, -radius, -radius), dvec3(radius, radius, -radius), dvec3(radius, -radius, radius), dvec3(radius, radius, radius));
 		sides[5] = std::make_shared<patch>(info);
-
-		for (size_t i = 0; i < 6; ++i)
-			data->leaf_patches.push_back(sides[i]->gen_mesh());
 	}
 
 	void planet::update(const glm::dvec3& cam_pos)
@@ -49,7 +46,7 @@ namespace planet_engine
 		{
 			if (leaf->should_subdivide(cam_pos))
 			{
-				data->to_subdivide.push_back(leaf->patch);
+				data->to_subdivide.push_back(leaf);
 			}
 		}
 
@@ -57,7 +54,7 @@ namespace planet_engine
 		{
 			if (lp->should_merge(cam_pos))
 			{
-				data->to_merge.push_back(lp->patch);
+				data->to_merge.push_back(lp);
 			}
 		}
 	}

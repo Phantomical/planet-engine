@@ -18,10 +18,22 @@
     <ClInclude Include="gl_core.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gl_core.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="MeshGenShader.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="noise.glsl" />
   </ItemGroup>
 </Project>

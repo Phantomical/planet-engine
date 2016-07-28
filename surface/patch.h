@@ -53,25 +53,6 @@ namespace planet_engine
 			std::weak_ptr<patch> parent;
 			std::shared_ptr<planet_data> data;
 		};
-		struct mesh
-		{
-			double farthest_vertex;       // Distance from pos to the farthest vertex (Not set when the mesh is generated
-			glm::dvec3 pos;               // Position on the sphere
-			std::shared_ptr<patch> patch; // Patch that this mesh was generated for
-
-			bool should_subdivide(const glm::dvec3& cam_pos)
-			{
-				static constexpr double MULT = 1.0 / (2.5 * 2.5);
-
-				return length2(cam_pos - pos) * MULT < farthest_vertex * farthest_vertex;
-			}
-			bool should_merge(const glm::dvec3& cam_pos)
-			{
-				static constexpr double MULT = 1.0 / (2.5 * 2.5);
-
-				return length2(cam_pos - pos) * MULT > farthest_vertex * farthest_vertex;
-			}
-		};
 
 		std::shared_ptr<patch> nw;
 		std::shared_ptr<patch> ne;
@@ -86,6 +67,7 @@ namespace planet_engine
 		glm::dvec3 pos; // Position in planet space
 
 		unsigned int level;  // Level within the quadtree
+		double farthest_vertex;
 
 		std::shared_ptr<planet_data> data;
 
@@ -100,13 +82,26 @@ namespace planet_engine
 		{
 			return !nw;
 		}
+
+		bool should_subdivide(const glm::dvec3& cam_pos) const
+		{
+			static constexpr double MULT = 1.0 / (2.5 * 2.5);
+
+			return length2(cam_pos - pos) * MULT < farthest_vertex * farthest_vertex;
+		}
+		bool should_merge(const glm::dvec3& cam_pos) const
+		{
+			static constexpr double MULT = 1.0 / (2.5 * 2.5);
+
+			return length2(cam_pos - pos) * MULT > farthest_vertex * farthest_vertex;
+		}
 	};
 
 	struct planet_data
 	{
 		double planet_radius;
-		contig_vector<std::shared_ptr<patch::mesh>> leaf_patches;
-		contig_vector<std::shared_ptr<patch::mesh>> leaf_parents;
+		contig_vector<std::shared_ptr<patch>> leaf_patches;
+		contig_vector<std::shared_ptr<patch>> leaf_parents;
 		std::vector<std::shared_ptr<patch>> to_subdivide;
 		std::vector<std::shared_ptr<patch>> to_merge;
 	};

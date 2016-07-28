@@ -14,7 +14,7 @@ layout(std140, binding = 0) uniform GeneratorInputs
 
 layout(location = 0) in float unused;
 
-#include "noise.inc"
+#include "noise.glsl"
 
 out vec3 out_vertex;
 out vec3 out_normal;

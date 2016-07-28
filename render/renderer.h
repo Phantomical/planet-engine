@@ -13,36 +13,26 @@ namespace planet_engine
 		GLuint mesh_buffer;
 		glm::dvec3 pos;
 	};
-	struct buffer_val 
-	{
-		glm::dvec3 pos;
-		double _pad1;
-		glm::dvec3 nwc;
-		double _pad2;
-		glm::dvec3 nec;
-		double _pad3;
-		glm::dvec3 swc;
-		double _pad3;
-		glm::dvec3 sec;
-		double _pad4;
-		double planet_radius;
-		double skirt_depth;
-		double scale;
-		double _pad5;
-	};
 
 	class renderer
 	{
 	public:
 		std::shared_ptr<planet_data> data;
 		planet planet;
-		std::map<std::shared_ptr<patch>, render_data> parent_map;
 		std::map<std::shared_ptr<patch>, render_data> rendermap;
 		bool keep_meshes;
+		// A buffer containing patch::NUM_VERTICES unspecified floats
+		// its values are never used. Its only use is to make sure that
+		// the transform feedback shader is called with the correct 
+		// value of gl_VertexID to calculate the vertex position
 		GLuint dummy_buffer;
 		GLuint meshgen_program;
 		GLuint uniform_index;
 		
+		// Contains the logic for calculating the patches of the new mesh
+		void subdivide();
+		void merge();
+
 		void update(const glm::dvec3& cam_pos);
 	};
 	
