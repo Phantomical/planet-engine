@@ -38,6 +38,11 @@ namespace planet_engine
 
 		set_info(info, dvec3(radius, -radius, -radius), dvec3(radius, radius, -radius), dvec3(radius, -radius, radius), dvec3(radius, radius, radius));
 		sides[5] = std::make_shared<patch>(info);
+
+		for (auto side : sides)
+		{
+			data->to_subdivide.push_back(side);
+		}
 	}
 
 	void planet::update(const glm::dvec3& cam_pos)

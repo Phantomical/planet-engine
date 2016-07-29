@@ -1,0 +1,72 @@
+#version 430
+
+// This shader calculates the distance 
+// of each vertex from the local origin
+
+#define SIDE_LEN 129
+
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+
+struct VertexInput
+{
+	vec4 vtx_start;
+	float _u1;
+	float _u2;
+	float _u3;
+};
+
+layout(binding = 0, packed) buffer verts_input
+{
+	VertexInput inputs[];
+};
+
+layout(binding = 1, std430) buffer results
+{
+	float result;
+};
+
+shared float values[SIDE_LEN * ((SIDE_LEN + 15) / 16)];
+
+layout(location = 2) uniform uvec2 size_vec;
+
+#define vertex vtx_start.xyz
+
+void main()
+{
+	const uvec2 size_vec = uvec2(SIDE_LEN, ((SIDE_LEN + 15) / 16));
+
+	// Get the index into the values array
+	uint index = gl_GlobalInvocationID.x * size_vec.x + gl_GlobalInvocationID.y;
+	uint size = size_vec.x * size_vec.y;
+	
+	float val = -1.0;
+	for (uint i = 0; i < 16 && index * 4 + 1 < size; ++i)
+		val = max(val, length(inputs[index * 4 + i].vertex));
+
+	values[index] = val;
+
+	barrier();
+
+	for (uint s = values.length() >> 1; s > 0; s >>= 1)
+	{
+		if (index < s - 1)
+		{
+			values[index] = max(values[index], values[index + s]);
+		}
+		else if (index < s)
+		{
+			if ((index & 1) == 0)
+				values[index] = max(values[index], values[index + s]);
+			// We don't need to do anything if s is odd
+			// since this is the last element there is
+			// no other element to compare against
+		}
+
+		barrier();
+	}
+
+	if (index == 0)
+	{
+		result = values[0];
+	}
+}

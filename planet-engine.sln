@@ -14,6 +14,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "render", "render\render.vcx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "embedfile", "embedfile\embedfile.csproj", "{DE074A83-1E7E-4359-9ED2-2CF0C02AE1C4}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "app", "app\app.vcxproj", "{C50D9870-9F88-4996-88E2-C6CE1B11BF2E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0F5FFA5F-785B-405D-BD47-8DFE2D84CEDE} = {0F5FFA5F-785B-405D-BD47-8DFE2D84CEDE}
+		{D429D46C-D215-4C42-82B4-BB77EFFF1877} = {D429D46C-D215-4C42-82B4-BB77EFFF1877}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +74,16 @@ Global
 		{DE074A83-1E7E-4359-9ED2-2CF0C02AE1C4}.Release|x64.Build.0 = Release|Any CPU
 		{DE074A83-1E7E-4359-9ED2-2CF0C02AE1C4}.Release|x86.ActiveCfg = Release|Any CPU
 		{DE074A83-1E7E-4359-9ED2-2CF0C02AE1C4}.Release|x86.Build.0 = Release|Any CPU
+		{C50D9870-9F88-4996-88E2-C6CE1B11BF2E}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{C50D9870-9F88-4996-88E2-C6CE1B11BF2E}.Debug|x64.ActiveCfg = Debug|x64
+		{C50D9870-9F88-4996-88E2-C6CE1B11BF2E}.Debug|x64.Build.0 = Debug|x64
+		{C50D9870-9F88-4996-88E2-C6CE1B11BF2E}.Debug|x86.ActiveCfg = Debug|Win32
+		{C50D9870-9F88-4996-88E2-C6CE1B11BF2E}.Debug|x86.Build.0 = Debug|Win32
+		{C50D9870-9F88-4996-88E2-C6CE1B11BF2E}.Release|Any CPU.ActiveCfg = Release|Win32
+		{C50D9870-9F88-4996-88E2-C6CE1B11BF2E}.Release|x64.ActiveCfg = Release|x64
+		{C50D9870-9F88-4996-88E2-C6CE1B11BF2E}.Release|x64.Build.0 = Release|x64
+		{C50D9870-9F88-4996-88E2-C6CE1B11BF2E}.Release|x86.ActiveCfg = Release|Win32
+		{C50D9870-9F88-4996-88E2-C6CE1B11BF2E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

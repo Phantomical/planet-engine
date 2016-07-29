@@ -1,5 +1,7 @@
 #version 430
 
+#include "noise.glsl"
+
 layout(std140, binding = 0) uniform GeneratorInputs
 {
 	dvec4 pos;
@@ -14,8 +16,6 @@ layout(std140, binding = 0) uniform GeneratorInputs
 
 layout(location = 0) in float unused;
 
-#include "noise.glsl"
-
 out vec3 out_vertex;
 out vec3 out_normal;
 out float out_displacement;
@@ -25,14 +25,11 @@ dvec3 to_sphere(dvec3 v)
 	return planet_radius * normalize(v);
 }
 
-#define pos GeneratorInputs.pos.xyz
-#define nwc GeneratorInputs.nwc.xyz
-#define nec GeneratorInputs.nec.xyz
-#define swc GeneratorInputs.swc.xyz
-#define sec GeneratorInputs.sec.xyz
-#define planet_radius GeneratorInputs.planet_radius
-#define skirt_depth GeneratorInputs.skirt_depth
-#define scale GeneratorInputs.scale
+#define pos pos.xyz
+#define nwc nwc.xyz
+#define nec nec.xyz
+#define swc swc.xyz
+#define sec sec.xyz
 
 void main()
 {

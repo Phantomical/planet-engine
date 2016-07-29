@@ -67,7 +67,7 @@ namespace planet_engine
 		glm::dvec3 pos; // Position in planet space
 
 		unsigned int level;  // Level within the quadtree
-		double farthest_vertex;
+		float farthest_vertex;
 
 		std::shared_ptr<planet_data> data;
 
@@ -104,5 +104,6 @@ namespace planet_engine
 		contig_vector<std::shared_ptr<patch>> leaf_parents;
 		std::vector<std::shared_ptr<patch>> to_subdivide;
 		std::vector<std::shared_ptr<patch>> to_merge;
+		glm::dmat4 model_matrix;
 	};
 }

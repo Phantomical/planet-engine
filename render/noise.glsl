@@ -1,7 +1,3 @@
-#version 330
-
-#extension GL_ARB_gpu_shader_fp64     : enable
-#extension GL_EXT_vertex_attrib_64bit : enable
 
 //
 // Description : Array and textureless GLSL 2D/3D/4D simplex 
@@ -499,24 +495,3 @@ double noise(dvec3 _v)
 	return total / maxAmplitude;
 }
 
-uniform double planet_radius;
-uniform dvec3 position;
-
-in dvec3 in_vertex;
-in dvec3 in_normal;
-
-out fvec3 out_vertex;
-out fvec3 out_texcoord;
-out float out_displacement;
-
-void main()
-{
-	dvec3 vertex = in_vertex;
-	double displacement = noise(vertex);
-	dvec3 texcoord = in_normal;
-	vertex += texcoord * displacement - position;
-	
-	out_vertex = fvec3(vertex.xyz);
-	out_texcoord = fvec3(texcoord.xyz);
-	out_displacement = float(displacement);
-}

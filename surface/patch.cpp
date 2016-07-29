@@ -55,7 +55,8 @@ namespace planet_engine
 		sec(info.sec),
 		level(info.level),
 		data(info.data),
-		parent(info.parent)
+		parent(info.parent),
+		farthest_vertex(std::numeric_limits<float>::max())
 	{
 		pos = to_sphere(nwc + nec + swc + sec, data->planet_radius);
 	}

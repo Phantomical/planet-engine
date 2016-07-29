@@ -15,28 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="gl_core.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="gl_core.c">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="noise.glsl" />
-    <None Include="PlanetVertexShader.vert" />
-    <None Include="PlanetFragmentShader.frag" />
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="DistanceCalc.comp" />
-    <CustomBuild Include="MeshGenShader.vert" />
   </ItemGroup>
 </Project>
