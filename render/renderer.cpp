@@ -56,6 +56,11 @@ namespace planet_engine
 
 		return program;
 	}
+	GLuint compile_discalc()
+	{
+		GLuint program = glCreateProgram();
+		GLuint shader = glCreateShader(GL_COMPUTE_SHADER);
+	}
 
 	void renderer::subdivide()
 	{
@@ -339,19 +344,11 @@ namespace planet_engine
 		info->sync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 	}
 
-	void renderer::render(const glm::dmat4& view_mat, const void* uniforms, size_t size) const
+	void renderer::render(const glm::dmat4& view_mat) const
 	{
 		glm::dmat4 PVM = view_mat * data->model_matrix;
 
 		glUseProgram(shader.program);
-
-		GLuint ubo;
-		if (size != 0)
-		{
-			glGenBuffers(1, &ubo);
-			glBufferData(GL_UNIFORM_BUFFER, size, uniforms, GL_STATIC_DRAW);
-			glBindBufferRange(GL_UNIFORM_BUFFER, shader.uniforms, ubo, 0, size);
-		}
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements);
 
@@ -364,14 +361,8 @@ namespace planet_engine
 			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 7, (void*)(sizeof(float) * 3));
 			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 7, (void*)(sizeof(float) * 6));
 
-			if (size != 0)
-				glUniformMatrix4fv(0, 1, GL_FALSE, &matrix[0][0]);
-
 			glDrawElements(GL_TRIANGLES, patch::NUM_INDICES, GL_UNSIGNED_INT, (void*)0);
 		}
-
-		if (size != 0)
-			glDeleteBuffers(1, &ubo);
 	}
 
 	void renderer::update(const glm::dvec3& cam_pos)
@@ -382,7 +373,7 @@ namespace planet_engine
 		merge();
 	}
 
-	renderer::renderer(double planet_radius) :
+	renderer::renderer(double planet_radius, GLuint shader) :
 		planet(planet_radius)
 	{
 		uint32_t* indices = gen_indices_32(patch::SIDE_LEN);
@@ -399,5 +390,6 @@ namespace planet_engine
 		}
 
 		meshgen.program = compile_meshgen();
+		this->shader.program = shader;
 	}
 }

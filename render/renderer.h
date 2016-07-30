@@ -41,7 +41,6 @@ namespace planet_engine
 		struct
 		{
 			GLuint program;  // OpenGL program ID
-			GLuint uniforms; // Uniform Buffer Binding index
 		} shader;
 		
 		GLuint merge_children(std::shared_ptr<patch> patch);
@@ -53,11 +52,11 @@ namespace planet_engine
 		void calc_farthest();
 
 	public:
-		void render(const glm::dmat4& MVP_mat, const void* uniforms, size_t size) const;
+		void render(const glm::dmat4& MVP_mat) const;
 
 		void update(const glm::dvec3& cam_pos);
 
-		renderer(double planet_radius);
+		renderer(double planet_radius, GLuint shader);
 	};
 	
 }
