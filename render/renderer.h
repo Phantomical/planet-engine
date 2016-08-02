@@ -30,13 +30,10 @@ namespace planet_engine
 		struct
 		{
 			GLuint program; // OpenGL program ID
-			GLuint index;   // Index of input uniform block
 		} meshgen;
 		struct
 		{
 			GLuint program;  // OpenGL program ID
-			GLuint in_index; // Index of input vertex buffer
-			GLuint results;  // Index of results buffer
 		} discalc;
 		struct
 		{

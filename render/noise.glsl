@@ -284,6 +284,11 @@ dvec2 voronoi1_source(dvec3 P)
 #undef Kzo
 #undef jitter
 }
+double voronoi1(dvec3 v)
+{
+	// Only return F1
+	return voronoi1_source(v).x;
+}
 
 // Cellular noise ("Worley noise") in 3D in GLSL.
 // Copyright (c) Stefan Gustavson 2011-04-19. All rights reserved.
@@ -475,6 +480,7 @@ double voronoi2(dvec3 v)
 
 double noise(dvec3 _v)
 {
+	dvec3 v = _v;
 	double total = 0.0;
 	double maxAmplitude = 0.0;
 	double amplitude = 1.0;
@@ -485,7 +491,7 @@ double noise(dvec3 _v)
 
 	for (uint i = 0; i < octaves; ++i)
 	{
-		dvec3 v = _v * frequency;
+		v = _v * frequency;
 		total += simplex1(v) * amplitude;
 		frequency *= lacunarity;
 		maxAmplitude += amplitude;
@@ -494,4 +500,3 @@ double noise(dvec3 _v)
 
 	return total / maxAmplitude;
 }
-

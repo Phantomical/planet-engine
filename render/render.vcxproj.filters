@@ -13,12 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\generated">
+      <UniqueIdentifier>{c741f9ec-6b45-4a9b-8519-034e8bcc1ce6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{4842345b-4335-4d68-a3ca-9b9017f9db47}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gl_core.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -29,14 +38,42 @@
     <ClCompile Include="renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DistanceCalc.comp.cpp">
+      <Filter>Source Files\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshGenShader.vert.cpp">
+      <Filter>Source Files\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="PlanetFragmentShader.frag.cpp">
+      <Filter>Source Files\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="PlanetVertexShader.vert.cpp">
+      <Filter>Source Files\generated</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="noise.glsl" />
-    <None Include="PlanetVertexShader.vert" />
-    <None Include="PlanetFragmentShader.frag" />
+    <CustomBuild Include="DistanceCalc.comp">
+      <Filter>Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MeshGenShader.vert">
+      <Filter>Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PlanetFragmentShader.frag">
+      <Filter>Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PlanetVertexShader.vert">
+      <Filter>Shaders</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="DistanceCalc.comp" />
-    <CustomBuild Include="MeshGenShader.vert" />
+    <Xml Include="NoiseSource.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="noise.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

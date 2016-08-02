@@ -119,7 +119,7 @@ namespace noisemaker
 						functext = Resources.VoronoiF2;
 						break;
 					case "voronoi":
-						functext = Resources.Voronoi;
+						functext = Resources.VoronoiF1;
 						break;
 					case "fractal":
 						functext = Resources.fBm;

@@ -1,8 +1,10 @@
 #version 430
 
+#extension GL_ARB_enhanced_layouts : enable
+
 #include "noise.glsl"
 
-layout(std140, binding = 0) uniform GeneratorInputs
+layout(binding = 0, std140) uniform GeneratorInputs
 {
 	dvec4 pos;
 	dvec4 nwc;
@@ -16,9 +18,12 @@ layout(std140, binding = 0) uniform GeneratorInputs
 
 layout(location = 0) in float unused;
 
-out vec3 out_vertex;
-out vec3 out_normal;
-out float out_displacement;
+layout(xfb_buffer = 0, xfb_stride = 28) out Data
+{
+	layout(xfb_offset = 0)  vec3 out_vertex;
+	layout(xfb_offset = 12) vec3 out_normal;
+	layout(xfb_offset = 24) float out_displacement;
+};
 
 dvec3 to_sphere(dvec3 v)
 {
@@ -41,7 +46,7 @@ void main()
 		double interp = INTERP * double(gl_VertexID / SIDE_LEN);
 		dvec3 v1 = mix(nwc, nec, interp);
 		dvec3 v2 = mix(swc, sec, interp);
-		dvec3 vtx = to_sphere(lerp(v1, v2, INTERP * double(gl_VertexID % SIDE_LEN)));
+		dvec3 vtx = to_sphere(mix(v1, v2, INTERP * double(gl_VertexID % SIDE_LEN)));
 		dvec3 normal = normalize(vtx);
 		double displacement = noise(vtx) * scale;
 		vtx += normal * displacement - pos;
@@ -52,7 +57,7 @@ void main()
 	}
 	else if (gl_VertexID < SIDE_LEN * SIDE_LEN + SIDE_LEN)
 	{
-		dvec3 vertex = to_sphere(lerp(nwc, swc, INTERP * (gl_VertexID - (SIDE_LEN * SIDE_LEN))));
+		dvec3 vertex = to_sphere(mix(nwc, swc, INTERP * (gl_VertexID - (SIDE_LEN * SIDE_LEN))));
 		dvec3 normal = normalize(vertex);
 		vertex -= normal * skirt_depth + pos;
 
@@ -62,7 +67,7 @@ void main()
 	}
 	else if (gl_VertexID < SIDE_LEN * SIDE_LEN + SIDE_LEN * 2)
 	{
-		dvec3 vertex = to_sphere(lerp(swc, sec, INTERP * (gl_VertexID - (SIDE_LEN * SIDE_LEN + SIDE_LEN))));
+		dvec3 vertex = to_sphere(mix(swc, sec, INTERP * (gl_VertexID - (SIDE_LEN * SIDE_LEN + SIDE_LEN))));
 		dvec3 normal = normalize(vertex);
 		vertex -= normal * skirt_depth + pos;
 
@@ -72,7 +77,7 @@ void main()
 	}
 	else if (gl_VertexID < SIDE_LEN * SIDE_LEN + SIDE_LEN * 3)
 	{
-		dvec3 vertex = to_sphere(lerp(nec, sec, INTERP * (gl_VertexID - (SIDE_LEN * SIDE_LEN + SIDE_LEN * 2))));
+		dvec3 vertex = to_sphere(mix(nec, sec, INTERP * (gl_VertexID - (SIDE_LEN * SIDE_LEN + SIDE_LEN * 2))));
 		dvec3 normal = normalize(vertex);
 		vertex -= normal * skirt_depth + pos;
 
@@ -82,7 +87,7 @@ void main()
 	}
 	else
 	{
-		dvec3 vertex = to_sphere(lerp(nwc, nec, INTERP * (gl_VertexID - (SIDE_LEN * SIDE_LEN + SIDE_LEN * 3))));
+		dvec3 vertex = to_sphere(mix(nwc, nec, INTERP * (gl_VertexID - (SIDE_LEN * SIDE_LEN + SIDE_LEN * 3))));
 		dvec3 normal = normalize(vertex);
 		vertex -= normal * skirt_depth + pos;
 

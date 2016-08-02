@@ -1,8 +1,9 @@
 #include "renderer.h"
+#include "shader.h"
 #include <glm\gtc\matrix_transform.hpp>
 
-const char* MeshGenShader;
-const char* DistanceCalc;
+extern const char* MeshGenShader;
+extern const char* DistanceCalc;
 
 namespace planet_engine
 {
@@ -32,40 +33,59 @@ namespace planet_engine
 
 	GLuint compile_meshgen()
 	{
-		GLuint program = glCreateProgram();
-		GLuint shader = glCreateShader(GL_VERTEX_SHADER);
+		using namespace util;
 
-		glShaderSource(shader, 1, &MeshGenShader, nullptr);
-		glCompileShader(shader);
+		glsl_shader shader = glsl_shader(false)
+			.vertex(MeshGenShader)
+			.link();
 
-		glAttachShader(program, shader);
-
-		const char* varyings[] =
+		if (shader.shader_log(GL_VERTEX_SHADER) != "")
 		{
-			"out_vertex",
-			"out_normal",
-			"out_displacement"
-		};
+			printf("%s", shader.shader_log(GL_VERTEX_SHADER).c_str());
 
-		glTransformFeedbackVaryings(program, 3, varyings, GL_INTERLEAVED_ATTRIBS);
+			assert(false);
+			std::terminate();
+		}
 
-		glLinkProgram(program);
+		if (shader.program_log() != "")
+		{
+			printf("%s", shader.program_log().c_str());
 
-		glDetachShader(program, shader);
-		glDeleteShader(shader);
+			assert(false);
+			std::terminate();
+		}
 
-		return program;
+		return shader.program();
 	}
 	GLuint compile_discalc()
 	{
-		GLuint program = glCreateProgram();
-		GLuint shader = glCreateShader(GL_COMPUTE_SHADER);
+		using namespace util;
+
+		glsl_shader shader = glsl_shader(false)
+			.compute(DistanceCalc)
+			.link();
+
+		if (shader.shader_log(GL_COMPUTE_SHADER) != "")
+		{
+			printf("%s", shader.shader_log(GL_COMPUTE_SHADER).c_str());
+
+			assert(false);
+			std::terminate();
+		}
+
+		if (shader.program_log() != "")
+		{
+			printf("%s", shader.program_log().c_str());
+
+			assert(false);
+			std::terminate();
+		}
+
+		return shader.program();
 	}
 
 	void renderer::subdivide()
 	{
-		// Nothing run in this section needs to output to the screen
-		glEnable(GL_RASTERIZER_DISCARD);
 
 		size_t size = data->to_subdivide.size() * 4;
 
@@ -77,6 +97,7 @@ namespace planet_engine
 		for (size_t i = 0; i < data->to_subdivide.size(); ++i)
 		{
 			auto patch = data->to_subdivide[i];
+			patch->split();
 
 			patches[i * 4 + 0] = patch->nw;
 			patches[i * 4 + 1] = patch->ne;
@@ -144,7 +165,7 @@ namespace planet_engine
 		for (size_t i = 0; i < size; ++i)
 		{
 			glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, buffers[i]);
-			glBindBufferRange(GL_UNIFORM_BUFFER, meshgen.index, ubo, sizeof(buffer_val) * i, sizeof(buffer_val));
+			glBindBufferRange(GL_UNIFORM_BUFFER, 0, ubo, sizeof(buffer_val) * i, sizeof(buffer_val));
 
 			glBeginTransformFeedback(GL_POINTS);
 
@@ -161,7 +182,7 @@ namespace planet_engine
 
 			rdat.mesh_buffer = buffers[i];
 			rdat.pos = patches[i]->pos;
-			rdat.radius = data->to_merge[i]->farthest_vertex;
+			rdat.radius = std::numeric_limits<float>::max();
 
 			rendermap.insert(std::make_pair(patches[i], rdat));
 		}
@@ -208,7 +229,7 @@ namespace planet_engine
 		for (size_t i = 0; i < size; ++i)
 		{
 			glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, buffers[i]);
-			glBindBufferRange(GL_UNIFORM_BUFFER, meshgen.index, ubo, sizeof(buffer_val) * i, sizeof(buffer_val));
+			glBindBufferRange(GL_UNIFORM_BUFFER, 0, ubo, sizeof(buffer_val) * i, sizeof(buffer_val));
 
 			glBeginTransformFeedback(GL_POINTS);
 
@@ -242,6 +263,8 @@ namespace planet_engine
 
 		for (auto patch : patches)
 		{
+			if (!patch)
+				continue;
 			{
 				auto it = std::find(data->leaf_patches.begin(), data->leaf_patches.end(), patch);
 				if (it != data->leaf_patches.end())
@@ -269,6 +292,9 @@ namespace planet_engine
 					rendermap.erase(it);
 				}
 			}
+
+			if (patch->subdivided())
+				patch->merge();
 		}
 
 		return result;
@@ -300,7 +326,7 @@ namespace planet_engine
 				if (!info->patches[i].expired())
 				{
 					auto patch = info->patches[i].lock();
-					patch->farthest_vertex = ptr[i];
+					patch->farthest_vertex = ptr[i * 4];
 					auto it = rendermap.find(patch);
 					if (it != rendermap.end())
 						it->second.radius = ptr[i];
@@ -320,7 +346,7 @@ namespace planet_engine
 
 		glUseProgram(discalc.program);
 
-		glNamedBufferData(info->results, rendermap.size() * sizeof(float), nullptr, GL_STATIC_DRAW);
+		glNamedBufferData(info->results, rendermap.size() * sizeof(float) * 4, nullptr, GL_STATIC_DRAW);
 
 		size_t idx = 0;
 
@@ -332,9 +358,9 @@ namespace planet_engine
 				continue;
 
 			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, pair.second.mesh_buffer, 0, sizeof(float) * 7 * patch::SIDE_LEN * patch::SIDE_LEN);
-			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, info->results, idx * sizeof(float), sizeof(float));
+			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, info->results, idx * sizeof(float) * 4, sizeof(float));
 
-			glDispatchCompute(patch::SIDE_LEN, ((patch::SIDE_LEN + 15) >> 4), 1);
+			glDispatchCompute(patch::SIDE_LEN, patch::SIDE_LEN, 1);
 
 			++idx;
 
@@ -371,6 +397,8 @@ namespace planet_engine
 
 		subdivide();
 		merge();
+
+		calc_farthest();
 	}
 
 	renderer::renderer(double planet_radius, GLuint shader) :
@@ -384,12 +412,10 @@ namespace planet_engine
 		delete[] indices;
 
 		data = planet.data;
-		for (auto& side : data->to_subdivide)
-		{
-			side->split();
-		}
 
 		meshgen.program = compile_meshgen();
+		discalc.program = compile_discalc();
+		
 		this->shader.program = shader;
 	}
 }

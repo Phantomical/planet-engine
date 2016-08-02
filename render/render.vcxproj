@@ -69,20 +69,28 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <CustomBuildAfterTargets>ClCompile</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
     <TargetExt>.lib</TargetExt>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <CustomBuildAfterTargets>ClCompile</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
     <TargetExt>.lib</TargetExt>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <CustomBuildAfterTargets>ClCompile</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
     <TargetExt>.lib</TargetExt>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <CustomBuildAfterTargets>ClCompile</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
     <TargetExt>.lib</TargetExt>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -159,10 +167,16 @@ $(SolutionDir)embedfile\bin\embedfile.exe %(Identity) -o %(Identity).cpp</Comman
   <ItemGroup>
     <ClInclude Include="gl_core.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DistanceCalc.comp.cpp" />
     <ClCompile Include="gl_core.c" />
+    <ClCompile Include="MeshGenShader.vert.cpp" />
+    <ClCompile Include="PlanetFragmentShader.frag.cpp" />
+    <ClCompile Include="PlanetVertexShader.vert.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="DistanceCalc.comp">
@@ -180,13 +194,6 @@ $(SolutionDir)embedfile\bin\embedfile.exe %(Identity) -o %(Identity).cpp</Comman
 $(SolutionDir)embedfile\bin\embedfile.exe %(Identity) -o %(Identity).cpp</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Identity).cpp</Outputs>
     </CustomBuild>
-    <None Include="noise.glsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-      <FileType>Document</FileType>
-    </None>
     <CustomBuild Include="PlanetVertexShader.vert">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)glslangValidator %(Identity)
@@ -222,6 +229,25 @@ $(SolutionDir)embedfile\bin\embedfile.exe %(Identity) -o %(Identity).cpp</Comman
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">noise.glsl</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">noise.glsl</AdditionalInputs>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="NoiseSource.xml">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)noisemaker\bin\noisemaker %(Identity) -o %(Identity).glsl
+ren %(Identity).glsl noise.glsl</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">noise.glsl</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)noisemaker\bin\noisemaker %(Identity) -o %(Identity).glsl
+ren %(Identity).glsl noise.glsl</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">noise.glsl</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)noisemaker\bin\noisemaker %(Identity) -o %(Identity).glsl
+ren %(Identity).glsl noise.glsl</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">noise.glsl</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)noisemaker\bin\noisemaker %(Identity) -o %(Identity).glsl
+ren %(Identity).glsl noise.glsl</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">noise.glsl</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="noise.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

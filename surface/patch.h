@@ -87,13 +87,27 @@ namespace planet_engine
 		{
 			static constexpr double MULT = 1.0 / (2.5 * 2.5);
 
-			return length2(cam_pos - pos) * MULT < farthest_vertex * farthest_vertex;
+			double dis = farthest_vertex;
+			if (farthest_vertex == std::numeric_limits<float>::max())
+				dis = side_length();
+			return length2(cam_pos - pos) * MULT < dis * dis;
 		}
 		bool should_merge(const glm::dvec3& cam_pos) const
 		{
 			static constexpr double MULT = 1.0 / (2.5 * 2.5);
 
 			return length2(cam_pos - pos) * MULT > farthest_vertex * farthest_vertex;
+		}
+
+		bool subdivided() const
+		{
+			return nw != nullptr;
+		}
+		double side_length() const
+		{
+			glm::dvec3 diff = nwc - nec;
+
+			return std::max({ diff.x, diff.y, diff.z });
 		}
 	};
 

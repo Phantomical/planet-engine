@@ -12,6 +12,7 @@ namespace noisemaker
 		public static string fBm = @"
 @scalar @name(@vec3 _v)
 {
+	@vec3 v = _v;
 	@scalar total = 0.0;
 	@scalar maxAmplitude = 0.0;
 	@scalar amplitude = 1.0;
@@ -22,7 +23,7 @@ namespace noisemaker
 
 	for (uint i = 0; i < octaves; ++i)
 	{
-		@vec3 v = _v * frequency;
+		v = _v * frequency;
 		total += @base * amplitude;
 		frequency *= lacunarity;
 		maxAmplitude += amplitude;

@@ -38,6 +38,7 @@ namespace planet_engine
 		info.nec = (nec + sec) * 0.5;
 		info.swc = (swc + sec) * 0.5;
 		info.sec = sec;
+		se = std::make_shared<patch>(info);
 	}
 	void patch::merge()
 	{
