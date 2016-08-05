@@ -20,6 +20,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "app", "app\app.vcxproj", "{
 		{D429D46C-D215-4C42-82B4-BB77EFFF1877} = {D429D46C-D215-4C42-82B4-BB77EFFF1877}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "render2", "render2\render2.vcxproj", "{027A0C69-77A5-4E61-949C-A834F0525216}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -84,6 +86,16 @@ Global
 		{C50D9870-9F88-4996-88E2-C6CE1B11BF2E}.Release|x64.Build.0 = Release|x64
 		{C50D9870-9F88-4996-88E2-C6CE1B11BF2E}.Release|x86.ActiveCfg = Release|Win32
 		{C50D9870-9F88-4996-88E2-C6CE1B11BF2E}.Release|x86.Build.0 = Release|Win32
+		{027A0C69-77A5-4E61-949C-A834F0525216}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{027A0C69-77A5-4E61-949C-A834F0525216}.Debug|x64.ActiveCfg = Debug|x64
+		{027A0C69-77A5-4E61-949C-A834F0525216}.Debug|x64.Build.0 = Debug|x64
+		{027A0C69-77A5-4E61-949C-A834F0525216}.Debug|x86.ActiveCfg = Debug|Win32
+		{027A0C69-77A5-4E61-949C-A834F0525216}.Debug|x86.Build.0 = Debug|Win32
+		{027A0C69-77A5-4E61-949C-A834F0525216}.Release|Any CPU.ActiveCfg = Release|Win32
+		{027A0C69-77A5-4E61-949C-A834F0525216}.Release|x64.ActiveCfg = Release|x64
+		{027A0C69-77A5-4E61-949C-A834F0525216}.Release|x64.Build.0 = Release|x64
+		{027A0C69-77A5-4E61-949C-A834F0525216}.Release|x86.ActiveCfg = Release|Win32
+		{027A0C69-77A5-4E61-949C-A834F0525216}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

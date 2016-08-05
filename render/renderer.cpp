@@ -35,9 +35,9 @@ namespace planet_engine
 	{
 		using namespace util;
 
-		glsl_shader shader = glsl_shader(false)
-			.vertex(MeshGenShader)
-			.link();
+		glsl_shader shader = glsl_shader(false);
+		shader.vertex(MeshGenShader);
+		shader.link();
 
 		if (shader.shader_log(GL_VERTEX_SHADER) != "")
 		{
@@ -61,9 +61,9 @@ namespace planet_engine
 	{
 		using namespace util;
 
-		glsl_shader shader = glsl_shader(false)
-			.compute(DistanceCalc)
-			.link();
+		glsl_shader shader = glsl_shader(false);
+		shader.compute(DistanceCalc);
+		shader.link();
 
 		if (shader.shader_log(GL_COMPUTE_SHADER) != "")
 		{
@@ -415,7 +415,7 @@ namespace planet_engine
 
 		meshgen.program = compile_meshgen();
 		discalc.program = compile_discalc();
-		
+
 		this->shader.program = shader;
 	}
 }

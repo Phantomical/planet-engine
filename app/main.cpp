@@ -29,10 +29,10 @@ int main()
 
 	GLuint program;
 	{
-		glsl_shader shader = glsl_shader(false)
-			.vertex(PlanetVertexShader)
-			.fragment(PlanetFragmentShader)
-			.link();
+		glsl_shader shader = glsl_shader(false);
+		shader.vertex(PlanetVertexShader);
+		shader.fragment(PlanetFragmentShader);
+		shader.link();
 
 		if (shader.shader_log(GL_VERTEX_SHADER) != "")
 		{

@@ -32,12 +32,14 @@ namespace planet_engine
 			_program(0)
 		{
 			std::memset(_shaders, 0, sizeof(_shaders));
+			std::memset(_statuses, 0, sizeof(_statuses));
 		}
 		glsl_shader::glsl_shader(bool owns) :
 			_destroy(owns),
 			_program(glCreateProgram())
 		{
 			std::memset(_shaders, 0, sizeof(_shaders));
+			std::memset(_statuses, 0, sizeof(_statuses));
 		}
 		glsl_shader::glsl_shader(glsl_shader&& sh) :
 			_program(sh._program),
@@ -48,6 +50,7 @@ namespace planet_engine
 			{
 				_logs[i] = std::move(sh._logs[i]);
 				_shaders[i] = sh._shaders[i];
+				_statuses[i] = sh._statuses[i];
 				sh._shaders[i] = 0;
 			}
 
@@ -73,31 +76,55 @@ namespace planet_engine
 			}
 		}
 
-		glsl_shader&& glsl_shader::vertex(const std::string& source)
+		void glsl_shader::vertex(const std::string& source)
 		{
 			return vertex(source.c_str());
 		}
-		glsl_shader&& glsl_shader::fragment(const std::string& source)
+		void glsl_shader::fragment(const std::string& source)
 		{
-			return vertex(source.c_str());
+			return fragment(source.c_str());
 		}
-		glsl_shader&& glsl_shader::tess_control(const std::string& source)
+		void glsl_shader::tess_control(const std::string& source)
 		{
-			return vertex(source.c_str());
+			return tess_control(source.c_str());
 		}
-		glsl_shader&& glsl_shader::tess_evaluation(const std::string& source)
+		void glsl_shader::tess_evaluation(const std::string& source)
 		{
-			return vertex(source.c_str());
+			return tess_evaluation(source.c_str());
 		}
-		glsl_shader&& glsl_shader::compute(const std::string& source)
+		void glsl_shader::compute(const std::string& source)
 		{
-			return vertex(source.c_str());
+			return compute(source.c_str());
 		}
 
-		glsl_shader&& glsl_shader::vertex(const char* source)
+		void glsl_shader::vertex(const char* source)
 		{
-			static constexpr GLenum stage = GL_VERTEX_SHADER;
-			static constexpr size_t index = sti<stage>::index;
+			return stage(GL_VERTEX_SHADER, source);
+		}
+		void glsl_shader::fragment(const char* source)
+		{
+			return stage(GL_FRAGMENT_SHADER, source);
+		}
+		void glsl_shader::tess_control(const char* source)
+		{
+			return stage(GL_TESS_CONTROL_SHADER, source);
+		}
+		void glsl_shader::tess_evaluation(const char* source)
+		{
+			return stage(GL_TESS_EVALUATION_SHADER, source);
+		}
+		void glsl_shader::compute(const char* source)
+		{
+			return stage(GL_COMPUTE_SHADER, source);
+		}
+
+		void glsl_shader::stage(GLenum stage, const std::string& source)
+		{
+			return this->stage(stage, source.c_str());
+		}
+		void glsl_shader::stage(GLenum stage, const char* source)
+		{
+			const size_t index = GetTypeIndex(stage);
 
 			assert(_shaders[index] == 0);
 
@@ -115,6 +142,7 @@ namespace planet_engine
 
 			if (status == GL_FALSE)
 			{
+				_statuses[index] = false;
 				GLint maxlength = 0;
 				glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxlength);
 
@@ -122,141 +150,18 @@ namespace planet_engine
 				glGetShaderInfoLog(shader, maxlength, &maxlength, &_logs[index][0]);
 				_logs[index].resize(maxlength);
 			}
-
-			return std::move(*this);
-		}
-		glsl_shader&& glsl_shader::fragment(const char* source)
-		{
-			static constexpr GLenum stage = GL_FRAGMENT_SHADER;
-			static constexpr size_t index = sti<stage>::index;
-
-			assert(_shaders[index] == 0);
-
-			GLuint shader = glCreateShader(stage);
-
-			glShaderSource(shader, 1, &source, nullptr);
-			glCompileShader(shader);
-
-			glAttachShader(_program, shader);
-			_shaders[index] = shader;
-
-			GLint status = 0;
-
-			glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-
-			if (status == GL_FALSE)
+			else
 			{
-				GLint maxlength = 0;
-				glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxlength);
-
-				_logs[index].resize(maxlength);
-				glGetShaderInfoLog(shader, maxlength, &maxlength, &_logs[index][0]);
-				_logs[index].resize(maxlength);
+				_statuses[index] = true;
 			}
-
-			return std::move(*this);
-		}
-		glsl_shader&& glsl_shader::tess_control(const char* source)
-		{
-			static constexpr GLenum stage = GL_TESS_CONTROL_SHADER;
-			static constexpr size_t index = sti<stage>::index;
-
-			assert(_shaders[index] == 0);
-
-			GLuint shader = glCreateShader(stage);
-
-			glShaderSource(shader, 1, &source, nullptr);
-			glCompileShader(shader);
-
-			glAttachShader(_program, shader);
-			_shaders[index] = shader;
-
-			GLint status = 0;
-
-			glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-
-			if (status == GL_FALSE)
-			{
-				GLint maxlength = 0;
-				glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxlength);
-
-				_logs[index].resize(maxlength);
-				glGetShaderInfoLog(shader, maxlength, &maxlength, &_logs[index][0]);
-				_logs[index].resize(maxlength);
-			}
-
-			return std::move(*this);
-		}
-		glsl_shader&& glsl_shader::tess_evaluation(const char* source)
-		{
-			static constexpr GLenum stage = GL_TESS_EVALUATION_SHADER;
-			static constexpr size_t index = sti<stage>::index;
-
-			assert(_shaders[index] == 0);
-
-			GLuint shader = glCreateShader(stage);
-
-			glShaderSource(shader, 1, &source, nullptr);
-			glCompileShader(shader);
-
-			glAttachShader(_program, shader);
-			_shaders[index] = shader;
-
-			GLint status = 0;
-
-			glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-
-			if (status == GL_FALSE)
-			{
-				GLint maxlength = 0;
-				glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxlength);
-
-				_logs[index].resize(maxlength);
-				glGetShaderInfoLog(shader, maxlength, &maxlength, &_logs[index][0]);
-				_logs[index].resize(maxlength);
-			}
-
-			return std::move(*this);
-		}
-		glsl_shader&& glsl_shader::compute(const char* source)
-		{
-			static constexpr GLenum stage = GL_COMPUTE_SHADER;
-			static constexpr size_t index = sti<stage>::index;
-
-			assert(_shaders[index] == 0);
-
-			GLuint shader = glCreateShader(stage);
-
-			glShaderSource(shader, 1, &source, nullptr);
-			glCompileShader(shader);
-
-			glAttachShader(_program, shader);
-			_shaders[index] = shader;
-
-			GLint status = 0;
-
-			glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-
-			if (status == GL_FALSE)
-			{
-				GLint maxlength = 0;
-				glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxlength);
-
-				_logs[index].resize(maxlength);
-				glGetShaderInfoLog(shader, maxlength, &maxlength, &_logs[index][0]);
-				_logs[index].resize(maxlength);
-			}
-
-			return std::move(*this);
 		}
 
-		glsl_shader&& glsl_shader::transform_feedback_varyings(size_t count, const char** varyings, GLenum bufferMode)
+		void glsl_shader::transform_feedback_varyings(size_t count, const char** varyings, GLenum bufferMode)
 		{
 			glTransformFeedbackVaryings(_program, count, varyings, bufferMode);
-			return std::move(*this);
 		}
 
-		glsl_shader&& glsl_shader::link()
+		void glsl_shader::link()
 		{
 			glLinkProgram(_program);
 
@@ -270,8 +175,12 @@ namespace planet_engine
 				_linker_log.resize(maxlength);
 				glGetProgramInfoLog(_program, maxlength, &maxlength, &_linker_log[0]);
 				_linker_log.resize(maxlength);
+				_link_status = false;
 			}
-			return std::move(*this);
+			else
+			{
+				_link_status = true;
+			}
 		}
 
 		bool glsl_shader::has_vertex() const
@@ -293,6 +202,19 @@ namespace planet_engine
 		bool glsl_shader::has_compute() const
 		{
 			return _shaders[sti<GL_COMPUTE_SHADER>::index] != 0;
+		}
+		bool glsl_shader::has_stage(GLenum stage) const
+		{
+			return _shaders[GetTypeIndex(stage)] != 0;
+		}
+
+		bool glsl_shader::compile_status(GLenum type) const
+		{
+			return _statuses[GetTypeIndex(type)];
+		}
+		bool glsl_shader::link_status() const
+		{
+			return _link_status;
 		}
 
 		GLuint glsl_shader::program()
