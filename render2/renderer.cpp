@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "shader.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -6,12 +7,17 @@
 #include <utility>
 #include <tuple>
 #include <stack>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 #pragma warning(disable : 4267)
 
 namespace planet_engine
 {
 #define vOffset(size) ((void*)(size))
+
+	using util::glsl_shader;
 
 	template<typename T, typename Container>
 	bool contains(const Container& c, const T& val)
@@ -29,6 +35,13 @@ namespace planet_engine
 		return std::find_if(std::begin(c), std::end(c), p);
 	}
 
+	std::string read_file(const char* patch)
+	{
+		std::ifstream t(patch);
+		std::stringstream buffer;
+		buffer << t.rdbuf();
+		return buffer.str();
+	}
 
 	/* Mesh Manipulation and Calculation Functions */
 	renderer::compute_state renderer::compute_bounds(std::initializer_list<std::shared_ptr<patch>> _meshes)
@@ -379,5 +392,56 @@ namespace planet_engine
 		glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, VERTEX_SIZE, vOffset(sizeof(float) * 6));
 
 		glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, nullptr, drawcommands.size(), 0);
+	}
+
+	/* Constructors and Destructors */
+	renderer::renderer(GLuint shader, double planet_radius) :
+		meshes(MESH_SIZE, NUM_BLOCKS),
+		drawcommands(sizeof(DrawElementsIndirectCommand), NUM_BLOCKS),
+		planet(planet_radius),
+		planet_shader(shader)
+	{
+		glsl_shader meshgen = glsl_shader(false);
+		meshgen.compute(read_file("mesh_gen.comp"));
+		meshgen.link();
+		meshgen.check_errors({ GL_COMPUTE_SHADER });
+
+		glsl_shader max_calc = glsl_shader(false);
+		max_calc.compute(read_file("max.comp"));
+		max_calc.link();
+		max_calc.check_errors({ GL_COMPUTE_SHADER });
+
+		glsl_shader length_calc = glsl_shader(false);
+		length_calc.compute(read_file("length.comp"));
+		length_calc.link();
+		length_calc.check_errors({ GL_COMPUTE_SHADER });
+
+		glsl_shader command_update = glsl_shader(false);
+		command_update.compute(read_file("length.comp"));
+		command_update.link();
+		command_update.check_errors({ GL_COMPUTE_SHADER });
+
+		this->meshgen = meshgen.program();
+		this->max_calc = max_calc.program();
+		this->length_calc = length_calc.program();
+		this->command_update = command_update.program();
+
+		data = planet.data;
+
+		unsigned int* indices = gen_indices(SIDE_LEN);
+
+		glCreateBuffers(1, &elements);
+		glNamedBufferData(elements, num_indices(SIDE_LEN) * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+
+		delete[] indices;
+	}
+	renderer::~renderer()
+	{
+		glDeleteProgram(meshgen);
+		glDeleteProgram(max_calc);
+		glDeleteProgram(length_calc);
+		glDeleteProgram(command_update);
+		
+		glDeleteBuffers(1, &elements);
 	}
 }

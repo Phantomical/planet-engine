@@ -19,8 +19,8 @@ namespace planet_engine
 		static constexpr size_t SIDE_LEN = patch::SIDE_LEN;
 		static constexpr size_t VERTEX_SIZE = sizeof(float) * 7;
 		static constexpr size_t MESH_SIZE = NUM_VERTICES * VERTEX_SIZE;
-		// The number of pages that will be allocated in GPU memory
-		static constexpr size_t NUM_PAGES = 2048;
+		// The maximum number of mesh blocks that can be allocated in GPU memorys
+		static constexpr size_t NUM_BLOCKS = 2048;
 		static constexpr size_t COMPUTE_GROUP_SIZE = 128;
 
 		typedef GLuint offset_type;
@@ -84,12 +84,10 @@ namespace planet_engine
 			void concat(const update_state& ust);
 		};
 
-		planet planet;
-		std::shared_ptr<planet_data> data;
-
 		buffer_manager meshes;
 		buffer_manager drawcommands;
 
+		// Element buffer
 		GLuint elements;
 
 		// Mesh generation shader
@@ -118,7 +116,15 @@ namespace planet_engine
 		void update_meshes();
 
 	public:
+		planet planet;
+		std::shared_ptr<planet_data> data;
+
 		void update(const glm::dvec3& cam_pos);
 		void render(const glm::dmat4& mvp_mat);
+
+		renderer(GLuint shader, double planet_radius);
+		renderer(const renderer&) = delete;
+
+		~renderer();
 	};
 }

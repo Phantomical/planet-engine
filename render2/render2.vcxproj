@@ -117,11 +117,13 @@
     <ClCompile Include="buffer_manager.cpp" />
     <ClCompile Include="gl_core.c" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer_manager.h" />
     <ClInclude Include="gl_core.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="shader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="command_update.comp" />
