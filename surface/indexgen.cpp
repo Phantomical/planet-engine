@@ -70,12 +70,8 @@ namespace planet_engine
 		return indices;
 	}
 
-	std::uint16_t* gen_indices_16(size_t side_len)
+	unsigned int* gen_indices(size_t side_len)
 	{
-		return gen_indices<std::uint16_t>(side_len);
-	}
-	std::uint32_t* gen_indices_32(size_t side_len)
-	{
-		return gen_indices<std::uint32_t>(side_len);
+		return gen_indices<unsigned int>(side_len);
 	}
 }
