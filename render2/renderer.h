@@ -62,6 +62,7 @@ namespace planet_engine
 			glm::dvec3 sec;
 			double _pad5;
 		};
+
 		struct DrawElementsIndirectCommand
 		{
 			GLuint count;
@@ -100,6 +101,12 @@ namespace planet_engine
 		GLuint command_update;
 		// The shader that is used for actually rendering the planet
 		GLuint planet_shader;
+
+		/* OpenGL constants */
+		// Required offset alignment for uniform buffer objects
+		GLuint ubo_offset_alignment;
+		// Required offset alignment for shader storage buffers
+		GLuint ssbo_offset_alignment;
 
 		std::map<std::shared_ptr<patch>, std::tuple<
 			GLuint /* Mesh Buffer Offset */, 

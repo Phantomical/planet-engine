@@ -13,9 +13,77 @@
 
 #pragma warning(disable : 4267)
 
+#define TARGET_DIR "D:\\Projects\\Projects\\C++\\planet-engine\\x64\\Debug\\"
+
+namespace
+{
+	std::string concat(const std::string& appendix)
+	{
+		return TARGET_DIR + appendix;
+	}
+}
+
 namespace planet_engine
 {
 #define vOffset(size) ((void*)(size))
+	
+	template<typename T>
+	// Stores elements padded to a certain alignment
+	// within a buffer
+	struct aligned_buffer
+	{
+	private:
+		GLuint _stride;
+		GLuint _size;
+		char* _array;
+
+	public:
+		aligned_buffer(GLuint alignment, GLuint size) :
+			_size(size)
+		{
+			_stride = ((sizeof(T) + alignment - 1) / alignment) * alignment;
+			_array = (char*)malloc(_stride * _size);
+
+			for (size_t i = 0; i < _size; ++i)
+			{
+				new (_array + i * _stride) T();
+			}
+		}
+		~aligned_buffer()
+		{
+			for (size_t i = 0; i < _size; ++i)
+			{
+				(*this)[i].~T();
+			}
+			free(_array);
+		}
+
+		GLuint size()
+		{
+			return _size * _stride;
+		}
+		GLuint stride()
+		{
+			return _stride;
+		}
+		void* data()
+		{
+			return _array;
+		}
+
+		T& operator[](GLuint idx)
+		{
+			return *((T*)(_array + _stride * idx));
+		}
+
+		aligned_buffer(const aligned_buffer&) = delete;
+	};
+
+	template<typename T>
+	T roundup(T val, T mult)
+	{
+		return ((val + mult - 1) / mult) * mult;
+	}
 
 	using util::glsl_shader;
 
@@ -35,9 +103,12 @@ namespace planet_engine
 		return std::find_if(std::begin(c), std::end(c), p);
 	}
 
-	std::string read_file(const char* patch)
+	std::string read_file(const std::string& path)
 	{
-		std::ifstream t(patch);
+		std::ifstream t(path);
+
+		assert(t.is_open());
+
 		std::stringstream buffer;
 		buffer << t.rdbuf();
 		return buffer.str();
@@ -49,6 +120,8 @@ namespace planet_engine
 		static constexpr size_t NUM_RESULT_ELEMS = compute_state::NUM_RESULT_ELEMS;
 		static constexpr size_t NUM_COMPUTE_GROUPS = compute_state::NUM_COMPUTE_GROUPS;
 
+		size_t result_size = roundup<size_t>(NUM_RESULT_ELEMS * sizeof(float), ssbo_offset_alignment);
+
 		compute_state state;
 
 		state.parent = this;
@@ -57,20 +130,20 @@ namespace planet_engine
 		glUseProgram(length_calc);
 		glGenBuffers(1, &state.result_buffer);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, state.result_buffer);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, NUM_RESULT_ELEMS * sizeof(float) * _meshes.size(), nullptr, GL_STATIC_DRAW);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, result_size * _meshes.size(), nullptr, GL_STATIC_DRAW);
 
 		glUniform1ui(0, NUM_RESULT_ELEMS);
 
 		for (auto patch : _meshes)
 		{
 			auto it = patches.find(patch);
-			if (it != patches.end())
+			if (it == patches.end())
 				continue;
 
 			GLuint offset = std::get<0>(it->second);
 			meshes.lock(offset);
-			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, meshes.buffer(), MESH_SIZE * offset, NUM_RESULT_ELEMS * VERTEX_SIZE);
-			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, state.result_buffer, NUM_RESULT_ELEMS * sizeof(float) * state.offsets.size(), NUM_RESULT_ELEMS * sizeof(float));
+			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, meshes.buffer(), meshes.block_size() * offset, NUM_RESULT_ELEMS * VERTEX_SIZE);
+			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, state.result_buffer, result_size * state.offsets.size(), result_size);
 
 			glDispatchCompute(NUM_COMPUTE_GROUPS, 1, 1);
 
@@ -92,6 +165,8 @@ namespace planet_engine
 	{
 		if (size > 1)
 		{
+			size_t result_size = roundup<size_t>(NUM_RESULT_ELEMS * sizeof(float), parent->ssbo_offset_alignment);
+
 			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 			glUseProgram(parent->max_calc);
@@ -102,7 +177,7 @@ namespace planet_engine
 
 			for (size_t i = 0; i < offsets.size(); ++i)
 			{
-				glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, result_buffer, NUM_RESULT_ELEMS * sizeof(float) * i, NUM_RESULT_ELEMS * sizeof(float));
+				glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, result_buffer, result_size * i, result_size);
 
 				glDispatchCompute(size, 1, 1);
 			}
@@ -125,9 +200,11 @@ namespace planet_engine
 		glBindBuffer(GL_COPY_READ_BUFFER, result_buffer);
 		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
 
+		size_t result_size = roundup<size_t>(NUM_RESULT_ELEMS * sizeof(float), parent->ssbo_offset_alignment);
+
 		for (size_t i = 0; i < offsets.size(); ++i)
 		{
-			glGetBufferSubData(GL_COPY_READ_BUFFER, NUM_RESULT_ELEMS * sizeof(float), sizeof(float), temp);
+			glGetBufferSubData(GL_COPY_READ_BUFFER, result_size * i, sizeof(float), temp);
 			parent->meshes.unlock(offsets[i]);
 
 			if (!patches[i].expired())
@@ -150,27 +227,31 @@ namespace planet_engine
 			return update_state();
 
 		std::vector<std::shared_ptr<patch>> meshes(_meshes.begin(), _meshes.end());
-		std::vector<mesh_info> infos;
+		aligned_buffer<mesh_info> infos(ubo_offset_alignment, meshes.size());
 		std::vector<offset_type> offsets;
-		infos.reserve(meshes.size());
 		offsets.reserve(meshes.size());
 		std::vector<std::shared_ptr<patch>> compute_targets;
 
-		for (auto patch : meshes)
+		for (size_t i = 0; i < meshes.size(); ++i)
 		{
-			mesh_info info;
-			info.pos = patch->pos;
-			info.nwc = patch->nwc;
-			info.nec = patch->nec;
-			info.swc = patch->swc;
-			info.sec = patch->sec;
-			info.planet_radius = data->planet_radius;
-			info.skirt_depth = patch::SKIRT_DEPTH;
-			info.scale = 1.0;
+			auto patch = meshes[i];
+			mesh_info info =
+			{
+				patch->pos,
+				data->planet_radius,
+				patch->nwc,
+				patch::SKIRT_DEPTH,
+				patch->nec,
+				1.0, // Scale value
+				patch->swc,
+				0.0, // Padding
+				info.sec = patch->sec,
+				0.0 // Padding
+			};
 
 			offset_type offset = this->meshes.alloc_block();
 
-			infos.push_back(info);
+			infos[i] = info;
 			offsets.push_back(offset);
 
 			if (patch->farthest_vertex == std::numeric_limits<float>::max())
@@ -180,7 +261,7 @@ namespace planet_engine
 		GLuint buffer;
 		glGenBuffers(1, &buffer);
 		glBindBuffer(GL_UNIFORM_BUFFER, buffer);
-		glBufferData(GL_UNIFORM_BUFFER, sizeof(mesh_info) * infos.size(), infos.data(), GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, infos.size(), infos.data(), GL_STATIC_DRAW);
 
 		glUseProgram(meshgen);
 
@@ -188,8 +269,8 @@ namespace planet_engine
 
 		for (size_t i = 0; i < offsets.size(); ++i)
 		{
-			glBindBufferRange(GL_UNIFORM_BUFFER, 0, buffer, sizeof(mesh_info) * i, sizeof(mesh_info));
-			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, this->meshes.buffer(), offsets[i] * MESH_SIZE, MESH_SIZE);
+			glBindBufferRange(GL_UNIFORM_BUFFER, 0, buffer, infos.stride() * i, sizeof(mesh_info));
+			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, this->meshes.buffer(), offsets[i] * this->meshes.block_size(), this->meshes.block_size());
 
 			glDispatchCompute((NUM_VERTICES + COMPUTE_GROUP_SIZE - 1) / COMPUTE_GROUP_SIZE, 1, 1);
 		}
@@ -233,6 +314,8 @@ namespace planet_engine
 		for (auto patch : _meshes)
 		{
 			auto it = patches.find(patch);
+			if (it == patches.end())
+				continue;
 			auto offsets = it->second;
 
 			GLuint offset = std::get<0>(offsets);
@@ -319,9 +402,13 @@ namespace planet_engine
 
 					if (contains(to_remove, patch))
 						assert(false);
+					if (contains(to_add, patch))
+						assert(false);
 
 					to_remove.push_back(patch);
 				}
+
+				p->merge();
 			}
 
 			ustate = add_meshes(std::initializer_list<std::shared_ptr<patch>>(
@@ -362,10 +449,14 @@ namespace planet_engine
 	}
 	void renderer::render(const glm::dmat4& mvp_mat)
 	{
-		glm::mat4* matrices = new glm::mat4[drawcommands.size()];
+		size_t size = drawcommands.size();
 
 		GLuint buffer;
-		glCreateBuffers(1, &buffer);
+		glGenBuffers(1, &buffer);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffer);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, size * sizeof(glm::mat4), nullptr, GL_STATIC_DRAW);
+
+		glm::mat4* matrices = (glm::mat4*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
 
 		for (auto& p : patches)
 		{
@@ -375,13 +466,11 @@ namespace planet_engine
 			matrices[idx] = mvp_mat * mat;
 		}
 
+		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+
 		glUseProgram(planet_shader);
 
-		glNamedBufferData(GL_UNIFORM_BUFFER, drawcommands.size() * sizeof(glm::mat4), matrices, GL_STATIC_DRAW);
-
-		delete[] matrices;
-
-		glBindBufferBase(GL_UNIFORM_BUFFER, 0, buffer);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffer);
 
 		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, drawcommands.buffer());
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements);
@@ -391,7 +480,7 @@ namespace planet_engine
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, VERTEX_SIZE, vOffset(sizeof(float) * 3));
 		glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, VERTEX_SIZE, vOffset(sizeof(float) * 6));
 
-		glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, nullptr, drawcommands.size(), 0);
+		glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, nullptr, size, 0);
 	}
 
 	/* Constructors and Destructors */
@@ -402,22 +491,22 @@ namespace planet_engine
 		planet_shader(shader)
 	{
 		glsl_shader meshgen = glsl_shader(false);
-		meshgen.compute(read_file("mesh_gen.comp"));
+		meshgen.compute(read_file(concat("mesh_gen.comp")));
 		meshgen.link();
 		meshgen.check_errors({ GL_COMPUTE_SHADER });
 
 		glsl_shader max_calc = glsl_shader(false);
-		max_calc.compute(read_file("max.comp"));
+		max_calc.compute(read_file(concat("max.comp")));
 		max_calc.link();
 		max_calc.check_errors({ GL_COMPUTE_SHADER });
 
 		glsl_shader length_calc = glsl_shader(false);
-		length_calc.compute(read_file("length.comp"));
+		length_calc.compute(read_file(concat("length.comp")));
 		length_calc.link();
 		length_calc.check_errors({ GL_COMPUTE_SHADER });
 
 		glsl_shader command_update = glsl_shader(false);
-		command_update.compute(read_file("length.comp"));
+		command_update.compute(read_file(concat("length.comp")));
 		command_update.link();
 		command_update.check_errors({ GL_COMPUTE_SHADER });
 
@@ -430,6 +519,13 @@ namespace planet_engine
 
 		unsigned int* indices = gen_indices(SIDE_LEN);
 
+		GLint ubo_align;
+		glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &ubo_align);
+		ubo_offset_alignment = ubo_align;
+		GLint ssbo_align;
+		glGetIntegerv(GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT, &ssbo_align);
+		ssbo_offset_alignment = ssbo_align;
+
 		glCreateBuffers(1, &elements);
 		glNamedBufferData(elements, num_indices(SIDE_LEN) * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
@@ -441,7 +537,7 @@ namespace planet_engine
 		glDeleteProgram(max_calc);
 		glDeleteProgram(length_calc);
 		glDeleteProgram(command_update);
-		
+
 		glDeleteBuffers(1, &elements);
 	}
 }

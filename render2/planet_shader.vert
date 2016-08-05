@@ -3,13 +3,12 @@
 // TODO: Find a more portable way to get this info
 #extension GL_ARB_shader_draw_parameters : enable
 
-layout(location = 0, std140) uniform Matrices
+layout(binding = 0, std140) buffer Matrices
 {
 	mat4 matrices[];
 };
 
 #define DrawID gl_DrawIDARB
-
 
 layout (location = 0) in vec3 in_vertex;
 layout (location = 1) in vec3 in_normal;

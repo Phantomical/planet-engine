@@ -39,10 +39,59 @@ namespace planet_engine
 		info.swc = (swc + sec) * 0.5;
 		info.sec = sec;
 		se = std::make_shared<patch>(info);
+
+		{
+			auto it = std::find(data->leaf_patches.begin(), data->leaf_patches.end(), shared_from_this());
+			if (it != data->leaf_patches.end())
+				data->leaf_patches.erase(it);
+		}
+
+		data->leaf_patches.push_back(nw);
+		data->leaf_patches.push_back(ne);
+		data->leaf_patches.push_back(sw);
+		data->leaf_patches.push_back(se);
 	}
 	void patch::merge()
 	{
-		nw = ne = sw = se = nullptr;
+		if (subdivided())
+		{
+			nw->remove_internal();
+			ne->remove_internal();
+			sw->remove_internal();
+			se->remove_internal();
+			nw = ne = sw = se = nullptr;
+		}
+		{
+			auto it = std::find(data->leaf_patches.begin(), data->leaf_patches.end(), shared_from_this());
+			if (it != data->leaf_patches.end())
+				data->leaf_patches.erase(it);
+		}
+		data->leaf_patches.push_back(shared_from_this());
+	}
+
+	void patch::remove_internal()
+	{
+		if (subdivided())
+		{
+			nw->remove_internal();
+			ne->remove_internal();
+			sw->remove_internal();
+			se->remove_internal();
+			nw = ne = sw = se = nullptr;
+		}
+
+
+		auto it = std::find(data->leaf_parents.begin(), data->leaf_parents.end(), shared_from_this());
+		if (it != data->leaf_parents.end())
+		{
+			data->leaf_parents.erase(it);
+		}
+		else
+		{
+			auto it = std::find(data->leaf_patches.begin(), data->leaf_patches.end(), shared_from_this());
+			if (it != data->leaf_patches.end())
+				data->leaf_parents.erase(it);
+		}
 	}
 
 	patch::patch(const info& info) :

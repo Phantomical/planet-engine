@@ -109,6 +109,9 @@ namespace planet_engine
 
 			return std::max({ diff.x, diff.y, diff.z });
 		}
+
+	private:
+		void remove_internal();
 	};
 
 	struct planet_data

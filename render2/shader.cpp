@@ -239,14 +239,17 @@ namespace planet_engine
 
 		void glsl_shader::check_errors(std::initializer_list<GLenum> stages) const
 		{
+			if (!valid())
+				return;
+
 			bool error = false;
 			
 			for (GLenum stage : stages)
 			{
-				if (!compile_status(stage))
+				if (!compile_status(stage) && has_stage(stage))
 				{
 					error = true;
-					printf("%s", shader_log(stage).c_str());
+					//printf("%s", shader_log(stage).c_str());
 				}
 			}
 
@@ -258,7 +261,7 @@ namespace planet_engine
 
 			if (error)
 			{
-				assert(false);
+				__debugbreak();
 				std::terminate();
 			}
 		}

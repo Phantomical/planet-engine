@@ -1,6 +1,6 @@
 #version 430
 
-smooth in displacement;
+smooth in float displacement;
 
 out vec3 colour;
 

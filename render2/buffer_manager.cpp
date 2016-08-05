@@ -60,7 +60,7 @@ namespace planet_engine
 		while (_max_index * _block_size > _num_pages * _page_size)
 		{
 			//Commits the next page allowing it to be used for mesh data
-			glNamedBufferPageCommitmentARB(_buffer,
+			glNamedBufferPageCommitmentEXT(_buffer,
 				_num_pages++ * _page_size, _page_size, GL_TRUE);
 		}
 
@@ -108,9 +108,13 @@ namespace planet_engine
 		return _max_index;
 	}
 
-	buffer_manager::buffer_manager(GLuint block_size, GLuint num_blocks) :
-		_block_size(block_size)
+	buffer_manager::buffer_manager(GLuint block_size, GLuint num_blocks)
 	{
+		GLint alignment;
+		glGetIntegerv(GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT, &alignment);
+
+		_block_size = ((block_size + alignment - 1) / alignment) * alignment;
+
 		alloc_buffer(num_blocks);
 	}
 	buffer_manager::~buffer_manager()
