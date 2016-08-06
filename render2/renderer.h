@@ -20,7 +20,7 @@ namespace planet_engine
 		static constexpr size_t VERTEX_SIZE = sizeof(float) * 7;
 		static constexpr size_t MESH_SIZE = NUM_VERTICES * VERTEX_SIZE;
 		// The maximum number of mesh blocks that can be allocated in GPU memorys
-		static constexpr size_t NUM_BLOCKS = 2048;
+		static constexpr size_t NUM_BLOCKS = 1 << 16;
 		static constexpr size_t COMPUTE_GROUP_SIZE = 128;
 
 		typedef GLuint offset_type;
@@ -86,7 +86,8 @@ namespace planet_engine
 		};
 
 		buffer_manager meshes;
-		buffer_manager drawcommands;
+		// The buffer for the draw commands
+		GLuint drawcommands;
 
 		// Element buffer
 		GLuint elements;
@@ -109,8 +110,7 @@ namespace planet_engine
 		GLuint ssbo_offset_alignment;
 
 		std::map<std::shared_ptr<patch>, std::tuple<
-			GLuint /* Mesh Buffer Offset */, 
-			GLuint /* Command Buffer Offset */>> patches;
+			GLuint /* Mesh Buffer Offset */>> patches;
 		std::deque<compute_state> compute_states;
 
 		compute_state compute_bounds(std::initializer_list<std::shared_ptr<patch>> meshes);

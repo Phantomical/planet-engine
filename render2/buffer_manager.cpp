@@ -37,10 +37,7 @@ namespace planet_engine
 	}
 	void buffer_manager::return_index(GLuint block)
 	{
-		if (block = _max_index - 1)
-			--_max_index;
-		else
-			_free_list.push(block);
+		_free_list.push(block);
 	}
 
 	GLuint buffer_manager::alloc_block()
@@ -66,10 +63,16 @@ namespace planet_engine
 
 		_offsets.insert(index);
 
+		//OutputDebug("[BUFMGR][At ", this, "] Allocated offset ", index, ".\n");
+
 		return index;
 	}
 	void buffer_manager::dealloc_block(GLuint offset)
 	{
+		//OutputDebug("[BUFMGR][At ", this, "] Deallocated offset ", offset, ".\n");
+
+		assert(offset < _max_index);
+
 		auto it = find(_offsets, offset);
 		_offsets.erase(it);
 

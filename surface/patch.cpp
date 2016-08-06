@@ -10,6 +10,8 @@ namespace planet_engine
 
 	void patch::split()
 	{
+		assert(!subdivided());
+
 		info info;
 		info.data = data;
 		info.level = level + 1;
@@ -45,6 +47,7 @@ namespace planet_engine
 			if (it != data->leaf_patches.end())
 				data->leaf_patches.erase(it);
 		}
+		data->leaf_parents.push_back(shared_from_this());
 
 		data->leaf_patches.push_back(nw);
 		data->leaf_patches.push_back(ne);
@@ -53,19 +56,19 @@ namespace planet_engine
 	}
 	void patch::merge()
 	{
-		if (subdivided())
+		assert(subdivided());
+		nw->remove_internal();
+		ne->remove_internal();
+		sw->remove_internal();
+		se->remove_internal();
+		nw = ne = sw = se = nullptr;
+
 		{
-			nw->remove_internal();
-			ne->remove_internal();
-			sw->remove_internal();
-			se->remove_internal();
-			nw = ne = sw = se = nullptr;
+			auto it = std::find(data->leaf_parents.begin(), data->leaf_parents.end(), shared_from_this());
+			if (it != data->leaf_parents.end())
+				data->leaf_parents.erase(it);
 		}
-		{
-			auto it = std::find(data->leaf_patches.begin(), data->leaf_patches.end(), shared_from_this());
-			if (it != data->leaf_patches.end())
-				data->leaf_patches.erase(it);
-		}
+
 		data->leaf_patches.push_back(shared_from_this());
 	}
 
@@ -90,7 +93,7 @@ namespace planet_engine
 		{
 			auto it = std::find(data->leaf_patches.begin(), data->leaf_patches.end(), shared_from_this());
 			if (it != data->leaf_patches.end())
-				data->leaf_parents.erase(it);
+				data->leaf_patches.erase(it);
 		}
 	}
 

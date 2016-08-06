@@ -86,7 +86,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)surface;D:\projects\src</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TGT_DIR="$(TargetDir)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LOG_TO_FILE</PreprocessorDefinitions>
     </ClCompile>
     <CustomBuild>
       <Command>copy "%(Identity)" "$(TargetDir)%(Identity)" &gt; nul</Command>
@@ -102,7 +102,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)surface;D:\projects\src</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TGT_DIR="$(TargetDir)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LOG_TO_FILE</PreprocessorDefinitions>
     </ClCompile>
     <CustomBuild>
       <Command>copy "%(Identity)" "$(TargetDir)%(Identity)" &gt; nul</Command>
@@ -120,7 +120,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)surface;D:\projects\src</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TGT_DIR="$(TargetDir)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LOG_TO_FILE</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -142,7 +142,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)surface;D:\projects\src</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>TGT_DIR="$(TargetDir)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LOG_TO_FILE</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -164,27 +164,28 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer_manager.h" />
+    <ClInclude Include="defs.h" />
     <ClInclude Include="gl_core.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="shader.h" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="command_update.comp">
+    <CustomBuild Include="command_update.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="length.comp">
+    <CustomBuild Include="length.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="max.comp">
+    <CustomBuild Include="max.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="mesh_gen.comp">
+    <CustomBuild Include="mesh_gen.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="planet_shader.frag">
+    <CustomBuild Include="planet_shader_frag.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="planet_shader.vert">
+    <CustomBuild Include="planet_shader_vert.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
   </ItemGroup>

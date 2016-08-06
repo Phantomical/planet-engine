@@ -64,16 +64,13 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 		break;
 	case GL_DEBUG_SEVERITY_NOTIFICATION:
 		severitystr = "[NOTIFICATION]";
-		break;
+		return;
 	default:
 		severitystr = "[UNKNOWN]";
 		break;
 	}
 
-	std::stringstream str;
-	str << typestr << severitystr << " " << message << "\n";
-
-	OutputDebugStringA(str.str().c_str());
+	OutputDebug(typestr, severitystr, ' ', message, '\n');
 }
 
 int main()
@@ -85,41 +82,47 @@ int main()
 	GLFWwindow* win = glfwCreateWindow(1080, 720, "Planet Engine Demo", nullptr, nullptr);
 	glfwMakeContextCurrent(win);
 	
-	glClear(0);
+	ogl_LoadFunctions();
+
+	glfwSwapBuffers(win);
 	
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(DebugProc, nullptr);
 
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 
-	GLuint program;
 	{
-		glsl_shader shader = glsl_shader(false);
-		shader.vertex(read_file(concat("planet_shader.vert")));
-		shader.fragment(read_file(concat("planet_shader.frag")));
-		shader.link();
-		shader.check_errors({ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER });
+		GLuint program;
+		{
+			glsl_shader shader = glsl_shader(false);
+			shader.vertex(read_file(concat("planet_shader_vert.glsl")));
+			shader.fragment(read_file(concat("planet_shader_frag.glsl")));
+			shader.link();
+			shader.check_errors({ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER });
 
-		program = shader.program();
-	}
+			program = shader.program();
+		}
 
-	renderer ren{ program, 10000.0 };
+		renderer ren{ program, 10000.0 };
 
-	glm::dvec3 cam_pos = glm::dvec3(0.0, 0.0, -12000.0);
+		glm::dvec3 cam_pos = glm::dvec3(0.0, 0.0, -12000.0);
 
-	ren.update(cam_pos);
-
-	while (!glfwWindowShouldClose(win))
-	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glm::dmat4 view_mat = glm::lookAt(cam_pos, glm::dvec3(0.0, 0.0, 0.0), glm::dvec3(0.0, 1.0, 0.0));
-		glm::dmat4 proj_mat = glm::perspective(60.0, 1080.0 / 720.0, 1000.0, 20000.0);
-
-		ren.render(proj_mat * view_mat);
 		ren.update(cam_pos);
 
-		glfwPollEvents();
-		glfwSwapBuffers(win);
+		while (!glfwWindowShouldClose(win))
+		{
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glm::dmat4 view_mat = glm::lookAt(cam_pos, glm::dvec3(0.0, 0.0, 0.0), glm::dvec3(0.0, 1.0, 0.0));
+			glm::dmat4 proj_mat = glm::perspective(60.0, 1080.0 / 720.0, 1000.0, 20000.0);
+
+			ren.render(proj_mat * view_mat);
+			ren.update(cam_pos);
+
+			glfwPollEvents();
+			glfwSwapBuffers(win);
+		}
+
+		glDeleteProgram(program);
 	}
 
 	glfwDestroyWindow(win);
