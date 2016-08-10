@@ -13,50 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{7eaab3c1-f93f-4846-8c8e-457e634d21c0}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="renderer.cpp">
+    <ClCompile Include="shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="buffer_manager.cpp">
+    <ClCompile Include="gl_core.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="buffer_manager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="defs.h">
+    <ClInclude Include="gl_core.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="command_update.glsl">
-      <Filter>Shaders</Filter>
-    </CustomBuild>
-    <CustomBuild Include="length.glsl">
-      <Filter>Shaders</Filter>
-    </CustomBuild>
-    <CustomBuild Include="max.glsl">
-      <Filter>Shaders</Filter>
-    </CustomBuild>
-    <CustomBuild Include="mesh_gen.glsl">
-      <Filter>Shaders</Filter>
-    </CustomBuild>
-    <CustomBuild Include="planet_shader_frag.glsl">
-      <Filter>Shaders</Filter>
-    </CustomBuild>
-    <CustomBuild Include="planet_shader_vert.glsl">
-      <Filter>Shaders</Filter>
-    </CustomBuild>
   </ItemGroup>
 </Project>
