@@ -12,7 +12,7 @@
 namespace util = planet_engine::util;
 using namespace util;
 
-constexpr size_t SIDE_LEN = 129;
+constexpr size_t SIDE_LEN = 1024;
 constexpr size_t NUM_VERTICES = planet_engine::num_vertices(SIDE_LEN);
 constexpr size_t NUM_ELEMENTS = planet_engine::num_indices(SIDE_LEN);
 constexpr size_t COMPUTE_GROUP_SIZE = 128;
@@ -201,15 +201,7 @@ public:
 		GenShaders(false);
 		GenVertices();
 	}
-
-	glm::dvec3 to_sphere(glm::dvec3 v)
-	{
-		// _pos.w is planet_radius
-		return 10.0 * normalize(v);
-	}
 };
-
-
 
 int main()
 {

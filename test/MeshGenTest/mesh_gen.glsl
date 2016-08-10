@@ -548,19 +548,18 @@ const double skirt_depth = _nwc.w;
 const double scale = _nec.w;
 const double INTERP = (1.0 / double(SIDE_LEN - 1));
 
-void calc_vertex(in uvec2 p, out vec3 vertex, out vec3 normal, out float displacement)
+void calc_vertex(in uvec2 p, out vec3 vertex, out float displacement)
 {
-		double interp = INTERP * double(p.y);
-		dvec3 v1 = mix(nwc, nec, interp);
-		dvec3 v2 = mix(swc, sec, interp);
-		dvec3 vtx = to_sphere(mix(v1, v2, INTERP * double(p.x)));
-		dvec3 nrm = normalize(vtx);
-		double disp = noise(vtx) * scale;
-		vtx += nrm * disp - pos;
+	double interp = INTERP * double(p.x);
+	dvec3 v1 = mix(nwc, nec, interp);
+	dvec3 v2 = mix(swc, sec, interp);
+	dvec3 vtx = to_sphere(mix(v1, v2, INTERP * double(p.y)));
+	dvec3 nrm = normalize(vtx);
+	double disp = noise(vtx) * scale;
+	vtx += nrm * disp - pos;
 
-		vertex = vec3(vtx);
-		normal = vec3(nrm);
-		displacement = float(disp);
+	vertex = vec3(vtx);
+	displacement = float(disp);
 }
 
 void main()
@@ -579,15 +578,14 @@ void main()
 	{
 		uvec2 p = uvec2(index / SIDE_LEN, index % SIDE_LEN);
 
-		//vec3 nrm2, nrm3;
-		//vec3 scratch;
-		//float ds;
+		vec3 vtx2, vtx3;
+		float scratch;
 
-		calc_vertex(p, vertex, normal, displacement);
-		//calc_vertex(p, scratch, nrm2, ds);
-		//calc_vertex(p, scratch, nrm3, ds);
+		calc_vertex(p, vertex, displacement);
+		calc_vertex(p + uvec2(1, 0), vtx2, scratch);
+		calc_vertex(p + uvec2(0, 1), vtx3, scratch);
 
-		//normal = normalize(cross(normal - nrm2, normal - nrm3));
+		normal = normalize(cross(vertex - vtx2, vertex - vtx3));
 	}
 	else
 	{
