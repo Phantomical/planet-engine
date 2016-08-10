@@ -50,6 +50,7 @@ namespace planet_engine
 		GLuint block_size() const;
 		GLuint size() const;
 		GLuint max_index() const;
+		GLuint current_max() const;
 
 		buffer_manager(GLuint block_size, GLuint num_blocks);
 		buffer_manager(const buffer_manager&) = delete;

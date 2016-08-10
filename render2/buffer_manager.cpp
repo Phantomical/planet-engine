@@ -64,13 +64,13 @@ namespace planet_engine
 
 		_offsets.insert(index);
 
-		OutputDebug("[BUFMGR][At ", this, "] Allocated offset ", index, ".\n");
+		//OutputDebug("[BUFMGR][At ", this, "] Allocated offset ", index, ".\n");
 
 		return index;
 	}
 	void buffer_manager::dealloc_block(GLuint offset)
 	{
-		OutputDebug("[BUFMGR][At ", this, "] Deallocated offset ", offset, ".\n");
+		//OutputDebug("[BUFMGR][At ", this, "] Deallocated offset ", offset, ".\n");
 
 		assert(offset < _max_index);
 
@@ -120,6 +120,10 @@ namespace planet_engine
 				offsets.data(), offsets.data() + offsets.size())) < _max_index);
 		}
 		return _max_index;
+	}
+	GLuint buffer_manager::current_max() const
+	{
+		return *std::max_element(_offsets.begin(), _offsets.end()) + 1;
 	}
 
 	buffer_manager::buffer_manager(GLuint block_size, GLuint num_blocks)

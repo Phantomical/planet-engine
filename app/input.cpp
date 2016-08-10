@@ -32,7 +32,7 @@ bool isLine = false;
 
 void HandleInput(GLFWwindow* win)
 {
-	static constexpr double displacement = 0.02f;
+	static constexpr double displacement = 0.2f;
 
 	KeyboardInterface Keyboard(win);
 	dmat4 rot = (dmat4)CamRot;

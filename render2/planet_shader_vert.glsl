@@ -16,12 +16,12 @@ layout(location = 2) in float in_displacement;
 
 layout(location = 0) uniform mat4 mvp;
 
-smooth out float displacement;
+smooth out vec3 normal;
 
 void main()
 {
 	//mat4 mvp = matrices[DrawID];
 
 	gl_Position = mvp * vec4(in_vertex, 1.0);
-	displacement = in_displacement;
+	normal = in_normal;
 }

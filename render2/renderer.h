@@ -17,11 +17,12 @@ namespace planet_engine
 		static constexpr size_t NUM_VERTICES = patch::NUM_VERTICES;
 		static constexpr size_t NUM_INDICES = patch::NUM_INDICES;
 		static constexpr size_t SIDE_LEN = patch::SIDE_LEN;
-		static constexpr size_t VERTEX_SIZE = sizeof(float) * 7;
+		static constexpr size_t VERTEX_SIZE = sizeof(float) * 8;
 		static constexpr size_t MESH_SIZE = NUM_VERTICES * VERTEX_SIZE;
 		// The maximum number of mesh blocks that can be allocated in GPU memory
 		static constexpr size_t NUM_BLOCKS = 1 << 14;
 		static constexpr size_t COMPUTE_GROUP_SIZE = 128;
+		static constexpr double SCALE = 2.0;
 
 		typedef GLuint offset_type;
 		typedef std::priority_queue<offset_type,
@@ -123,6 +124,8 @@ namespace planet_engine
 
 		void step_compute_states();
 		void update_meshes();
+
+		void cull_invalid();
 
 	public:
 		planet planet;

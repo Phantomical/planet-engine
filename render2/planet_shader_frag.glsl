@@ -1,10 +1,12 @@
 #version 430
 
-smooth in float displacement;
+layout(location = 1) uniform vec3 LightDir;
 
-out vec3 colour;
+smooth in vec3 normal;
+
+out vec3 Colour;
 
 void main()
 {
-	colour = vec3(1.0, 1.0, 1.0);
+	Colour = vec3(clamp(dot(normal, -LightDir), 0.0, 1.0));
 }

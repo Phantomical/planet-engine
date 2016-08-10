@@ -12,11 +12,11 @@
 namespace util = planet_engine::util;
 using namespace util;
 
-constexpr size_t SIDE_LEN = 1024;
+constexpr size_t SIDE_LEN = 512;
 constexpr size_t NUM_VERTICES = planet_engine::num_vertices(SIDE_LEN);
 constexpr size_t NUM_ELEMENTS = planet_engine::num_indices(SIDE_LEN);
 constexpr size_t COMPUTE_GROUP_SIZE = 128;
-static constexpr double radius = 10.0;
+static constexpr double radius = 50.0;
 
 using glm::dvec3;
 using glm::dvec4;
@@ -136,7 +136,7 @@ public:
 	{
 		UniformLayout vals =
 		{
-			dvec3(0.0, 10.0, 0.0),
+			dvec3(0.0, 50.0, 50.0),
 			radius,
 			dvec3(radius, radius, -radius),
 			2.0, // Skirt Depth

@@ -26,7 +26,7 @@ namespace
 namespace planet_engine
 {
 #define vOffset(size) ((void*)(size))
-	
+
 	template<typename T>
 	// Stores elements padded to a certain alignment
 	// within a buffer
@@ -243,7 +243,7 @@ namespace planet_engine
 				patch->nwc,
 				patch::SKIRT_DEPTH,
 				patch->nec,
-				1.0, // Scale value
+				SCALE, // Scale value
 				patch->swc,
 				0.0, // Padding
 				info.sec = patch->sec,
@@ -259,10 +259,6 @@ namespace planet_engine
 				compute_targets.push_back(patch);
 		}
 
-		GLuint buffer;
-		glGenBuffers(1, &buffer);
-		glBindBuffer(GL_UNIFORM_BUFFER, buffer);
-		glBufferData(GL_UNIFORM_BUFFER, infos.size(), infos.data(), GL_STATIC_DRAW);
 
 		glUseProgram(meshgen);
 
@@ -270,10 +266,19 @@ namespace planet_engine
 
 		for (size_t i = 0; i < offsets.size(); ++i)
 		{
-			glBindBufferRange(GL_UNIFORM_BUFFER, 0, buffer, infos.stride() * i, sizeof(mesh_info));
+			//glUniform1ui(2, this->meshes.block_size() / VERTEX_SIZE * offsets[i]);
+
+			GLuint buffer;
+			glGenBuffers(1, &buffer);
+			glBindBuffer(GL_UNIFORM_BUFFER, buffer);
+			glBufferData(GL_UNIFORM_BUFFER, sizeof(mesh_info), &infos[i], GL_STATIC_DRAW);
+
+			glBindBufferBase(GL_UNIFORM_BUFFER, 0, buffer);
 			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, this->meshes.buffer(), offsets[i] * this->meshes.block_size(), this->meshes.block_size());
 
-			glDispatchCompute((NUM_VERTICES + COMPUTE_GROUP_SIZE - 1) / COMPUTE_GROUP_SIZE, 1, 1);
+			glDispatchCompute(((NUM_VERTICES + COMPUTE_GROUP_SIZE - 1) / COMPUTE_GROUP_SIZE), 1, 1);
+
+			glDeleteBuffers(1, &buffer);
 		}
 
 		glMemoryBarrier(/*GL_SHADER_STORAGE_BARRIER_BIT*/GL_ALL_BARRIER_BITS);
@@ -284,11 +289,11 @@ namespace planet_engine
 		{
 			DrawElementsIndirectCommand cmd;
 			cmd.baseInstance = 0;
-			cmd.baseVertex = NUM_VERTICES * offsets[i];
+			cmd.baseVertex = (this->meshes.block_size() / VERTEX_SIZE) * offsets[i];
 			cmd.count = NUM_INDICES;
 			cmd.firstIndex = 0;
 			cmd.instanceCount = 0;
-			
+
 			MoveCommand mvcmd;
 			mvcmd.dest = offsets[i];
 			mvcmd.source = i;
@@ -356,6 +361,12 @@ namespace planet_engine
 		{
 			std::vector<std::shared_ptr<patch>> to_add, to_remove;
 
+			for (auto p : patches)
+			{
+				if (p.first->level != 0	&& p.first->parent.expired())
+					to_remove.push_back(p.first);
+			}
+
 			for (auto p : data->to_subdivide)
 			{
 				p->split();
@@ -372,8 +383,14 @@ namespace planet_engine
 			{
 				std::stack<std::shared_ptr<patch>> stack;
 
-				if (!contains(to_remove, p))
-					to_remove.push_back(p);
+				if (!contains(to_add, p))
+					to_add.push_back(p);
+
+				{
+					auto it = find(to_remove, p);
+					if (it != to_remove.end())
+						to_remove.erase(it);
+				}
 
 				if (p->subdivided())
 				{
@@ -385,8 +402,18 @@ namespace planet_engine
 
 				while (!stack.empty())
 				{
+
 					auto patch = stack.top();
 					stack.pop();
+
+					{
+						auto it = find(to_add, patch);
+						if (it != to_add.end())
+						{
+							to_add.erase(it);
+							continue;
+						}
+					}
 
 					if (patch->subdivided())
 					{
@@ -396,12 +423,8 @@ namespace planet_engine
 						stack.push(patch->se);
 					}
 
-					if (contains(to_remove, patch))
-						assert(false);
-					if (contains(to_add, patch))
-						assert(false);
-
-					to_remove.push_back(patch);
+					if (!contains(to_remove, patch))
+						to_remove.push_back(patch);
 				}
 
 				if (p->subdivided())
@@ -469,14 +492,14 @@ namespace planet_engine
 	}
 	void renderer::render(const glm::dmat4& mvp_mat)
 	{
-		size_t size = meshes.max_index();
+		size_t size = meshes.current_max();
 
 		GLuint buffer;
 		glGenBuffers(1, &buffer);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffer);
 		glBufferData(GL_SHADER_STORAGE_BUFFER, size * sizeof(glm::mat4), nullptr, GL_STATIC_DRAW);
 
-		glm::mat4* matrices = new glm::mat4[size];//(glm::mat4*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
+		glm::mat4* matrices = (glm::mat4*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
 
 		for (auto& p : patches)
 		{
@@ -487,14 +510,14 @@ namespace planet_engine
 			matrices[idx] = mvp_mat * mat;
 		}
 
-		//glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 
 		glUseProgram(planet_shader);
 
-		//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffer);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffer);
 
 		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, drawcommands);
-		
+
 		glBindVertexArray(vertex_array);
 
 		DrawElementsIndirectCommand* commands = (DrawElementsIndirectCommand*)glMapBuffer(GL_DRAW_INDIRECT_BUFFER, GL_READ_ONLY);
@@ -575,7 +598,7 @@ namespace planet_engine
 		glBindVertexArray(vertex_array);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements);
-		
+
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);

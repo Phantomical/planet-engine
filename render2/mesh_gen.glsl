@@ -529,13 +529,7 @@ double noise_a(dvec3 _v)
 
 double noise(dvec3 v)
 {
-	return noise_a(v / 2.0) * 1.0;
-}
-
-dvec3 to_sphere(in dvec3 v)
-{
-	// _pos.w is planet_radius
-	return _pos.w * normalize(v);
+	return noise_a(v * dvec3(0.1)) * 1.0;
 }
 
 const dvec3 pos = _pos.xyz;
@@ -547,6 +541,11 @@ const double planet_radius = _pos.w;
 const double skirt_depth = _nwc.w;
 const double scale = _nec.w;
 const double INTERP = (1.0 / double(SIDE_LEN - 1));
+
+dvec3 to_sphere(in dvec3 v)
+{
+	return planet_radius * normalize(v);
+}
 
 void calc_vertex(in uvec2 p, out vec3 vertex, out float displacement)
 {
@@ -564,6 +563,7 @@ void calc_vertex(in uvec2 p, out vec3 vertex, out float displacement)
 
 void main()
 {
+#define STRIDE 8
 
 	uint index = gl_GlobalInvocationID.x;
 
@@ -607,11 +607,11 @@ void main()
 		displacement = float(-skirt_depth);
 	}
 
-	values[index * 7 + 0] = vertex.x;
-	values[index * 7 + 1] = vertex.y;
-	values[index * 7 + 2] = vertex.z;
-	values[index * 7 + 3] = normal.x;
-	values[index * 7 + 4] = normal.y;
-	values[index * 7 + 5] = normal.z;
-	values[index * 7 + 6] = displacement;
+	values[index * STRIDE + 0] = vertex.x;
+	values[index * STRIDE + 1] = vertex.y;
+	values[index * STRIDE + 2] = vertex.z;
+	values[index * STRIDE + 3] = normal.x;
+	values[index * STRIDE + 4] = normal.y;
+	values[index * STRIDE + 5] = normal.z;
+	values[index * STRIDE + 6] = displacement;
 }

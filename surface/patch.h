@@ -41,8 +41,8 @@ namespace planet_engine
 		static constexpr size_t SIDE_LEN = 129;
 		static constexpr size_t NUM_VERTICES = num_vertices(SIDE_LEN);
 		static constexpr size_t NUM_INDICES = num_indices(SIDE_LEN);
-		static constexpr double SKIRT_DEPTH = 500.0;
-		static constexpr size_t MAX_LEVEL = 2;
+		static constexpr double SKIRT_DEPTH = 5.0;
+		static constexpr size_t MAX_LEVEL = 10;
 
 		struct info
 		{
@@ -79,15 +79,12 @@ namespace planet_engine
 		void split();
 		void merge();
 
-		bool is_leaf() const
-		{
-			return !nw;
-		}
+	private:
+		static constexpr double MULT = 1.0 / (2.5);
 
+	public:
 		bool should_subdivide(const glm::dvec3& cam_pos) const
 		{
-			static constexpr double MULT = 1.0 / (2.5 * 2.5);
-
 			double dis = farthest_vertex;
 			if (farthest_vertex == std::numeric_limits<float>::max())
 				dis = side_length();
@@ -95,8 +92,6 @@ namespace planet_engine
 		}
 		bool should_merge(const glm::dvec3& cam_pos) const
 		{
-			static constexpr double MULT = 1.0 / (2.5 * 2.5);
-
 			return length2(cam_pos - pos) * MULT > farthest_vertex * farthest_vertex;
 		}
 
@@ -109,6 +104,18 @@ namespace planet_engine
 			glm::dvec3 diff = nwc - nec;
 
 			return std::max({ diff.x, diff.y, diff.z });
+		}
+
+		size_t get_max_level() const
+		{
+			if (!subdivided())
+				return level;
+			return std::max({
+				nw->get_max_level(),
+				ne->get_max_level(),
+				sw->get_max_level(),
+				se->get_max_level()
+			});
 		}
 
 	private:

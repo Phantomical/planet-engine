@@ -24,12 +24,14 @@ layout (binding = 1, std430) buffer Lengths
 
 void main()
 {
+#define STRIDE 8
+
 	if (GlobalInvocationIndex < size)
 	{
 		vec3 vertex = vec3(
-			values[GlobalInvocationIndex * 7 + 0],
-			values[GlobalInvocationIndex * 7 + 1],
-			values[GlobalInvocationIndex * 7 + 2]);
+			values[GlobalInvocationIndex * 8 + 0],
+			values[GlobalInvocationIndex * 8 + 1],
+			values[GlobalInvocationIndex * 8 + 2]);
 
 		lengths[GlobalInvocationIndex] = length(vertex);
 	}

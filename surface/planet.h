@@ -12,5 +12,7 @@ namespace planet_engine
 		planet(double radius);
 
 		void update(const glm::dvec3& cam_pos);
+
+		size_t get_max_level() const;
 	};
 }

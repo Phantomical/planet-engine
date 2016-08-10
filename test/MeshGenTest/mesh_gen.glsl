@@ -562,6 +562,8 @@ void calc_vertex(in uvec2 p, out vec3 vertex, out float displacement)
 	displacement = float(disp);
 }
 
+#define STRIDE 7
+
 void main()
 {
 
@@ -607,11 +609,11 @@ void main()
 		displacement = float(-skirt_depth);
 	}
 
-	values[index * 7 + 0] = vertex.x;
-	values[index * 7 + 1] = vertex.y;
-	values[index * 7 + 2] = vertex.z;
-	values[index * 7 + 3] = normal.x;
-	values[index * 7 + 4] = normal.y;
-	values[index * 7 + 5] = normal.z;
-	values[index * 7 + 6] = displacement;
+	values[index * STRIDE + 0] = vertex.x;
+	values[index * STRIDE + 1] = vertex.y;
+	values[index * STRIDE + 2] = vertex.z;
+	values[index * STRIDE + 3] = normal.x;
+	values[index * STRIDE + 4] = normal.y;
+	values[index * STRIDE + 5] = normal.z;
+	values[index * STRIDE + 6] = displacement;
 }

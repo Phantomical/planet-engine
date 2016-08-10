@@ -101,7 +101,8 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 		break;
 	}
 
-	OutputDebug(typestr, severitystr, ' ', message, '\n');
+	OutputDebug(typestr, severitystr, ' ', message);
+	OutputDebug('\n');
 }
 
 void WindowCallback(GLFWwindow* win, int xsz, int ysz)
@@ -145,11 +146,13 @@ int main()
 			shader.check_errors({ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER });
 
 			program = shader.program();
+
+			glProgramUniform3f(program, 1, 0.0, 0.5, 0.5);
 		}
 
-		renderer ren{ program, 0.5 };
+		renderer ren{ program, 50.0 };
 
-		CamPos = glm::dvec3(0.0, 0.0, 0.0/*-12000.0*/);
+		CamPos = glm::dvec3(0.0, 0.0, -10.0/*-12000.0*/);
 		CamRot = glm::dquat(1.0, 0.0, 0.0, 0.0);
 
 		ren.update(CamPos);
@@ -159,7 +162,7 @@ int main()
 		{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glm::dmat4 view_mat = glm::inverse(glm::translate(glm::dmat4(1.0), CamPos) * (glm::dmat4)CamRot);
-			glm::dmat4 proj_mat = projection(deg2rad(60.0), aspect, 0.05, 10.0);
+			glm::dmat4 proj_mat = projection(deg2rad(60.0), aspect, 0.05, 100.0);
 			auto vp_mat = proj_mat * view_mat;
 
 			ren.render(vp_mat);

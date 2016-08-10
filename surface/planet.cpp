@@ -43,6 +43,10 @@ namespace planet_engine
 		{
 			data->to_subdivide.push_back(side);
 		}
+		for (auto side : sides)
+		{
+			data->to_merge.push_back(side);
+		}
 	}
 
 	void planet::update(const glm::dvec3& cam_pos)
@@ -62,5 +66,17 @@ namespace planet_engine
 				data->to_merge.push_back(lp);
 			}
 		}
+	}
+
+	size_t planet::get_max_level() const
+	{
+		return std::max({
+			sides[0]->get_max_level(),
+			sides[1]->get_max_level(),
+			sides[2]->get_max_level(),
+			sides[3]->get_max_level(),
+			sides[4]->get_max_level(),
+			sides[5]->get_max_level()
+		});
 	}
 }
