@@ -32,9 +32,6 @@
     <ClInclude Include="buffer_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="defs.h">
       <Filter>Header Files</Filter>
     </ClInclude>

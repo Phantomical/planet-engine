@@ -164,7 +164,6 @@
     <ClInclude Include="buffer_manager.h" />
     <ClInclude Include="defs.h" />
     <ClInclude Include="renderer.h" />
-    <ClInclude Include="shader.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="command_update.glsl">
