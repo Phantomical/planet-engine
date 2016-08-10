@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma once
+
 #include "gl_core.h"
 #include <string>
 
@@ -7,7 +9,7 @@ namespace planet_engine
 {
 	namespace util
 	{
-		class shader
+		class glsl_shader
 		{
 		private:
 			static constexpr size_t NumShaderTypes = 6;
@@ -28,12 +30,12 @@ namespace planet_engine
 			bool _link_status;
 
 		public:
-			shader();
-			shader(bool owns);
-			shader(shader&& sh);
-			shader(const shader&) = delete;
+			glsl_shader();
+			glsl_shader(bool owns);
+			glsl_shader(glsl_shader&& sh);
+			glsl_shader(const glsl_shader&) = delete;
 
-			~shader();
+			~glsl_shader();
 
 			void vertex(const char* source);
 			void vertex(const std::string& source);
@@ -65,13 +67,14 @@ namespace planet_engine
 			bool valid() const;
 
 			//Prints out errors to the console and terminates if an error is found
-			void check_errors(std::initializer_list<GLenum> stages) const;
+			void check_errors(std::initializer_list<GLenum> stages, bool exit_on_faliure = true) const;
 
 			GLuint program();
 			const std::string& shader_log(GLenum shader_stage) const;
 			const std::string& program_log() const;
 		};
 
-		typedef shader glsl_shader;
+		typedef glsl_shader shader;
 	}
 }
+

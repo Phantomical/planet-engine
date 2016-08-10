@@ -5,16 +5,19 @@
 #include <sstream>
 #include <cassert>
 
-namespace utils
+namespace planet_engine
 {
-	std::string read_file(const std::string& path)
+	namespace util
 	{
-		std::ifstream t(path);
+		std::string read_file(const std::string& path)
+		{
+			std::ifstream t(path);
 
-		assert(t.is_open());
+			assert(t.is_open());
 
-		std::stringstream buffer;
-		buffer << t.rdbuf();
-		return buffer.str();
+			std::stringstream buffer;
+			buffer << t.rdbuf();
+			return buffer.str();
+		}
 	}
 }

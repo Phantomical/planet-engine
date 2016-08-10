@@ -2,7 +2,10 @@
 
 #include <string>
 
-namespace utils
+namespace planet_engine
 {
-	std::string read_file(const std::string& path);
+	namespace util
+	{
+		std::string read_file(const std::string& path);
+	}
 }
