@@ -1,7 +1,8 @@
 #include "renderer.h"
 #include "shader.h"
+#include "input.h"
 #include <GLFW\glfw3.h>
-#include <sstream>
+#include <iostream>
 
 #include <glm\gtc\matrix_transform.hpp>
 
@@ -22,6 +23,36 @@ namespace planet_engine
 {
 	std::string read_file(const std::string& fname);
 }
+
+constexpr double deg2rad(double v)
+{
+	return v * 0.017453292519943295769;
+}
+constexpr double rad2deg(double v)
+{
+	return v * 57.295779513082320877;
+}
+glm::dmat4 projection(double fovy, double aspect, double near_z, double far_z)
+{
+	double tmp1 = 1.0 / std::tan(fovy);
+	double tmp2 = 1.0 / (far_z - near_z);
+
+	return glm::dmat4(
+		tmp1, 0.0, 0.0, 0.0,
+		0.0, aspect * tmp1, 0.0, 0.0,
+		0.0, 0.0, (far_z + near_z)  * tmp2, 1.0,
+		0.0, 0.0, -2.0*far_z*near_z * tmp2, 0.0);
+}
+glm::dmat4 translation(const glm::dvec3& v)
+{
+	return glm::dmat4(
+		1.0, 0.0, 0.0, v.x,
+		0.0, 1.0, 0.0, v.y,
+		0.0, 0.0, 1.0, v.z,
+		0.0, 0.0, 0.0, 1.0);
+}
+
+double aspect;
 
 void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void*)
 {
@@ -73,6 +104,12 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 	OutputDebug(typestr, severitystr, ' ', message, '\n');
 }
 
+void WindowCallback(GLFWwindow* win, int xsz, int ysz)
+{
+	glViewport(0, 0, xsz, ysz);
+	aspect = double(xsz) / double(ysz);
+}
+
 int main()
 {
 	glfwInit();
@@ -81,15 +118,22 @@ int main()
 
 	GLFWwindow* win = glfwCreateWindow(1080, 720, "Planet Engine Demo", nullptr, nullptr);
 	glfwMakeContextCurrent(win);
-	
+
+	glfwSetWindowSizeCallback(win, &WindowCallback);
+
 	ogl_LoadFunctions();
 
 	glfwSwapBuffers(win);
-	
-	//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+
+	aspect = 1.5;
+
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(DebugProc, nullptr);
 
-	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClearColor(0.0, 1.0, 1.0, 1.0);
+	glEnable(GL_DEPTH_TEST);
+
+	glPointSize(10);
 
 	{
 		GLuint program;
@@ -103,23 +147,30 @@ int main()
 			program = shader.program();
 		}
 
-		renderer ren{ program, 10000.0 };
+		renderer ren{ program, 0.5 };
 
-		glm::dvec3 cam_pos = glm::dvec3(0.0, 0.0, -12000.0);
+		CamPos = glm::dvec3(0.0, 0.0, 0.0/*-12000.0*/);
+		CamRot = glm::dquat(1.0, 0.0, 0.0, 0.0);
 
-		ren.update(cam_pos);
+		ren.update(CamPos);
 
+		size_t i = 0;
 		while (!glfwWindowShouldClose(win))
 		{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glm::dmat4 view_mat = glm::lookAt(cam_pos, glm::dvec3(0.0, 0.0, 0.0), glm::dvec3(0.0, 1.0, 0.0));
-			glm::dmat4 proj_mat = glm::perspective(60.0, 1080.0 / 720.0, 1000.0, 20000.0);
+			glm::dmat4 view_mat = glm::inverse(glm::translate(glm::dmat4(1.0), CamPos) * (glm::dmat4)CamRot);
+			glm::dmat4 proj_mat = projection(deg2rad(60.0), aspect, 0.05, 10.0);
+			auto vp_mat = proj_mat * view_mat;
 
-			ren.render(proj_mat * view_mat);
-			ren.update(cam_pos);
+			ren.render(vp_mat);
+			ren.update(CamPos);
+
+			HandleInput(win);
 
 			glfwPollEvents();
 			glfwSwapBuffers(win);
+
+			//std::cout << "[FRAME] Ended Frame " << ++i << std::endl;
 		}
 
 		glDeleteProgram(program);

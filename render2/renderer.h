@@ -19,8 +19,8 @@ namespace planet_engine
 		static constexpr size_t SIDE_LEN = patch::SIDE_LEN;
 		static constexpr size_t VERTEX_SIZE = sizeof(float) * 7;
 		static constexpr size_t MESH_SIZE = NUM_VERTICES * VERTEX_SIZE;
-		// The maximum number of mesh blocks that can be allocated in GPU memorys
-		static constexpr size_t NUM_BLOCKS = 1 << 16;
+		// The maximum number of mesh blocks that can be allocated in GPU memory
+		static constexpr size_t NUM_BLOCKS = 1 << 14;
 		static constexpr size_t COMPUTE_GROUP_SIZE = 128;
 
 		typedef GLuint offset_type;
@@ -88,6 +88,8 @@ namespace planet_engine
 		buffer_manager meshes;
 		// The buffer for the draw commands
 		GLuint drawcommands;
+
+		GLuint vertex_array;
 
 		// Element buffer
 		GLuint elements;

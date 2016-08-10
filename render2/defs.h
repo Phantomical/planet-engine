@@ -1,5 +1,7 @@
 #pragma once
 
+#undef LOG_TO_FILE
+
 #include <sstream>
 #ifdef LOG_TO_FILE
 #include <iostream>
@@ -20,12 +22,14 @@ typename std::enable_if<sizeof...(Args) != 0>::type _OutputDebug(std::stringstre
 	_OutputDebug(str, args...);
 }
 
+#ifdef LOG_TO_FILE
 inline std::ofstream& _GetDebugStream()
 {
 	static std::ofstream _OutputFile = std::ofstream("log.txt");
 	_OutputFile.sync_with_stdio();
 	return _OutputFile;
 }
+#endif
 
 template<typename... Args>
 void OutputDebug(const Args&... args)

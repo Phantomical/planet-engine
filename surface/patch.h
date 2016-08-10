@@ -42,6 +42,7 @@ namespace planet_engine
 		static constexpr size_t NUM_VERTICES = num_vertices(SIDE_LEN);
 		static constexpr size_t NUM_INDICES = num_indices(SIDE_LEN);
 		static constexpr double SKIRT_DEPTH = 500.0;
+		static constexpr size_t MAX_LEVEL = 2;
 
 		struct info
 		{
@@ -90,7 +91,7 @@ namespace planet_engine
 			double dis = farthest_vertex;
 			if (farthest_vertex == std::numeric_limits<float>::max())
 				dis = side_length();
-			return length2(cam_pos - pos) * MULT < dis * dis;
+			return level < MAX_LEVEL && length2(cam_pos - pos) * MULT < dis * dis;
 		}
 		bool should_merge(const glm::dvec3& cam_pos) const
 		{

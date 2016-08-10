@@ -56,6 +56,7 @@ namespace planet_engine
 
 		while (_max_index * _block_size > _num_pages * _page_size)
 		{
+			assert((_num_pages + 1) < _max_pages);
 			//Commits the next page allowing it to be used for mesh data
 			glNamedBufferPageCommitmentEXT(_buffer,
 				_num_pages++ * _page_size, _page_size, GL_TRUE);
@@ -63,13 +64,13 @@ namespace planet_engine
 
 		_offsets.insert(index);
 
-		//OutputDebug("[BUFMGR][At ", this, "] Allocated offset ", index, ".\n");
+		OutputDebug("[BUFMGR][At ", this, "] Allocated offset ", index, ".\n");
 
 		return index;
 	}
 	void buffer_manager::dealloc_block(GLuint offset)
 	{
-		//OutputDebug("[BUFMGR][At ", this, "] Deallocated offset ", offset, ".\n");
+		OutputDebug("[BUFMGR][At ", this, "] Deallocated offset ", offset, ".\n");
 
 		assert(offset < _max_index);
 
@@ -108,6 +109,16 @@ namespace planet_engine
 	}
 	GLuint buffer_manager::size() const
 	{
+		return _max_index;
+	}
+	GLuint buffer_manager::max_index() const
+	{
+		if (_offsets.size() != 0)
+		{
+			std::vector<GLuint> offsets(_offsets.begin(), _offsets.end());
+			assert(std::max(std::initializer_list<GLuint>(
+				offsets.data(), offsets.data() + offsets.size())) < _max_index);
+		}
 		return _max_index;
 	}
 
