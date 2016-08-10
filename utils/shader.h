@@ -7,7 +7,7 @@ namespace planet_engine
 {
 	namespace util
 	{
-		class glsl_shader
+		class shader
 		{
 		private:
 			static constexpr size_t NumShaderTypes = 6;
@@ -28,12 +28,12 @@ namespace planet_engine
 			bool _link_status;
 
 		public:
-			glsl_shader();
-			glsl_shader(bool owns);
-			glsl_shader(glsl_shader&& sh);
-			glsl_shader(const glsl_shader&) = delete;
+			shader();
+			shader(bool owns);
+			shader(shader&& sh);
+			shader(const shader&) = delete;
 
-			~glsl_shader();
+			~shader();
 
 			void vertex(const char* source);
 			void vertex(const std::string& source);
@@ -71,5 +71,7 @@ namespace planet_engine
 			const std::string& shader_log(GLenum shader_stage) const;
 			const std::string& program_log() const;
 		};
+
+		typedef shader glsl_shader;
 	}
 }

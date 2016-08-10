@@ -29,21 +29,21 @@ namespace planet_engine
 		template<GLuint idx>
 		struct sti : shader_type_index<idx> { };
 
-		glsl_shader::glsl_shader() :
+		shader::shader() :
 			_destroy(false),
 			_program(0)
 		{
 			std::memset(_shaders, 0, sizeof(_shaders));
 			std::memset(_statuses, 0, sizeof(_statuses));
 		}
-		glsl_shader::glsl_shader(bool owns) :
+		shader::shader(bool owns) :
 			_destroy(owns),
 			_program(glCreateProgram())
 		{
 			std::memset(_shaders, 0, sizeof(_shaders));
 			std::memset(_statuses, 0, sizeof(_statuses));
 		}
-		glsl_shader::glsl_shader(glsl_shader&& sh) :
+		shader::shader(shader&& sh) :
 			_program(sh._program),
 			_destroy(sh._destroy),
 			_linker_log(std::move(sh._linker_log))
@@ -58,7 +58,7 @@ namespace planet_engine
 
 			sh._program = 0;
 		}
-		glsl_shader::~glsl_shader()
+		shader::~shader()
 		{
 			if (valid())
 			{
@@ -78,53 +78,53 @@ namespace planet_engine
 			}
 		}
 
-		void glsl_shader::vertex(const std::string& source)
+		void shader::vertex(const std::string& source)
 		{
 			return vertex(source.c_str());
 		}
-		void glsl_shader::fragment(const std::string& source)
+		void shader::fragment(const std::string& source)
 		{
 			return fragment(source.c_str());
 		}
-		void glsl_shader::tess_control(const std::string& source)
+		void shader::tess_control(const std::string& source)
 		{
 			return tess_control(source.c_str());
 		}
-		void glsl_shader::tess_evaluation(const std::string& source)
+		void shader::tess_evaluation(const std::string& source)
 		{
 			return tess_evaluation(source.c_str());
 		}
-		void glsl_shader::compute(const std::string& source)
+		void shader::compute(const std::string& source)
 		{
 			return compute(source.c_str());
 		}
 
-		void glsl_shader::vertex(const char* source)
+		void shader::vertex(const char* source)
 		{
 			return stage(GL_VERTEX_SHADER, source);
 		}
-		void glsl_shader::fragment(const char* source)
+		void shader::fragment(const char* source)
 		{
 			return stage(GL_FRAGMENT_SHADER, source);
 		}
-		void glsl_shader::tess_control(const char* source)
+		void shader::tess_control(const char* source)
 		{
 			return stage(GL_TESS_CONTROL_SHADER, source);
 		}
-		void glsl_shader::tess_evaluation(const char* source)
+		void shader::tess_evaluation(const char* source)
 		{
 			return stage(GL_TESS_EVALUATION_SHADER, source);
 		}
-		void glsl_shader::compute(const char* source)
+		void shader::compute(const char* source)
 		{
 			return stage(GL_COMPUTE_SHADER, source);
 		}
 
-		void glsl_shader::stage(GLenum stage, const std::string& source)
+		void shader::stage(GLenum stage, const std::string& source)
 		{
 			return this->stage(stage, source.c_str());
 		}
-		void glsl_shader::stage(GLenum stage, const char* source)
+		void shader::stage(GLenum stage, const char* source)
 		{
 			const size_t index = GetTypeIndex(stage);
 
@@ -158,12 +158,12 @@ namespace planet_engine
 			}
 		}
 
-		void glsl_shader::transform_feedback_varyings(size_t count, const char** varyings, GLenum bufferMode)
+		void shader::transform_feedback_varyings(size_t count, const char** varyings, GLenum bufferMode)
 		{
 			glTransformFeedbackVaryings(_program, count, varyings, bufferMode);
 		}
 
-		void glsl_shader::link()
+		void shader::link()
 		{
 			glLinkProgram(_program);
 
@@ -185,59 +185,59 @@ namespace planet_engine
 			}
 		}
 
-		bool glsl_shader::has_vertex() const
+		bool shader::has_vertex() const
 		{
 			return _shaders[sti<GL_VERTEX_SHADER>::index] != 0;
 		}
-		bool glsl_shader::has_fragment() const
+		bool shader::has_fragment() const
 		{
 			return _shaders[sti<GL_FRAGMENT_SHADER>::index] != 0;
 		}
-		bool glsl_shader::has_tess_control() const
+		bool shader::has_tess_control() const
 		{
 			return _shaders[sti<GL_TESS_CONTROL_SHADER>::index] != 0;
 		}
-		bool glsl_shader::has_tess_evaluation() const
+		bool shader::has_tess_evaluation() const
 		{
 			return _shaders[sti<GL_TESS_EVALUATION_SHADER>::index] != 0;
 		}
-		bool glsl_shader::has_compute() const
+		bool shader::has_compute() const
 		{
 			return _shaders[sti<GL_COMPUTE_SHADER>::index] != 0;
 		}
-		bool glsl_shader::has_stage(GLenum stage) const
+		bool shader::has_stage(GLenum stage) const
 		{
 			return _shaders[GetTypeIndex(stage)] != 0;
 		}
 
-		bool glsl_shader::compile_status(GLenum type) const
+		bool shader::compile_status(GLenum type) const
 		{
 			return _statuses[GetTypeIndex(type)];
 		}
-		bool glsl_shader::link_status() const
+		bool shader::link_status() const
 		{
 			return _link_status;
 		}
 
-		GLuint glsl_shader::program()
+		GLuint shader::program()
 		{
 			return _program;
 		}
-		const std::string& glsl_shader::shader_log(GLenum shader_stage) const
+		const std::string& shader::shader_log(GLenum shader_stage) const
 		{
 			return _logs[GetTypeIndex(shader_stage)];
 		}
-		const std::string& glsl_shader::program_log() const
+		const std::string& shader::program_log() const
 		{
 			return _linker_log;
 		}
 
-		bool glsl_shader::valid() const
+		bool shader::valid() const
 		{
 			return _program != 0;
 		}
 
-		void glsl_shader::check_errors(std::initializer_list<GLenum> stages) const
+		void shader::check_errors(std::initializer_list<GLenum> stages) const
 		{
 			if (!valid())
 				return;
