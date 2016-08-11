@@ -101,8 +101,8 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 		break;
 	}
 
-	OutputDebug(typestr, severitystr, ' ', message);
-	OutputDebug('\n');
+	OutputDebug(typestr, severitystr, ' ', message, '\n');
+	OutputDebug("");
 }
 
 void WindowCallback(GLFWwindow* win, int xsz, int ysz)

@@ -124,9 +124,7 @@ namespace planet_engine
 
 		void step_compute_states();
 		void update_meshes();
-
-		void cull_invalid();
-
+		
 	public:
 		planet planet;
 		std::shared_ptr<planet_data> data;

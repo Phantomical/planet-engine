@@ -9,15 +9,6 @@ struct LoadCommand
 	uint is_new;
 };
 
-const uint WorkGroupIndex = 
-          gl_WorkGroupID.z * gl_NumWorkGroups.x * gl_NumWorkGroups.y +
-          gl_WorkGroupID.y * gl_NumWorkGroups.x + 
-          gl_WorkGroupID.x;
-const uint GlobalInvocationIndex = 
-		WorkGroupIndex * gl_WorkGroupSize.x * 
-		gl_WorkGroupSize.y * gl_WorkGroupSize.z + 
-		gl_LocalInvocationIndex;
-
 layout (location = 0) uniform uint size;
 
 layout (binding = 0, std430) buffer CommandBuffer
@@ -35,6 +26,8 @@ layout (binding = 2, std430) buffer OutputBuffer
 
 void main()
 {
+	const uint GlobalInvokationIndex = gl_GlobalInvokationID.x;
+
 	if (GlobalInvokationIndex >= size)
 		return;
 
