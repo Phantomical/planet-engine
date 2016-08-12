@@ -186,7 +186,7 @@ int main()
 		{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glm::dmat4 view_mat = glm::inverse(glm::translate(glm::dmat4(1.0), CamPos) * (glm::dmat4)CamRot);
-			glm::dmat4 proj_mat = projection(deg2rad(60.0), aspect, 0.05, 100.0);
+			glm::dmat4 proj_mat = projection(deg2rad(60.0), aspect, 0.05, 1000.0);
 			auto vp_mat = proj_mat * view_mat;
 
 			ren.render(vp_mat);
