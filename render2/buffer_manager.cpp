@@ -96,6 +96,30 @@ namespace planet_engine
 			return_index(offset);
 	}
 
+	void buffer_manager::uncommit_unused()
+	{
+		GLuint max = current_max();
+
+		std::vector<GLuint> used;
+
+		while (!_free_list.empty())
+		{
+			if (_free_list.top() < max)
+				used.push_back(_free_list.top());
+			_free_list.pop();
+		}
+
+		glBindBuffer(GL_ARRAY_BUFFER, _buffer);
+		
+		for (GLuint page = ((max + _page_size - 1) / _page_size); page < _num_pages; ++page)
+		{
+			glBufferPageCommitmentARB(GL_ARRAY_BUFFER, page * _page_size, _page_size, GL_FALSE);
+		}
+
+		for (GLuint open : used)
+			_free_list.push(open);
+	}
+
 	GLuint buffer_manager::buffer() const
 	{
 		return _buffer;

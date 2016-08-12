@@ -52,6 +52,10 @@ namespace planet_engine
 		GLuint max_index() const;
 		GLuint current_max() const;
 
+		// Removes all unused pages at the end of 
+		// allocated range in the buffer
+		void uncommit_unused();
+
 		buffer_manager(GLuint block_size, GLuint num_blocks);
 		buffer_manager(const buffer_manager&) = delete;
 
