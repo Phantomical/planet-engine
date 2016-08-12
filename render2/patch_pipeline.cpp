@@ -61,6 +61,7 @@ namespace planet_engine
 	{
 		static constexpr size_t VERTEX_BUFFER_SIZE = (SIDE_LEN + 2) * (SIDE_LEN + 2) * sizeof(float) * 4;
 		static constexpr size_t NUM_INVOCATIONS = ((SIDE_LEN + 2) * (SIDE_LEN + 2) + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
+		static constexpr size_t GEN_VERTEX_INVOCATIONS = (SIDE_LEN + 2 + 7) / 7;
 
 		switch (state)
 		{
@@ -100,7 +101,7 @@ namespace planet_engine
 			// Bind uniforms
 			glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniform);
 			// Dispatch compute shader to fill the output buffer
-			glDispatchCompute(NUM_INVOCATIONS, 1, 1);
+			glDispatchCompute(GEN_VERTEX_INVOCATIONS, GEN_VERTEX_INVOCATIONS, 1);
 			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 			state = GEN_MESH;
@@ -120,7 +121,7 @@ namespace planet_engine
 
 			// Generate buffers
 			glDeleteBuffers(1, &uniform);
-			glDeleteBuffers(1, &vertex_buffer);
+			//glDeleteBuffers(1, &vertex_buffer);
 
 			pipeline->_offsets.insert(std::make_pair(target_patch, offset));
 

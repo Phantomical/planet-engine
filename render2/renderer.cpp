@@ -205,7 +205,7 @@ namespace planet_engine
 		offsets.clear();
 		size = 0;
 	}
-	
+
 	void renderer::step_compute_states()
 	{
 		for (auto& state : compute_states)
@@ -253,7 +253,7 @@ namespace planet_engine
 
 				if (p->farthest_vertex == std::numeric_limits<float>::max())
 					to_compute.push_back(p);
-				
+
 				if (p->subdivided())
 				{
 					stack.push(p->nw);
@@ -292,8 +292,9 @@ namespace planet_engine
 
 			ustate = pipeline.process();
 
-			compute_states.push_back(compute_bounds(std::initializer_list<std::shared_ptr<patch>>(
-				to_compute.data(), to_compute.data() + to_compute.size())));
+			if (!to_compute.empty())
+				compute_states.push_back(compute_bounds(std::initializer_list<std::shared_ptr<patch>>(
+					to_compute.data(), to_compute.data() + to_compute.size())));
 		}
 
 		if (ustate.movecommands.size() != 0)
@@ -319,7 +320,7 @@ namespace planet_engine
 
 			DrawElementsIndirectCommand* commands = (DrawElementsIndirectCommand*)glMapNamedBufferRange(drawcommands, 0,
 				sizeof(DrawElementsIndirectCommand) * pipeline.manager().max_index(), GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
-			
+
 			for (auto cmd : ustate.movecommands)
 			{
 				if (cmd.is_new)
@@ -331,7 +332,7 @@ namespace planet_engine
 					std::memset(commands + cmd.dest, 0, sizeof(DrawElementsIndirectCommand));
 				}
 			}
-			
+
 			glUnmapNamedBuffer(drawcommands);
 		}
 	}
@@ -350,12 +351,7 @@ namespace planet_engine
 	{
 		size_t size = pipeline.manager().current_max();
 
-		GLuint buffer;
-		glGenBuffers(1, &buffer);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffer);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, size * sizeof(glm::mat4), nullptr, GL_STATIC_DRAW);
-
-		glm::mat4* matrices = (glm::mat4*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
+		glm::mat4* matrices = new glm::mat4[size];
 
 		for (auto& p : pipeline.patches())
 		{
@@ -366,11 +362,14 @@ namespace planet_engine
 			matrices[idx] = mvp_mat * mat;
 		}
 
-		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, matbuffer);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, size * sizeof(glm::mat4), matrices, GL_DYNAMIC_DRAW);
+		
+		delete[] matrices;
 
 		glUseProgram(planet_shader);
 
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffer);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, matbuffer);
 
 		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, drawcommands);
 
@@ -379,8 +378,6 @@ namespace planet_engine
 		glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, nullptr, size, 0);
 
 		glBindVertexArray(0);
-
-		glDeleteBuffers(1, &buffer);
 	}
 
 	/* Constructors and Destructors */
@@ -407,7 +404,7 @@ namespace planet_engine
 		this->max_calc = max_calc.program();
 		this->length_calc = length_calc.program();
 		this->command_update = command_update.program();
-		
+
 		data = planet.data;
 
 		unsigned int* indices = gen_indices(SIDE_LEN);
@@ -419,11 +416,15 @@ namespace planet_engine
 		glGetIntegerv(GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT, &ssbo_align);
 		ssbo_offset_alignment = ssbo_align;
 
-		glCreateBuffers(1, &elements);
-		glNamedBufferData(elements, num_indices(SIDE_LEN) * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+		glGenBuffers(1, &elements);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, num_indices(SIDE_LEN) * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
-		glCreateBuffers(1, &drawcommands);
-		glNamedBufferData(drawcommands, sizeof(DrawElementsIndirectCommand) * NUM_BLOCKS, nullptr, GL_STATIC_DRAW);
+		glGenBuffers(1, &drawcommands);
+		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, drawcommands);
+		glBufferData(GL_DRAW_INDIRECT_BUFFER, sizeof(DrawElementsIndirectCommand) * NUM_BLOCKS, nullptr, GL_STATIC_DRAW);
+
+		glGenBuffers(1, &matbuffer);
 
 		delete[] indices;
 
@@ -451,5 +452,7 @@ namespace planet_engine
 		glDeleteProgram(command_update);
 
 		glDeleteBuffers(1, &elements);
+		glDeleteBuffers(1, &drawcommands);
+		glDeleteBuffers(1, &matbuffer);
 	}
 }

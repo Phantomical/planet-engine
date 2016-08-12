@@ -58,6 +58,8 @@ namespace planet_engine
 
 		// The buffer for the draw commands
 		GLuint drawcommands;
+		// Matrix buffer
+		GLuint matbuffer;
 
 		GLuint vertex_array;
 

@@ -64,16 +64,14 @@
     <CustomBuild Include="mesh_gen3.glsl">
       <Filter>Shaders</Filter>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="vertex_gen.glsl">
+    <CustomBuild Include="mesh_gen.glsl">
       <Filter>Shaders\pipeline</Filter>
-    </None>
-    <None Include="upsample.glsl">
+    </CustomBuild>
+    <CustomBuild Include="upsample.glsl">
       <Filter>Shaders\pipeline</Filter>
-    </None>
-    <None Include="mesh_gen2.glsl">
+    </CustomBuild>
+    <CustomBuild Include="vertex_gen.glsl">
       <Filter>Shaders\pipeline</Filter>
-    </None>
+    </CustomBuild>
   </ItemGroup>
 </Project>
