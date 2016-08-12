@@ -13,128 +13,15 @@ namespace planet_engine
 		return v.state == T::ERROR_STATE;
 	}
 
-	void patch_pipeline::upsample(std::shared_ptr<patch> patch)
-	{
-		if (!can_upsample(patch))
-		{
-			assert(false);
-			return;
-		}
+#define any_of_switch(exec, func) do { \
+	switch (exec.active_index()) { \
+		case 0: func(0); break; \
+		case 1: func(1); break; \
+		case 2: func(2); break; \
+		case 3: func(3); break; \
+	}} while(0)
 
-		_waiting.emplace(upsample_state(patch, this));
-	}
-	void patch_pipeline::generate(std::shared_ptr<patch> patch)
-	{
-		_waiting.emplace(generate_state(patch, this));
-	}
-	void patch_pipeline::remove(std::shared_ptr<patch> patch)
-	{
-		_waiting.emplace(remove_state(patch, this));
-	}
-
-	void patch_pipeline::cull()
-	{
-		std::vector<std::shared_ptr<patch>> tr;
-
-		for (const auto& p : _offsets)
-		{
-			if (p.first->parent.expired() && p.first->level != 0)
-				tr.push_back(p.first);
-		}
-
-		for (const auto& p : tr)
-			remove(p);
-	}
-
-	bool patch_pipeline::generate_state::is_done() const
-	{
-		return state == DONE;
-	}
-	bool patch_pipeline::upsample_state::is_done() const
-	{
-		return state == DONE;
-	}
-	bool patch_pipeline::remove_state::is_done() const
-	{
-		return state == DONE;
-	}
-
-	void patch_pipeline::generate_state::step()
-	{
-		static constexpr size_t VERTEX_BUFFER_SIZE = (SIDE_LEN + 2) * (SIDE_LEN + 2) * sizeof(float) * 4;
-		static constexpr size_t NUM_INVOCATIONS = ((SIDE_LEN + 2) * (SIDE_LEN + 2) + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
-		static constexpr size_t GEN_VERTEX_INVOCATIONS = (SIDE_LEN + 2 + 7) / 7;
-
-		switch (state)
-		{
-		case planet_engine::patch_pipeline::generate_state::START:
-		{
-			glGenBuffers(1, &vertex_buffer);
-			glGenBuffers(1, &uniform);
-
-			glBindBuffer(GL_SHADER_STORAGE_BUFFER, vertex_buffer);
-			glBufferStorage(GL_SHADER_STORAGE_BUFFER, VERTEX_BUFFER_SIZE, nullptr, 0);
-
-			mesh_info info =
-			{
-				target_patch->pos,
-				target_patch->data->planet_radius,
-				target_patch->nwc,
-				SKIRT_DEPTH,
-				target_patch->nec,
-				1.0, // Scale
-				target_patch->swc,
-				0.0, //Padding
-				target_patch->sec
-			};
-
-			glBindBuffer(GL_UNIFORM_BUFFER, uniform);
-			glBufferData(GL_UNIFORM_BUFFER, sizeof(mesh_info), &info, GL_STATIC_DRAW);
-
-			offset = pipeline->_manager.alloc_block();
-
-			state = GEN_VERTEX_ARRAY;
-			OutputDebug("[PIPELINE] Generated patch ", target_patch.get(), ". There are ", ++n, " patches.\n");
-			break;
-		}
-		case planet_engine::patch_pipeline::generate_state::GEN_VERTEX_ARRAY:
-			glUseProgram(pipeline->_vertex_gen);
-			// Bind ouput buffer
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertex_buffer);
-			// Bind uniforms
-			glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniform);
-			// Dispatch compute shader to fill the output buffer
-			glDispatchCompute(GEN_VERTEX_INVOCATIONS, GEN_VERTEX_INVOCATIONS, 1);
-			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-
-			state = GEN_MESH;
-			break;
-		case planet_engine::patch_pipeline::generate_state::GEN_MESH:
-			glUseProgram(pipeline->_meshgen);
-			// Bind input buffer
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertex_buffer);
-			// Bind output buffer range
-			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, pipeline->_manager.buffer(),
-				offset * pipeline->_manager.block_size(), pipeline->_manager.block_size());
-			// Bind Uniforms
-			glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniform);
-			// Dispatch compute shader to fill the output buffer
-			glDispatchCompute(NUM_INVOCATIONS, 1, 1);
-			glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT);
-
-			// Generate buffers
-			glDeleteBuffers(1, &uniform);
-			glDeleteBuffers(1, &vertex_buffer);
-
-			pipeline->_offsets.insert(std::make_pair(target_patch, offset));
-
-			state = DONE;
-			break;
-		default:
-			break;
-		}
-	}
-	void patch_pipeline::upsample_state::step()
+	void patch_pipeline::_upsample_state::step()
 	{
 		static constexpr size_t NUM_INVOCATIONS = (NUM_VERTICES + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
 
@@ -210,7 +97,7 @@ namespace planet_engine
 			break;
 		}
 	}
-	void patch_pipeline::remove_state::step()
+	void patch_pipeline::_remove_state::step()
 	{
 		switch (state)
 		{
@@ -245,15 +132,8 @@ namespace planet_engine
 			break;
 		}
 	}
-
-	patch_pipeline::generate_state::generate_state(std::shared_ptr<patch> p, patch_pipeline* pipeline) :
-		state(START),
-		pipeline(pipeline),
-		target_patch(p)
-	{
-
-	}
-	patch_pipeline::upsample_state::upsample_state(std::shared_ptr<patch> p, patch_pipeline* pipeline) :
+	
+	patch_pipeline::_upsample_state::_upsample_state(std::shared_ptr<patch> p, patch_pipeline* pipeline) :
 		state(START),
 		pipeline(pipeline),
 		target_patch(p)
@@ -280,7 +160,7 @@ namespace planet_engine
 			}
 		}
 	}
-	patch_pipeline::remove_state::remove_state(std::shared_ptr<patch> p, patch_pipeline* pipeline) :
+	patch_pipeline::_remove_state::_remove_state(std::shared_ptr<patch> p, patch_pipeline* pipeline) :
 		state(START),
 		pipeline(pipeline),
 		target_patch(p),
@@ -289,145 +169,258 @@ namespace planet_engine
 
 	}
 
-	update_state patch_pipeline::process(size_t n)
+	void patch_pipeline::subdivide_state::gen_vertices(size_t idx)
 	{
-		for (size_t i = 0; i < n && !_waiting.empty();)
+		glGenBuffers(1, &vertex_buffers[idx]);
+		glGenBuffers(1, &uniforms[idx]);
+
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, vertex_buffers[idx]);
+		glBufferStorage(GL_SHADER_STORAGE_BUFFER, VERTEX_BUFFER_SIZE, nullptr, 0);
+
+		mesh_info info =
 		{
-			_executing.push_back(_waiting.front());
+			children[idx]->pos,
+			children[idx]->data->planet_radius,
+			children[idx]->nwc,
+			SKIRT_DEPTH,
+			children[idx]->nec,
+			1.0, // Scale
+			children[idx]->swc,
+			0.0, //Padding
+			children[idx]->sec
+		};
 
-			// Removing costs next to nothing so we
-			// can do many of them at once
-			if (!_waiting.front().is<remove_state>())
-				++i;
+		glBindBuffer(GL_UNIFORM_BUFFER, uniforms[idx]);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(mesh_info), &info, GL_STATIC_DRAW);
 
-			_waiting.pop();
+		offsets[idx] = pipeline->manager().alloc_block();
+
+		glUseProgram(pipeline->_vertex_gen);
+		// Bind output buffer
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertex_buffers[idx]);
+		// Bind uniforms
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniforms[idx]);
+		// Dispatch compute shader to fill the output buffer
+		glDispatchCompute(GEN_VERTEX_INVOCATIONS, GEN_VERTEX_INVOCATIONS, 1);
+		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+		++counter;
+	}
+	void patch_pipeline::subdivide_state::gen_mesh(size_t idx)
+	{
+		glUseProgram(pipeline->_meshgen);
+		// Bind input buffer
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertex_buffers[idx]);
+		// Bind output buffer range
+		glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, pipeline->manager().buffer(),
+			offsets[idx] * pipeline->manager().block_size(), pipeline->manager().block_size());
+		// Bind uniforms
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniforms[idx]);
+		// Dispatch compute shader to fill the output buffer range
+		glDispatchCompute(NUM_INVOCATIONS, 1, 1);
+		glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT);
+
+		// Delete buffers
+		glDeleteBuffers(1, &uniforms[idx]);
+		glDeleteBuffers(1, &vertex_buffers[idx]);
+
+		++counter;
+	}
+
+	bool patch_pipeline::subdivide_state::can_finalize()
+	{
+		return counter == 8;
+	}
+	void patch_pipeline::subdivide_state::get_state(update_state& ustate)
+	{
+		for (size_t i = 0; i < 4; ++i)
+		{
+			MoveCommand mvcmd;
+			mvcmd.is_new = GL_TRUE;
+			mvcmd.source = ustate.commands.size();
+			mvcmd.dest = offsets[i];
+
+			DrawElementsIndirectCommand cmd;
+			cmd.count = NUM_ELEMENTS;
+			cmd.instanceCount = 1;
+			cmd.firstIndex = 0;
+			cmd.baseVertex = pipeline->manager().block_size() / VERTEX_SIZE * offsets[i];
+			cmd.baseInstance = 0;
+
+			ustate.movecommands.push_back(mvcmd);
+			ustate.commands.push_back(cmd);
+
+			pipeline->_offsets.insert(std::make_pair(children[i], offsets[i]));
+
 		}
 
-		for (auto& exec : _executing)
 		{
-			switch (exec.active_index())
-			{
-			case 0:
-				exec.get<exec_type::type_at<0>>().step();
-				break;
-			case 1:
-				exec.get<exec_type::type_at<1>>().step();
-				break;
-			case 2:
-				exec.get<exec_type::type_at<2>>().step();
-				break;
-			}
+			pipeline->manager().dealloc_block(offset);
+
+			MoveCommand mvcmd;
+			mvcmd.is_new = GL_FALSE;
+			mvcmd.source = 0;
+			mvcmd.dest = offset;
+
+			auto it = pipeline->_offsets.find(parent);
+			if (it == pipeline->_offsets.end())
+				assert(false);
+			pipeline->_offsets.erase(it);
+
+			ustate.movecommands.push_back(mvcmd);
+		}
+	}
+
+	void patch_pipeline::merge_state::gen_vertices()
+	{
+		glGenBuffers(1, &vertex_buffer);
+		glGenBuffers(1, &uniforms);
+
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, vertex_buffer);
+		glBufferStorage(GL_SHADER_STORAGE_BUFFER, VERTEX_BUFFER_SIZE, nullptr, 0);
+
+		mesh_info info =
+		{
+			parent->pos,
+			parent->data->planet_radius,
+			parent->nwc,
+			SKIRT_DEPTH,
+			parent->nec,
+			1.0, // Scale
+			parent->swc,
+			0.0, //Padding
+			parent->sec
+		};
+
+		glBindBuffer(GL_UNIFORM_BUFFER, uniforms);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(mesh_info), &info, GL_STATIC_DRAW);
+
+		offset = pipeline->manager().alloc_block();
+
+		glUseProgram(pipeline->_vertex_gen);
+		// Bind output buffer
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertex_buffer);
+		// Bind uniforms
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniforms);
+		// Dispatch compute shader to fill the output buffer
+		glDispatchCompute(GEN_VERTEX_INVOCATIONS, GEN_VERTEX_INVOCATIONS, 1);
+		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+		++counter;
+	}
+	void patch_pipeline::merge_state::gen_mesh()
+	{
+		glUseProgram(pipeline->_meshgen);
+		// Bind input buffer
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertex_buffer);
+		// Bind output buffer range
+		glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, pipeline->manager().buffer(),
+			offset * pipeline->manager().block_size(), pipeline->manager().block_size());
+		// Bind uniforms
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniforms);
+		// Dispatch compute shader to fill the output buffer range
+		glDispatchCompute(NUM_INVOCATIONS, 1, 1);
+		glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT);
+
+		// Delete buffers
+		glDeleteBuffers(1, &uniforms);
+		glDeleteBuffers(1, &vertex_buffer);
+
+		++counter;
+	}
+
+	bool patch_pipeline::merge_state::can_finalize()
+	{
+		return counter == 2;
+	}
+	void patch_pipeline::merge_state::get_state(update_state& ustate)
+	{
+		for (size_t i = 0; i < 4; ++i)
+		{
+			MoveCommand mvcmd;
+			mvcmd.is_new = GL_FALSE;
+			mvcmd.source = 0;
+			mvcmd.dest = offsets[i];
+
+			ustate.movecommands.push_back(mvcmd);
+
+			auto it = pipeline->_offsets.find(children[i]);
+			if (it == pipeline->_offsets.end())
+				assert(false);
+			pipeline->_offsets.erase(it);
+
+			pipeline->manager().dealloc_block(offsets[i]);
+		}
+
+		{
+			MoveCommand mvcmd;
+			mvcmd.is_new = GL_TRUE;
+			mvcmd.source = ustate.commands.size();
+			mvcmd.dest = offset;
+
+			DrawElementsIndirectCommand cmd;
+			cmd.count = NUM_ELEMENTS;
+			cmd.instanceCount = 1;
+			cmd.firstIndex = 0;
+			cmd.baseVertex = pipeline->manager().block_size() / VERTEX_SIZE * offset;
+			cmd.baseInstance = 0;
+
+			ustate.movecommands.push_back(mvcmd);
+			ustate.commands.push_back(cmd);
+
+			pipeline->_offsets.insert(std::make_pair(parent, offset));
+		}
+	}
+
+	void patch_pipeline::subdivide(std::shared_ptr<patch> patch)
+	{
+		std::shared_ptr<subdivide_state> ptr = std::make_shared<subdivide_state>(patch, this);
+
+		for (size_t i = 0; i < 4; ++i)
+		{
+			_job_queue.push([=]() {
+				ptr->gen_vertices(i);
+			});
+			_job_queue.push([=]() {
+				ptr->gen_mesh(i);
+			});
+		}
+	}
+
+	update_state patch_pipeline::process(size_t n)
+	{
+#define finalize(idx) \
+	finalizable = exec.get<exec_type::type_at<idx>>()->can_finalize(); 
+#define get_state(idx) exec.get<exec_type::type_at<idx>>()->get_state(ustate)
+
+		for (size_t i = 0; i < n && !_job_queue.empty(); ++i)
+		{
+			_job_queue.front()();
+			_job_queue.pop();
 		}
 
 		update_state ustate;
 
-		bool cond = false;
-		bool failed = false;
-		do
+		bool finalizable = true;
+
+		while (finalizable && !_exec_queue.empty())
 		{
-			if (_executing.empty())
-				break;
-			auto& exec = _executing.front();
-			switch (exec.active_index())
+			auto& exec = _exec_queue.front();
+
+			any_of_switch(exec, finalize);
+
+			if (finalizable)
 			{
-			case 0:
-			{
-				auto& var = exec.get<exec_type::type_at<0>>();
-				cond = var.is_done();
-				failed = is_failed(var);
-				break;
+				any_of_switch(exec, get_state);
+
+				_exec_queue.pop();
 			}
-			case 1:
-			{
-				auto& var = exec.get<exec_type::type_at<1>>();
-				cond = var.is_done();
-				failed = is_failed(var);
-				break;
-			}
-			case 2:
-			{
-				auto& var = exec.get<exec_type::type_at<2>>();
-				cond = var.is_done();
-				failed = is_failed(var);
-				break;
-			}
-			default:
-				assert(false);
-			}
-
-			if (cond)
-			{
-				switch (exec.active_index())
-				{
-				case exec_type::index_of<generate_state>::value:
-				{
-					auto& val = exec.get<generate_state>();
-
-					MoveCommand mvcmd;
-					mvcmd.is_new = GL_TRUE;
-					mvcmd.dest = val.offset;
-					mvcmd.source = (GLuint)ustate.commands.size();
-
-					DrawElementsIndirectCommand cmd = {
-						NUM_ELEMENTS,
-						1, // Instance Count
-						0, // First Index
-						_manager.block_size() / VERTEX_SIZE * val.offset,
-						0 // BaseInstance
-					};
-
-					ustate.movecommands.push_back(mvcmd);
-					ustate.commands.push_back(cmd);
-					break;
-				}
-				case exec_type::index_of<upsample_state>::value:
-				{
-					auto& val = exec.get<upsample_state>();
-
-					MoveCommand mvcmd;
-					mvcmd.is_new = GL_TRUE;
-					mvcmd.dest = val.offset;
-					mvcmd.source = (GLuint)ustate.commands.size();
-
-					DrawElementsIndirectCommand cmd = {
-						NUM_ELEMENTS,
-						1, // Instance Count
-						0, // First Index
-						_manager.block_size() / VERTEX_SIZE * val.offset,
-						0 // BaseInstance
-					};
-
-					ustate.movecommands.push_back(mvcmd);
-					ustate.commands.push_back(cmd);
-					break;
-				}
-				case exec_type::index_of<remove_state>::value:
-				{
-					auto& val = exec.get<remove_state>();
-
-					_manager.dealloc_block(val.offset);
-
-					MoveCommand mvcmd;
-					mvcmd.is_new = GL_FALSE;
-					mvcmd.dest = val.offset;
-					mvcmd.source = 0;
-
-					ustate.movecommands.push_back(mvcmd);
-				}
-				}
-
-				_executing.pop_front();
-			}
-
-			if (failed)
-			{
-				OutputDebug("[PIPELINE][ERROR] A command failed!\n");
-				_executing.pop_front();
-			}
-		} while (cond && !failed);
-
+		}
 
 		return ustate;
+
+#undef finalize
+#undef get_state
 	}
 
 	buffer_manager& patch_pipeline::manager()
@@ -471,11 +464,6 @@ namespace planet_engine
 	}
 	patch_pipeline::~patch_pipeline()
 	{
-		while (!_waiting.empty() && !_executing.empty())
-		{
-			process(64);
-		}
-
 		glDeleteProgram(_meshgen);
 		glDeleteProgram(_vertex_gen);
 		glDeleteProgram(_upsampler);

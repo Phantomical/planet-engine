@@ -7,6 +7,7 @@
 
 #include <map>
 #include <queue>
+#include <functional>
 #include <unordered_map>
 
 namespace planet_engine
@@ -48,18 +49,6 @@ namespace planet_engine
 		double _pad5;
 	};
 
-	struct pipeline_item
-	{
-		enum item_type : uint_least8_t
-		{
-			ADD,
-			REMOVE
-		};
-
-		item_type type;
-		std::weak_ptr<patch> patch;
-	};
-
 	class patch_pipeline
 	{
 	private:
@@ -70,33 +59,8 @@ namespace planet_engine
 		static constexpr size_t SHADER_GROUP_SIZE = 128;
 		static constexpr size_t VERTEX_SIZE = sizeof(float) * 8;
 		static constexpr size_t MESH_SIZE = NUM_VERTICES * VERTEX_SIZE;
-		
-		struct generate_state
-		{
-			enum execution_state : uint_least8_t
-			{
-				START = 0,
-				GEN_VERTEX_ARRAY = 1,
-				GEN_MESH = 2,
-				DONE = 3,
-				ERROR_STATE = 0xFF
-			};
 
-			execution_state state;
-			patch_pipeline* pipeline;
-			std::shared_ptr<patch> target_patch;
-
-			GLuint vertex_buffer;
-			GLuint uniform;
-
-			GLuint offset;
-
-			bool is_done() const;
-			void step();
-
-			generate_state(std::shared_ptr<patch> p, patch_pipeline* pipeline);
-		};
-		struct upsample_state
+		struct _upsample_state
 		{
 			enum execution_state : uint_least8_t
 			{
@@ -116,9 +80,9 @@ namespace planet_engine
 			bool is_done() const;
 			void step();
 
-			upsample_state(std::shared_ptr<patch> p, patch_pipeline* pipeline);
+			_upsample_state(std::shared_ptr<patch> p, patch_pipeline* pipeline);
 		};
-		struct remove_state
+		struct _remove_state
 		{
 			enum execution_state : uint_least8_t
 			{
@@ -138,15 +102,84 @@ namespace planet_engine
 			bool is_done() const;
 			void step();
 
-			remove_state(std::shared_ptr<patch> p, patch_pipeline* pipeline);
+			_remove_state(std::shared_ptr<patch> p, patch_pipeline* pipeline);
 		};
 
-		typedef util::any_of<generate_state, upsample_state, remove_state> exec_type;
+		struct subdivide_state
+		{
+			static constexpr size_t VERTEX_BUFFER_SIZE = (SIDE_LEN + 2) * (SIDE_LEN + 2) * sizeof(float) * 4;
+			static constexpr size_t NUM_INVOCATIONS = ((SIDE_LEN + 2) * (SIDE_LEN + 2) + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
+			static constexpr size_t GEN_VERTEX_INVOCATIONS = (SIDE_LEN + 2 + 7) / 7;
+
+			size_t counter;
+			patch_pipeline* pipeline;
+
+			GLuint vertex_buffers[4];
+			GLuint uniforms[4];
+
+			GLuint offsets[4];
+			std::shared_ptr<patch> children[4];
+			GLuint offset;
+			std::shared_ptr<patch> parent;
+
+			void gen_vertices(size_t idx);
+			void gen_mesh(size_t idx);
+
+			subdivide_state(std::shared_ptr<patch> p, patch_pipeline* pipeline);
+
+			bool can_finalize();
+			void get_state(update_state& ustate);
+		};
+		struct merge_state
+		{
+			static constexpr size_t VERTEX_BUFFER_SIZE = (SIDE_LEN + 2) * (SIDE_LEN + 2) * sizeof(float) * 4;
+			static constexpr size_t NUM_INVOCATIONS = ((SIDE_LEN + 2) * (SIDE_LEN + 2) + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
+			static constexpr size_t GEN_VERTEX_INVOCATIONS = (SIDE_LEN + 2 + 7) / 7;
+
+			size_t counter;
+			patch_pipeline* pipeline;
+
+			std::shared_ptr<patch> parent;
+			std::shared_ptr<patch> children[4];
+
+			GLuint offset;
+			GLuint offsets[4];
+
+			GLuint vertex_buffer;
+			GLuint uniforms;
+
+			void gen_vertices();
+			void gen_mesh();
+
+			bool can_finalize();
+			void get_state(update_state& ustate);
+		};
+		struct remove_state
+		{
+			std::shared_ptr<patch> patch;
+
+			bool can_finalize();
+			void get_state(update_state& ustate);
+		};
+		struct generate_state
+		{
+			size_t counter;
+
+			bool can_finalize();
+			void get_state(update_state& ustate);
+		};
+
+		typedef util::any_of<
+			std::shared_ptr<subdivide_state>,
+			std::shared_ptr<merge_state>,
+			std::shared_ptr<remove_state>,
+			std::shared_ptr<generate_state>> exec_type;
 
 		buffer_manager _manager;
 
-		std::queue<exec_type> _waiting;
-		std::deque<exec_type> _executing;
+		std::queue<std::function<void()>> _job_queue;
+		std::queue<exec_type> _exec_queue;
+
 		std::map<std::shared_ptr<patch>, GLuint> _offsets;
 
 		GLuint _meshgen;
@@ -159,7 +192,8 @@ namespace planet_engine
 		patch_pipeline(patch_pipeline&&) = delete;
 		~patch_pipeline();
 
-		void upsample(std::shared_ptr<patch> patch);
+		void subdivide(std::shared_ptr<patch> patch);
+		void merge(std::shared_ptr<patch> patch);
 		void generate(std::shared_ptr<patch> patch);
 		void remove(std::shared_ptr<patch> patch);
 

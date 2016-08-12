@@ -241,44 +241,8 @@ namespace planet_engine
 
 			for (auto p : data->to_merge)
 			{
-				if (patch_pipeline::can_upsample(p))
-				{
-					pipeline.upsample(p);
-					continue;
-				}
-
-				std::stack<std::shared_ptr<patch>> stack;
-
-				pipeline.generate(p);
-
-				if (p->farthest_vertex == std::numeric_limits<float>::max())
-					to_compute.push_back(p);
-
-				if (p->subdivided())
-				{
-					stack.push(p->nw);
-					stack.push(p->ne);
-					stack.push(p->sw);
-					stack.push(p->se);
-				}
-
-				while (!stack.empty())
-				{
-
-					auto patch = stack.top();
-					stack.pop();
-
-
-					if (patch->subdivided())
-					{
-						stack.push(patch->nw);
-						stack.push(patch->ne);
-						stack.push(patch->sw);
-						stack.push(patch->se);
-					}
-
-					pipeline.remove(patch);
-				}
+				
+				pipeline.merge(p);
 			}
 
 			for (auto p : data->to_remove)
