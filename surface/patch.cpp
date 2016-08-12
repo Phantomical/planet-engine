@@ -1,5 +1,9 @@
 #include "patch.h"
+#include "defs.h"
 #include "findutils.h"
+
+#undef max
+#undef min
 
 namespace planet_engine
 {
@@ -7,7 +11,7 @@ namespace planet_engine
 	using glm::fvec3;
 	using glm::normalize;
 
-	void patch::split()
+	void patch::split(update_info& uinfo)
 	{
 		assert(!subdivided());
 
@@ -41,52 +45,39 @@ namespace planet_engine
 		info.sec = sec;
 		se = std::make_shared<patch>(info);
 
-		{
-			auto it = std::find(data->leaf_patches.begin(), data->leaf_patches.end(), shared_from_this());
-			if (it != data->leaf_patches.end())
-				data->leaf_patches.erase(it);
-		}
-		{
-			auto it = std::find(data->leaf_parents.begin(), data->leaf_parents.end(), parent.lock());
-			if (it != data->leaf_parents.end())
-				data->leaf_parents.erase(it);
-		}
-
 		data->to_remove.push_back(shared_from_this());
 		data->to_add.push_back(nw);
 		data->to_add.push_back(ne);
 		data->to_add.push_back(sw);
 		data->to_add.push_back(se);
 
-		data->leaf_parents.push_back(shared_from_this());
+		uinfo.leafs_to_erase.push_back(shared_from_this());
+		uinfo.parents_to_add.push_back(shared_from_this());
 
-		data->leaf_patches.push_back(nw);
-		data->leaf_patches.push_back(ne);
-		data->leaf_patches.push_back(sw);
-		data->leaf_patches.push_back(se);
+		uinfo.leafs_to_add.push_back(nw);
+		uinfo.leafs_to_add.push_back(ne);
+		uinfo.leafs_to_add.push_back(sw);
+		uinfo.leafs_to_add.push_back(se);
 	}
-	void patch::merge()
+	void patch::merge(update_info& uinfo)
 	{
-		assert(subdivided());
-		nw->remove_internal();
-		ne->remove_internal();
-		sw->remove_internal();
-		se->remove_internal();
+		//assert(subdivided());
+		if (!subdivided())
+		{
+			OutputDebug("[PATCH] Invalid merge called.\n");
+			return;
+		}
+
+		nw->remove_internal(uinfo);
+		ne->remove_internal(uinfo);
+		sw->remove_internal(uinfo);
+		se->remove_internal(uinfo);
 		nw = ne = sw = se = nullptr;
 
-		{
-			auto it = std::find(data->leaf_parents.begin(), data->leaf_parents.end(), shared_from_this());
-			if (it != data->leaf_parents.end())
-				data->leaf_parents.erase(it);
-		}
-		{
-			auto parent = this->parent.lock();
-			if (parent != nullptr && !util::contains(data->leaf_parents, parent))
-				data->leaf_parents.push_back(parent);
-		}
+		uinfo.parents_to_erase.push_back(shared_from_this());
+		uinfo.leafs_to_add.push_back(shared_from_this());
 
-		data->leaf_patches.push_back(shared_from_this());
-		data->to_merge.push_back(shared_from_this());
+		data->to_add.push_back(shared_from_this());
 	}
 
 	bool patch::should_subdivide(const glm::dvec3& cam_pos) const
@@ -98,7 +89,10 @@ namespace planet_engine
 	}
 	bool patch::should_merge(const glm::dvec3& cam_pos) const
 	{
-		return length2(cam_pos - pos) * MULT > farthest_vertex * farthest_vertex;
+		double dis = farthest_vertex;
+		if (farthest_vertex == std::numeric_limits<float>::max())
+			dis = side_length();
+		return length2(cam_pos - pos) * MULT > dis * dis;
 	}
 
 	bool patch::subdivided() const
@@ -107,9 +101,11 @@ namespace planet_engine
 	}
 	double patch::side_length() const
 	{
+		using std::abs;
+
 		glm::dvec3 diff = nwc - nec;
 
-		return std::max({ diff.x, diff.y, diff.z });
+		return std::max({ abs(diff.x), abs(diff.y), abs(diff.z) });
 	}
 
 	size_t patch::get_max_level() const
@@ -124,29 +120,21 @@ namespace planet_engine
 		});
 	}
 
-	void patch::remove_internal()
+	void patch::remove_internal(update_info& uinfo)
 	{
 		if (subdivided())
 		{
-			nw->remove_internal();
-			ne->remove_internal();
-			sw->remove_internal();
-			se->remove_internal();
+			nw->remove_internal(uinfo);
+			ne->remove_internal(uinfo);
+			sw->remove_internal(uinfo);
+			se->remove_internal(uinfo);
 			nw = ne = sw = se = nullptr;
 		}
 
+		uinfo.leafs_to_erase.push_back(shared_from_this());
+		uinfo.parents_to_erase.push_back(shared_from_this());
 
-		auto it = std::find(data->leaf_parents.begin(), data->leaf_parents.end(), shared_from_this());
-		if (it != data->leaf_parents.end())
-		{
-			data->leaf_parents.erase(it);
-		}
-		else
-		{
-			auto it = std::find(data->leaf_patches.begin(), data->leaf_patches.end(), shared_from_this());
-			if (it != data->leaf_patches.end())
-				data->leaf_patches.erase(it);
-		}
+		data->to_remove.push_back(shared_from_this());
 	}
 
 	patch::patch(const info& info) :

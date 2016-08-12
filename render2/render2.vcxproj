@@ -163,7 +163,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer_manager.h" />
-    <ClInclude Include="defs.h" />
     <ClInclude Include="patch_pipeline.h" />
     <ClInclude Include="renderer.h" />
   </ItemGroup>

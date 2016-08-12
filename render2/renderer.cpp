@@ -290,7 +290,7 @@ namespace planet_engine
 			data->to_merge.clear();
 			data->to_remove.clear();
 
-			ustate = pipeline.process();
+			ustate = pipeline.process(1);
 
 			if (!to_compute.empty())
 				compute_states.push_back(compute_bounds(std::initializer_list<std::shared_ptr<patch>>(
@@ -319,7 +319,19 @@ namespace planet_engine
 			//glDeleteBuffers(2, buffers);
 
 			DrawElementsIndirectCommand* commands = (DrawElementsIndirectCommand*)glMapNamedBufferRange(drawcommands, 0,
-				sizeof(DrawElementsIndirectCommand) * pipeline.manager().max_index(), GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
+				sizeof(DrawElementsIndirectCommand) * pipeline.manager().max_index(), GL_MAP_WRITE_BIT);
+
+			//std::memset(commands, 0, sizeof(DrawElementsIndirectCommand) * pipeline.manager().max_index());
+			//
+			//for (auto p : pipeline.patches())
+			//{
+			//	DrawElementsIndirectCommand cmd;
+			//	cmd.baseInstance = 0;
+			//	cmd.baseVertex = p.second * pipeline.manager().block_size() / VERTEX_SIZE;
+			//	cmd.count = NUM_INDICES;
+			//	cmd.firstIndex = 0;
+			//	cmd.instanceCount = 1;
+			//}
 
 			for (auto cmd : ustate.movecommands)
 			{
@@ -358,8 +370,8 @@ namespace planet_engine
 			GLuint idx = p.second;
 			assert(idx < size);
 
-			glm::dmat4 mat = glm::translate(glm::dmat4(1.0), p.first->pos);
-			matrices[idx] = mvp_mat * mat;
+			glm::dmat4 mat = mvp_mat * glm::translate(glm::dmat4(1.0), p.first->pos);
+			matrices[idx] = mat;
 		}
 
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, matbuffer);

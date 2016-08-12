@@ -1,4 +1,7 @@
 #include "planet.h"
+#include "findutils.h"
+
+#include <stack>
 
 namespace planet_engine
 {
@@ -42,16 +45,19 @@ namespace planet_engine
 		for (auto side : sides)
 		{
 			data->to_add.push_back(side);
+			data->leaf_patches.push_back(side);
 		}
 	}
 
 	void planet::update(const glm::dvec3& cam_pos)
 	{
+		update_info uinfo;
+
 		for (auto& patch : data->leaf_patches)
 		{
 			if (patch->should_subdivide(cam_pos))
 			{
-				patch->split();
+				patch->split(uinfo);
 			}
 		}
 
@@ -59,9 +65,71 @@ namespace planet_engine
 		{
 			if (patch->should_merge(cam_pos))
 			{
-				patch->merge();
+				patch->merge(uinfo);
 			}
 		}
+
+		for (auto patch : uinfo.leafs_to_erase)
+		{
+			auto it = util::find(data->leaf_patches, patch);
+			if (it != data->leaf_patches.end())
+				data->leaf_patches.erase(it);
+		}
+
+		for (auto patch : uinfo.leafs_to_add)
+		{
+			if (!patch->subdivided())
+				data->leaf_patches.push_back(patch);
+		}
+
+		for (auto patch : uinfo.parents_to_erase)
+		{
+			auto it = util::find(data->leaf_parents, patch);
+			if (it != data->leaf_parents.end())
+				data->leaf_parents.erase(it);
+		}
+
+		for (auto patch : uinfo.parents_to_add)
+		{
+			if (patch->subdivided())
+				data->leaf_parents.push_back(patch);
+		}
+	}
+	void planet::reset()
+	{
+		{
+			std::stack<std::shared_ptr<patch>> stack;
+
+			stack.push(sides[0]);
+			stack.push(sides[1]);
+			stack.push(sides[2]);
+			stack.push(sides[3]);
+			stack.push(sides[4]);
+			stack.push(sides[5]);
+
+			while (!stack.empty())
+			{
+				auto p = stack.top();
+				stack.pop();
+
+				if (p->subdivided())
+				{
+					stack.push(p->nw);
+					stack.push(p->ne);
+					stack.push(p->sw);
+					stack.push(p->se);
+				}
+
+				data->to_remove.push_back(p);
+			}
+		}
+
+		data->to_add.push_back(sides[0]);
+		data->to_add.push_back(sides[1]);
+		data->to_add.push_back(sides[2]);
+		data->to_add.push_back(sides[3]);
+		data->to_add.push_back(sides[4]);
+		data->to_add.push_back(sides[5]);
 	}
 
 	size_t planet::get_max_level() const

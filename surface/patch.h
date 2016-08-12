@@ -34,6 +34,13 @@ namespace planet_engine
 		glm::dvec3 texcoord;
 	};
 
+	struct update_info
+	{
+		std::vector<std::shared_ptr<patch>> parents_to_erase;
+		std::vector<std::shared_ptr<patch>> parents_to_add;
+		std::vector<std::shared_ptr<patch>> leafs_to_erase;
+		std::vector<std::shared_ptr<patch>> leafs_to_add;
+	};
 
 	struct patch : std::enable_shared_from_this<patch>
 	{
@@ -77,8 +84,8 @@ namespace planet_engine
 
 		patch(const info& info);
 
-		void split();
-		void merge();
+		void split(update_info& info);
+		void merge(update_info& info);
 
 	private:
 		static constexpr double MULT = 1.0 / (2.5);
@@ -93,7 +100,7 @@ namespace planet_engine
 		size_t get_max_level() const;
 
 	private:
-		void remove_internal();
+		void remove_internal(update_info& info);
 	};
 
 	struct planet_data

@@ -14,5 +14,7 @@ namespace planet_engine
 		void update(const glm::dvec3& cam_pos);
 
 		size_t get_max_level() const;
+
+		void reset();
 	};
 }

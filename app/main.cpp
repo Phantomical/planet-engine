@@ -118,13 +118,13 @@ void(WINAPI*oldDelBuffers)(GLsizei n, const GLuint* bufs);
 void WINAPI newGenBuffers(GLsizei n, GLuint* bufs)
 {
 	nbuffers += n;
-	OutputDebug("[GENBUFFERS] Generated ", n, " buffers. There are ", nbuffers, " buffers\n");
+	//OutputDebug("[GENBUFFERS] Generated ", n, " buffers. There are ", nbuffers, " buffers\n");
 	oldGenBuffers(n, bufs);
 }
 void WINAPI newDelBuffers(GLsizei n, const GLuint* bufs)
 {
 	nbuffers -= n;
-	OutputDebug("[DELBUFFERS] Deleted ", n, " buffers. There are ", nbuffers, " buffers\n");
+	//OutputDebug("[DELBUFFERS] Deleted ", n, " buffers. There are ", nbuffers, " buffers\n");
 	oldDelBuffers(n, bufs);
 }
 
@@ -157,6 +157,8 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	glPointSize(10);
+
+	bool cDown = false;
 
 	{
 		GLuint program;
@@ -191,6 +193,16 @@ int main()
 			ren.update(CamPos);
 
 			HandleInput(win);
+
+			if (glfwGetKey(win, GLFW_KEY_C) == GLFW_PRESS)
+			{
+				ren.planet.reset();
+				cDown = true;
+			}
+			else
+			{
+				cDown = false;
+			}
 
 			glfwPollEvents();
 			glfwSwapBuffers(win);

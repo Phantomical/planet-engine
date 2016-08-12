@@ -126,6 +126,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="contig_vector.h" />
+    <ClInclude Include="defs.h" />
     <ClInclude Include="indexgen.h" />
     <ClInclude Include="mathutils.h" />
     <ClInclude Include="patch.h" />

@@ -65,7 +65,7 @@ namespace planet_engine
 
 		_offsets.insert(index);
 
-		OutputDebug("[BUFMGR][At ", this, "] Allocated offset ", index, ".\n");
+		//OutputDebug("[BUFMGR][At ", this, "] Allocated offset ", index, ".\n");
 
 		return index;
 	}
@@ -75,8 +75,7 @@ namespace planet_engine
 
 		assert(offset < _max_index);
 
-		auto it = find(_offsets, offset);
-		_offsets.erase(it);
+		_offsets.erase(offset);
 
 		if (!contains(_locked, offset))
 		{

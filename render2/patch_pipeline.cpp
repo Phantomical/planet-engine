@@ -5,6 +5,8 @@
 
 namespace planet_engine
 {
+	static size_t n = 0;
+
 	template<typename T>
 	bool is_failed(const T& v)
 	{
@@ -92,6 +94,7 @@ namespace planet_engine
 			offset = pipeline->_manager.alloc_block();
 
 			state = GEN_VERTEX_ARRAY;
+			OutputDebug("[PIPELINE] Generated patch ", target_patch.get(), ". There are ", ++n, " patches.\n");
 			break;
 		}
 		case planet_engine::patch_pipeline::generate_state::GEN_VERTEX_ARRAY:
@@ -121,7 +124,7 @@ namespace planet_engine
 
 			// Generate buffers
 			glDeleteBuffers(1, &uniform);
-			//glDeleteBuffers(1, &vertex_buffer);
+			glDeleteBuffers(1, &vertex_buffer);
 
 			pipeline->_offsets.insert(std::make_pair(target_patch, offset));
 
@@ -189,6 +192,14 @@ namespace planet_engine
 
 			glDeleteBuffers(1, &uniforms);
 
+			state = DONE;
+
+			OutputDebug("[PIPELINE] Upsampling patch ", target_patch.get(), '\n');
+
+			OutputDebug("[PIPELINE] Removing patch ", children[0].get(), '\n');
+			OutputDebug("[PIPELINE] Removing patch ", children[1].get(), '\n');
+			OutputDebug("[PIPELINE] Removing patch ", children[2].get(), '\n');
+			OutputDebug("[PIPELINE] Removing patch ", children[3].get(), '\n');
 			break;
 		}
 		case DONE:
@@ -208,7 +219,7 @@ namespace planet_engine
 			auto it = pipeline->_offsets.find(target_patch);
 			if (it == pipeline->_offsets.end())
 			{
-				if (ctr++ < 10)
+				if (ctr++ < 16)
 					state = START;
 				else
 				{
@@ -221,9 +232,9 @@ namespace planet_engine
 			offset = it->second;
 			pipeline->_offsets.erase(it);
 
-			pipeline->_manager.dealloc_block(offset);
-
 			state = DONE;
+
+			OutputDebug("[PIPELINE] Removed patch ", target_patch.get(), ". There are ", --n, " patches.\n");
 			break;
 		}
 		case DONE:
@@ -240,7 +251,7 @@ namespace planet_engine
 		pipeline(pipeline),
 		target_patch(p)
 	{
-		OutputDebug("[PIPELINE] Generating patch ", target_patch.get(), '\n');
+
 	}
 	patch_pipeline::upsample_state::upsample_state(std::shared_ptr<patch> p, patch_pipeline* pipeline) :
 		state(START),
@@ -268,13 +279,6 @@ namespace planet_engine
 				children[3] = p->se;
 			}
 		}
-
-		OutputDebug("[PIPELINE] Upsampling patch ", target_patch.get(), '\n');
-
-		OutputDebug("[PIPELINE] Removing patch ", children[0].get(), '\n');
-		OutputDebug("[PIPELINE] Removing patch ", children[1].get(), '\n');
-		OutputDebug("[PIPELINE] Removing patch ", children[2].get(), '\n');
-		OutputDebug("[PIPELINE] Removing patch ", children[3].get(), '\n');
 	}
 	patch_pipeline::remove_state::remove_state(std::shared_ptr<patch> p, patch_pipeline* pipeline) :
 		state(START),
@@ -282,7 +286,7 @@ namespace planet_engine
 		target_patch(p),
 		ctr(0)
 	{
-		OutputDebug("[PIPELINE] Removing patch ", target_patch.get(), '\n');
+
 	}
 
 	update_state patch_pipeline::process(size_t n)
@@ -316,7 +320,6 @@ namespace planet_engine
 		}
 
 		update_state ustate;
-		std::set<GLuint> to_erase;
 
 		bool cond = false;
 		bool failed = false;
@@ -360,8 +363,6 @@ namespace planet_engine
 				{
 					auto& val = exec.get<generate_state>();
 
-					to_erase.erase(val.offset);
-
 					MoveCommand mvcmd;
 					mvcmd.is_new = GL_TRUE;
 					mvcmd.dest = val.offset;
@@ -382,8 +383,6 @@ namespace planet_engine
 				case exec_type::index_of<upsample_state>::value:
 				{
 					auto& val = exec.get<upsample_state>();
-
-					to_erase.erase(val.offset);
 
 					MoveCommand mvcmd;
 					mvcmd.is_new = GL_TRUE;
@@ -406,7 +405,14 @@ namespace planet_engine
 				{
 					auto& val = exec.get<remove_state>();
 
-					to_erase.insert(val.offset);
+					_manager.dealloc_block(val.offset);
+
+					MoveCommand mvcmd;
+					mvcmd.is_new = GL_FALSE;
+					mvcmd.dest = val.offset;
+					mvcmd.source = 0;
+
+					ustate.movecommands.push_back(mvcmd);
 				}
 				}
 
@@ -415,15 +421,6 @@ namespace planet_engine
 			assert(!failed);
 		} while (cond);
 
-		for (GLuint offset : to_erase)
-		{
-			MoveCommand mvcmd;
-			mvcmd.is_new = GL_FALSE;
-			mvcmd.dest = offset;
-			mvcmd.source = 0;
-
-			ustate.movecommands.push_back(mvcmd);
-		}
 
 		return ustate;
 	}
