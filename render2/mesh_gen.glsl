@@ -13,10 +13,10 @@ layout(location = 1) uniform uint SIDE_LEN;
 layout(binding = 0, std140) uniform GeneratorInputs
 {
 	dvec4 _pos;
-dvec4 _nwc;
-dvec4 _nec;
-dvec4 _swc;
-dvec4 _sec;
+	dvec4 _nwc;
+	dvec4 _nec;
+	dvec4 _swc;
+	dvec4 _sec;
 };
 
 layout(binding = 0, std430) buffer OutputValues
@@ -561,11 +561,17 @@ void calc_vertex(in uvec2 p, out vec3 vertex, out float displacement)
 	displacement = float(disp);
 }
 
+const uint WorkGroupIndex = gl_WorkGroupID.z * gl_NumWorkGroups.x * gl_NumWorkGroups.y
++ gl_WorkGroupID.y * gl_NumWorkGroups.x + gl_WorkGroupID.x;
+const uint GlobalInvocationIndex = WorkGroupIndex * gl_WorkGroupSize.x * gl_WorkGroupSize.y
+* gl_WorkGroupSize.z + gl_LocalInvocationIndex;
+
+
 void main()
 {
 #define STRIDE 8
 
-	uint index = gl_GlobalInvocationID.x;
+	uint index = GlobalInvocationIndex;
 
 	if (index >= size)
 		return;

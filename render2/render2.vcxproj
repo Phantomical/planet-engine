@@ -158,11 +158,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="buffer_manager.cpp" />
+    <ClCompile Include="patch_pipeline.cpp" />
     <ClCompile Include="renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer_manager.h" />
     <ClInclude Include="defs.h" />
+    <ClInclude Include="patch_pipeline.h" />
     <ClInclude Include="renderer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +186,11 @@
     <CustomBuild Include="planet_shader_vert.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="mesh_gen2.glsl" />
+    <None Include="upsample.glsl" />
+    <None Include="vertex_gen.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -24,11 +24,14 @@ layout (binding = 2, std430) buffer OutputBuffer
 	uint outputs[];
 };
 
+const uint WorkGroupIndex = gl_WorkGroupID.z * gl_NumWorkGroups.x * gl_NumWorkGroups.y
++ gl_WorkGroupID.y * gl_NumWorkGroups.x + gl_WorkGroupID.x;
+const uint GlobalInvocationIndex = WorkGroupIndex * gl_WorkGroupSize.x * gl_WorkGroupSize.y
+* gl_WorkGroupSize.z + gl_LocalInvocationIndex;
+
 void main()
 {
-	const uint GlobalInvokationIndex = gl_GlobalInvokationID.x;
-
-	if (GlobalInvokationIndex >= size)
+	if (GlobalInvocationIndex >= size)
 		return;
 
 	LoadCommand cmd;
@@ -36,7 +39,7 @@ void main()
 	cmd.dest =   commands[GlobalInvocationIndex * 3 + 1];
 	cmd.is_new = commands[GlobalInvocationIndex * 3 + 2];
 
-	if (is_new != 0)
+	if (is_new)
 		// The value is a new draw command
 	{
 		outputs[cmd.dest * 5]     = inputs[cmd.source * 5];

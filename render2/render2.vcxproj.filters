@@ -16,12 +16,18 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{7eaab3c1-f93f-4846-8c8e-457e634d21c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\pipeline">
+      <UniqueIdentifier>{2fac8d3f-0ef0-44eb-aaba-6bb3437a7794}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="buffer_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="patch_pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -33,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="defs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="patch_pipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -55,5 +64,16 @@
     <CustomBuild Include="planet_shader_vert.glsl">
       <Filter>Shaders</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vertex_gen.glsl">
+      <Filter>Shaders\pipeline</Filter>
+    </None>
+    <None Include="upsample.glsl">
+      <Filter>Shaders\pipeline</Filter>
+    </None>
+    <None Include="mesh_gen2.glsl">
+      <Filter>Shaders\pipeline</Filter>
+    </None>
   </ItemGroup>
 </Project>

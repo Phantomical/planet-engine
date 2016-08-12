@@ -3,6 +3,7 @@
 #include "planet.h"
 #include "gl_core.h"
 #include "buffer_manager.h"
+#include "patch_pipeline.h"
 
 #include <vector>
 #include <queue>
@@ -20,7 +21,7 @@ namespace planet_engine
 		static constexpr size_t VERTEX_SIZE = sizeof(float) * 8;
 		static constexpr size_t MESH_SIZE = NUM_VERTICES * VERTEX_SIZE;
 		// The maximum number of mesh blocks that can be allocated in GPU memory
-		static constexpr size_t NUM_BLOCKS = 1 << 14;
+		static constexpr size_t NUM_BLOCKS = 1 << 16;
 		static constexpr size_t COMPUTE_GROUP_SIZE = 128;
 		static constexpr double SCALE = 2.0;
 
@@ -49,19 +50,6 @@ namespace planet_engine
 			bool is_done() const;
 			// Returns the results and deletes all the buffers
 			void update_patches();
-		};
-		struct mesh_info
-		{
-			glm::dvec3 pos;
-			double planet_radius;
-			glm::dvec3 nwc;
-			double skirt_depth;
-			glm::dvec3 nec;
-			double scale;
-			glm::dvec3 swc;
-			double _pad4;
-			glm::dvec3 sec;
-			double _pad5;
 		};
 
 		struct DrawElementsIndirectCommand

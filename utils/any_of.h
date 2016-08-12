@@ -98,7 +98,19 @@ namespace planet_engine
 
 			template<typename T, typename T2>
 			using index_of = Index<T, T2>;
+
+			template<size_t, typename T>
+			struct type_at;
+			template<size_t idx, template<typename...> typename C, typename... Ts>
+			struct type_at<idx, C<Ts...>>
+			{
+				typedef typename std::tuple_element<idx, std::tuple<Ts...>>::type type;
+			};
+
 		}
+
+		template<size_t idx, typename T>
+		using type_at = typename detail::type_at<idx, T>::type;
 
 		template<typename... Ts>
 		struct any_of
@@ -109,24 +121,28 @@ namespace planet_engine
 			size_t active_element;
 			tuple_type values;
 
-			template<size_t idx>
-			void delete_elem()
-			{
-				typedef typename std::tuple_element<Ts...>::type type;
+			template<typename T>
+			static bool util_function(T&) { return false; }
 
-				if (idx == active_element)
-					detail::getter<idx>::get(values).~type();
-				else
-					delete_elem<idx - 1>();
+			template<typename T>
+			void delete_elem(T& v)
+			{
+				if (index_of<T>::value == active_element)
+					v.~T();
 			}
 
 			template<size_t... idxs>
 			void delete_elems(std::index_sequence<idxs...>)
 			{
-				delete_elem<idxs>()...;
+				auto l = { (delete_elem(get<idxs>()), 0)... };
 			}
 
 		public:
+			template<size_t idx>
+			using type_at = typename detail::type_at<idx, any_of<Ts...>>::type;
+			template<typename T>
+			using index_of = typename detail::index_of<T, std::tuple<Ts...>>;
+
 			template<typename T>
 			any_of(const T& v) :
 				active_element(detail::index_of<T, std::tuple<Ts...>>::value)
@@ -156,10 +172,30 @@ namespace planet_engine
 				return detail::getter<index, tuple_type>::get_cst(values);
 			}
 
+			template<size_t idx>
+			type_at<idx>& get()
+			{
+				static_assert(idx < sizeof...(Ts), "any_of index out of bounds.");
+				return get<type_at<idx>>();
+			}
+			template<size_t idx>
+			const type_at<idx>& get() const
+			{
+				static_assert(idx < sizeof...(Ts), "any_of index out of bounds.");
+				return get<type_at<idx>>();
+			}
+
 			size_t active_index() const
 			{
 				return active_element;
 			}
+
+			template<typename T>
+			bool is() const
+			{
+				return index_of<T>::value == active_element;
+			}
 		};
+
 	}
 }
