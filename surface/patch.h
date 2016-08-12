@@ -69,6 +69,7 @@ namespace planet_engine
 
 		unsigned int level;  // Level within the quadtree
 		float farthest_vertex;
+		uint64_t hash; // A hash value that uniquely identifies this patch within the planet
 
 		std::shared_ptr<planet_data> data;
 
@@ -83,40 +84,13 @@ namespace planet_engine
 		static constexpr double MULT = 1.0 / (2.5);
 
 	public:
-		bool should_subdivide(const glm::dvec3& cam_pos) const
-		{
-			double dis = farthest_vertex;
-			if (farthest_vertex == std::numeric_limits<float>::max())
-				dis = side_length();
-			return level < MAX_LEVEL && length2(cam_pos - pos) * MULT < dis * dis;
-		}
-		bool should_merge(const glm::dvec3& cam_pos) const
-		{
-			return length2(cam_pos - pos) * MULT > farthest_vertex * farthest_vertex;
-		}
+		bool should_subdivide(const glm::dvec3& cam_pos) const;
+		bool should_merge(const glm::dvec3& cam_pos) const;
 
-		bool subdivided() const
-		{
-			return nw != nullptr;
-		}
-		double side_length() const
-		{
-			glm::dvec3 diff = nwc - nec;
+		bool subdivided() const;
+		double side_length() const;
 
-			return std::max({ diff.x, diff.y, diff.z });
-		}
-
-		size_t get_max_level() const
-		{
-			if (!subdivided())
-				return level;
-			return std::max({
-				nw->get_max_level(),
-				ne->get_max_level(),
-				sw->get_max_level(),
-				se->get_max_level()
-			});
-		}
+		size_t get_max_level() const;
 
 	private:
 		void remove_internal();

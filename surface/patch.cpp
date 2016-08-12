@@ -72,6 +72,41 @@ namespace planet_engine
 		data->leaf_patches.push_back(shared_from_this());
 	}
 
+	bool patch::should_subdivide(const glm::dvec3& cam_pos) const
+	{
+		double dis = farthest_vertex;
+		if (farthest_vertex == std::numeric_limits<float>::max())
+			dis = side_length();
+		return level < MAX_LEVEL && length2(cam_pos - pos) * MULT < dis * dis;
+	}
+	bool patch::should_merge(const glm::dvec3& cam_pos) const
+	{
+		return length2(cam_pos - pos) * MULT > farthest_vertex * farthest_vertex;
+	}
+
+	bool patch::subdivided() const
+	{
+		return nw != nullptr;
+	}
+	double patch::side_length() const
+	{
+		glm::dvec3 diff = nwc - nec;
+
+		return std::max({ diff.x, diff.y, diff.z });
+	}
+
+	size_t patch::get_max_level() const
+	{
+		if (!subdivided())
+			return level;
+		return std::max({
+			nw->get_max_level(),
+			ne->get_max_level(),
+			sw->get_max_level(),
+			se->get_max_level()
+		});
+	}
+
 	void patch::remove_internal()
 	{
 		if (subdivided())
@@ -112,5 +147,9 @@ namespace planet_engine
 		farthest_vertex(std::numeric_limits<float>::max())
 	{
 		pos = to_sphere(nwc + nec + swc + sec, data->planet_radius);
+
+		auto v = glm::ivec3(pos);
+		auto h = std::hash<int>();
+		hash = h(v.x) ^ (v.y) + v.z;
 	}
 }
