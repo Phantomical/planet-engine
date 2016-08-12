@@ -134,6 +134,7 @@
   <ItemGroup>
     <ClInclude Include="any_of.h" />
     <ClInclude Include="appbase.h" />
+    <ClInclude Include="findutils.h" />
     <ClInclude Include="gl_core.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="load_file.h" />

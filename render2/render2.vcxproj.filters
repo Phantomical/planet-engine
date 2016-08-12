@@ -55,13 +55,13 @@
     <CustomBuild Include="max.glsl">
       <Filter>Shaders</Filter>
     </CustomBuild>
-    <CustomBuild Include="mesh_gen.glsl">
-      <Filter>Shaders</Filter>
-    </CustomBuild>
     <CustomBuild Include="planet_shader_frag.glsl">
       <Filter>Shaders</Filter>
     </CustomBuild>
     <CustomBuild Include="planet_shader_vert.glsl">
+      <Filter>Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mesh_gen3.glsl">
       <Filter>Shaders</Filter>
     </CustomBuild>
   </ItemGroup>

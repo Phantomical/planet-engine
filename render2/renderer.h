@@ -51,30 +51,11 @@ namespace planet_engine
 			// Returns the results and deletes all the buffers
 			void update_patches();
 		};
+		
+		//buffer_manager meshes;
 
-		struct DrawElementsIndirectCommand
-		{
-			GLuint count;
-			GLuint instanceCount;
-			GLuint firstIndex;
-			GLuint baseVertex;
-			GLuint baseInstance;
-		};
-		struct MoveCommand
-		{
-			GLuint source;
-			GLuint dest;
-			GLuint is_new;
-		};
-		struct update_state
-		{
-			std::vector<DrawElementsIndirectCommand> commands;
-			std::vector<MoveCommand> movecommands;
+		patch_pipeline pipeline;
 
-			void concat(const update_state& ust);
-		};
-
-		buffer_manager meshes;
 		// The buffer for the draw commands
 		GLuint drawcommands;
 
@@ -84,7 +65,7 @@ namespace planet_engine
 		GLuint elements;
 
 		// Mesh generation shader
-		GLuint meshgen;
+		//GLuint meshgen;
 		// Parallel maximum calculation shader
 		GLuint max_calc;
 		// Parallel distance calculation shader
@@ -100,15 +81,10 @@ namespace planet_engine
 		// Required offset alignment for shader storage buffers
 		GLuint ssbo_offset_alignment;
 
-		std::map<std::shared_ptr<patch>, std::tuple<
-			GLuint /* Mesh Buffer Offset */>> patches;
 		std::deque<compute_state> compute_states;
 
 		compute_state compute_bounds(std::initializer_list<std::shared_ptr<patch>> meshes);
 
-		// Add should always be called before remove for the same update_state
-		update_state add_meshes(std::initializer_list<std::shared_ptr<patch>> meshes);
-		update_state remove_meshes(std::initializer_list<std::shared_ptr<patch>> meshes);
 
 		void step_compute_states();
 		void update_meshes();

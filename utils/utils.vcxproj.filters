@@ -50,5 +50,8 @@
     <ClInclude Include="any_of.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="findutils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

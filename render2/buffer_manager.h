@@ -45,7 +45,7 @@ namespace planet_engine
 		void lock(GLuint offset);
 		void unlock(GLuint offset);
 
-		GLuint buffer();
+		GLuint buffer() const;
 		GLuint max_size() const;
 		GLuint block_size() const;
 		GLuint size() const;

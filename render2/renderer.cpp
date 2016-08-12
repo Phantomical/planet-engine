@@ -1,5 +1,6 @@
 #include "renderer.h"
 #include "shader.h"
+#include "findutils.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -88,22 +89,6 @@ namespace planet_engine
 
 	using util::glsl_shader;
 
-	template<typename T, typename Container>
-	bool contains(const Container& c, const T& val)
-	{
-		return std::find(std::begin(c), std::end(c), val) != std::end(c);
-	}
-	template<typename T, typename Container>
-	auto find(Container& c, const T& val)
-	{
-		return std::find(std::begin(c), std::end(c), val);
-	}
-	template<typename T, typename Container, typename Pred>
-	auto find_if(Container& c, const Pred& p)
-	{
-		return std::find_if(std::begin(c), std::end(c), p);
-	}
-
 	std::string read_file(const std::string& path)
 	{
 		std::ifstream t(path);
@@ -137,13 +122,13 @@ namespace planet_engine
 
 		for (auto patch : _meshes)
 		{
-			auto it = patches.find(patch);
-			if (it == patches.end())
+			auto it = util::find_if(pipeline.patches(), [&](auto p) { return p.first == patch; });
+			if (it == pipeline.patches().end())
 				continue;
 
-			GLuint offset = std::get<0>(it->second);
-			meshes.lock(offset);
-			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, meshes.buffer(), meshes.block_size() * offset, NUM_RESULT_ELEMS * VERTEX_SIZE);
+			GLuint offset = it->second;
+			pipeline.manager().lock(offset);
+			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, pipeline.manager().buffer(), pipeline.manager().block_size() * offset, NUM_RESULT_ELEMS * VERTEX_SIZE);
 			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, state.result_buffer, result_size * state.offsets.size(), result_size);
 
 			glDispatchCompute(NUM_COMPUTE_GROUPS, 1, 1);
@@ -156,7 +141,7 @@ namespace planet_engine
 		return state;
 	}
 
-	void renderer::update_state::concat(const update_state& ust)
+	void update_state::concat(const update_state& ust)
 	{
 		commands.insert(commands.end(), ust.commands.begin(), ust.commands.end());
 		movecommands.insert(movecommands.end(), ust.movecommands.begin(), ust.movecommands.end());
@@ -206,7 +191,7 @@ namespace planet_engine
 		for (size_t i = 0; i < offsets.size(); ++i)
 		{
 			glGetBufferSubData(GL_COPY_READ_BUFFER, result_size * i, sizeof(float), temp);
-			parent->meshes.unlock(offsets[i]);
+			parent->pipeline.manager().unlock(offsets[i]);
 
 			if (!patches[i].expired())
 			{
@@ -220,123 +205,7 @@ namespace planet_engine
 		offsets.clear();
 		size = 0;
 	}
-
-	/* Mesh Management Functions */
-	renderer::update_state renderer::add_meshes(std::initializer_list<std::shared_ptr<patch>> _meshes)
-	{
-		if (_meshes.size() == 0)
-			return update_state();
-
-		std::vector<std::shared_ptr<patch>> meshes(_meshes.begin(), _meshes.end());
-		aligned_buffer<mesh_info> infos(ubo_offset_alignment, meshes.size());
-		std::vector<offset_type> offsets;
-		offsets.reserve(meshes.size());
-		std::vector<std::shared_ptr<patch>> compute_targets;
-
-		for (size_t i = 0; i < meshes.size(); ++i)
-		{
-			auto patch = meshes[i];
-			mesh_info info =
-			{
-				patch->pos,
-				data->planet_radius,
-				patch->nwc,
-				patch::SKIRT_DEPTH,
-				patch->nec,
-				SCALE, // Scale value
-				patch->swc,
-				0.0, // Padding
-				info.sec = patch->sec,
-				0.0 // Padding
-			};
-
-			offset_type offset = this->meshes.alloc_block();
-
-			infos[i] = info;
-			offsets.push_back(offset);
-
-			if (patch->farthest_vertex == std::numeric_limits<float>::max())
-				compute_targets.push_back(patch);
-		}
-
-		OutputDebug("[RENDERER] Created ", offsets.size(), " new patches.\n");
-
-		glUseProgram(meshgen);
-
-		glUniform1ui(0, NUM_VERTICES);
-
-		for (size_t i = 0; i < offsets.size(); ++i)
-		{
-			GLuint buffer;
-			glGenBuffers(1, &buffer);
-			glBindBuffer(GL_UNIFORM_BUFFER, buffer);
-			glBufferData(GL_UNIFORM_BUFFER, sizeof(mesh_info), &infos[i], GL_STATIC_DRAW);
-
-			glBindBufferBase(GL_UNIFORM_BUFFER, 0, buffer);
-			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, this->meshes.buffer(), offsets[i] * this->meshes.block_size(), this->meshes.block_size());
-
-			glDispatchCompute(((NUM_VERTICES + COMPUTE_GROUP_SIZE - 1) / COMPUTE_GROUP_SIZE), 1, 1);
-
-			glDeleteBuffers(1, &buffer);
-		}
-
-		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-
-		update_state ustate;
-
-		for (size_t i = 0; i < meshes.size(); ++i)
-		{
-			DrawElementsIndirectCommand cmd;
-			cmd.baseInstance = 0;
-			cmd.baseVertex = (this->meshes.block_size() / VERTEX_SIZE) * offsets[i];
-			cmd.count = NUM_INDICES;
-			cmd.firstIndex = 0;
-			cmd.instanceCount = 1;
-
-			MoveCommand mvcmd;
-			mvcmd.dest = offsets[i];
-			mvcmd.source = i;
-			mvcmd.is_new = true;
-
-			patches.insert(std::make_pair(meshes[i], std::make_tuple(offsets[i])));
-
-			ustate.commands.push_back(cmd);
-			ustate.movecommands.push_back(mvcmd);
-		}
-
-		compute_states.push_back(compute_bounds(
-			std::initializer_list<std::shared_ptr<patch>>(compute_targets.data(),
-				compute_targets.data() + compute_targets.size())));
-
-		return ustate;
-	}
-	renderer::update_state renderer::remove_meshes(std::initializer_list<std::shared_ptr<patch>> _meshes)
-	{
-		update_state ustate;
-
-		for (auto patch : _meshes)
-		{
-			auto it = patches.find(patch);
-			if (it == patches.end())
-				continue;
-			auto offsets = it->second;
-
-			GLuint offset = std::get<0>(offsets);
-
-			patches.erase(it);
-			meshes.dealloc_block(offset);
-
-			MoveCommand mvcmd;
-			mvcmd.source = 0;
-			mvcmd.dest = offset;
-			mvcmd.is_new = false;
-
-			ustate.movecommands.push_back(mvcmd);
-		}
-
-		return ustate;
-	}
-
+	
 	void renderer::step_compute_states()
 	{
 		for (auto& state : compute_states)
@@ -358,39 +227,33 @@ namespace planet_engine
 		update_state ustate;
 
 		{
-			std::vector<std::shared_ptr<patch>> to_add, to_remove;
+			std::vector<std::shared_ptr<patch>> to_compute;
 
-			for (auto p : patches)
+			pipeline.cull();
+
+			for (auto p : data->to_add)
 			{
-				if (p.first->level != 0	&& p.first->parent.expired())
-					to_remove.push_back(p.first);
-			}
+				pipeline.generate(p);
 
-			for (auto p : data->to_subdivide)
-			{
-				p->split();
-
-				to_add.push_back(p->nw);
-				to_add.push_back(p->ne);
-				to_add.push_back(p->sw);
-				to_add.push_back(p->se);
-
-				to_remove.push_back(p);
+				if (p->farthest_vertex == std::numeric_limits<float>::max())
+					to_compute.push_back(p);
 			}
 
 			for (auto p : data->to_merge)
 			{
-				std::stack<std::shared_ptr<patch>> stack;
-
-				if (!contains(to_add, p))
-					to_add.push_back(p);
-
+				if (patch_pipeline::can_upsample(p))
 				{
-					auto it = find(to_remove, p);
-					if (it != to_remove.end())
-						to_remove.erase(it);
+					pipeline.upsample(p);
+					continue;
 				}
 
+				std::stack<std::shared_ptr<patch>> stack;
+
+				pipeline.generate(p);
+
+				if (p->farthest_vertex == std::numeric_limits<float>::max())
+					to_compute.push_back(p);
+				
 				if (p->subdivided())
 				{
 					stack.push(p->nw);
@@ -405,14 +268,6 @@ namespace planet_engine
 					auto patch = stack.top();
 					stack.pop();
 
-					{
-						auto it = find(to_add, patch);
-						if (it != to_add.end())
-						{
-							to_add.erase(it);
-							continue;
-						}
-					}
 
 					if (patch->subdivided())
 					{
@@ -422,21 +277,23 @@ namespace planet_engine
 						stack.push(patch->se);
 					}
 
-					if (!contains(to_remove, patch))
-						to_remove.push_back(patch);
+					pipeline.remove(patch);
 				}
-
-				if (p->subdivided())
-					p->merge();
 			}
 
-			data->to_subdivide.clear();
-			data->to_merge.clear();
+			for (auto p : data->to_remove)
+			{
+				pipeline.remove(p);
+			}
 
-			ustate = add_meshes(std::initializer_list<std::shared_ptr<patch>>(
-				to_add.data(), to_add.data() + to_add.size()));
-			ustate.concat(remove_meshes(std::initializer_list<std::shared_ptr<patch>>(
-				to_remove.data(), to_remove.data() + to_remove.size())));
+			data->to_add.clear();
+			data->to_merge.clear();
+			data->to_remove.clear();
+
+			ustate = pipeline.process();
+
+			compute_states.push_back(compute_bounds(std::initializer_list<std::shared_ptr<patch>>(
+				to_compute.data(), to_compute.data() + to_compute.size())));
 		}
 
 		if (ustate.movecommands.size() != 0)
@@ -461,7 +318,7 @@ namespace planet_engine
 			//glDeleteBuffers(2, buffers);
 
 			DrawElementsIndirectCommand* commands = (DrawElementsIndirectCommand*)glMapNamedBufferRange(drawcommands, 0,
-				sizeof(DrawElementsIndirectCommand) * meshes.max_index(), GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
+				sizeof(DrawElementsIndirectCommand) * pipeline.manager().max_index(), GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
 			
 			for (auto cmd : ustate.movecommands)
 			{
@@ -491,7 +348,7 @@ namespace planet_engine
 	}
 	void renderer::render(const glm::dmat4& mvp_mat)
 	{
-		size_t size = meshes.current_max();
+		size_t size = pipeline.manager().current_max();
 
 		GLuint buffer;
 		glGenBuffers(1, &buffer);
@@ -500,9 +357,9 @@ namespace planet_engine
 
 		glm::mat4* matrices = (glm::mat4*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
 
-		for (auto& p : patches)
+		for (auto& p : pipeline.patches())
 		{
-			GLuint idx = std::get<0>(p.second);
+			GLuint idx = p.second;
 			assert(idx < size);
 
 			glm::dmat4 mat = glm::translate(glm::dmat4(1.0), p.first->pos);
@@ -528,37 +385,29 @@ namespace planet_engine
 
 	/* Constructors and Destructors */
 	renderer::renderer(GLuint shader, double planet_radius) :
-		meshes(MESH_SIZE, NUM_BLOCKS),
+		pipeline(NUM_BLOCKS),
 		planet(planet_radius),
 		planet_shader(shader)
 	{
-		glsl_shader meshgen = glsl_shader(false);
-		meshgen.compute(read_file(concat("mesh_gen.glsl")));
-		meshgen.link();
-		meshgen.check_errors({ GL_COMPUTE_SHADER });
-
 		glsl_shader max_calc = glsl_shader(false);
-		max_calc.compute(read_file(concat("max.glsl")));
+		max_calc.compute(read_file("max.glsl"));
 		max_calc.link();
 		max_calc.check_errors({ GL_COMPUTE_SHADER });
 
 		glsl_shader length_calc = glsl_shader(false);
-		length_calc.compute(read_file(concat("length.glsl")));
+		length_calc.compute(read_file("length.glsl"));
 		length_calc.link();
 		length_calc.check_errors({ GL_COMPUTE_SHADER });
 
 		glsl_shader command_update = glsl_shader(false);
-		command_update.compute(read_file(concat("length.glsl")));
+		command_update.compute(read_file("length.glsl"));
 		command_update.link();
 		command_update.check_errors({ GL_COMPUTE_SHADER });
 
-		this->meshgen = meshgen.program();
 		this->max_calc = max_calc.program();
 		this->length_calc = length_calc.program();
 		this->command_update = command_update.program();
-
-		glProgramUniform1ui(this->meshgen, 1, SIDE_LEN);
-
+		
 		data = planet.data;
 
 		unsigned int* indices = gen_indices(SIDE_LEN);
@@ -587,7 +436,7 @@ namespace planet_engine
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 
-		glBindBuffer(GL_ARRAY_BUFFER, meshes.buffer());
+		glBindBuffer(GL_ARRAY_BUFFER, pipeline.manager().buffer());
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTEX_SIZE, vOffset(0));
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, VERTEX_SIZE, vOffset(sizeof(float) * 3));
@@ -597,7 +446,6 @@ namespace planet_engine
 	}
 	renderer::~renderer()
 	{
-		glDeleteProgram(meshgen);
 		glDeleteProgram(max_calc);
 		glDeleteProgram(length_calc);
 		glDeleteProgram(command_update);

@@ -111,6 +111,23 @@ void WindowCallback(GLFWwindow* win, int xsz, int ysz)
 	aspect = double(xsz) / double(ysz);
 }
 
+long nbuffers;
+
+void(WINAPI*oldGenBuffers)(GLsizei n, GLuint* bufs);
+void(WINAPI*oldDelBuffers)(GLsizei n, const GLuint* bufs);
+void WINAPI newGenBuffers(GLsizei n, GLuint* bufs)
+{
+	nbuffers += n;
+	OutputDebug("[GENBUFFERS] Generated ", n, " buffers. There are ", nbuffers, " buffers\n");
+	oldGenBuffers(n, bufs);
+}
+void WINAPI newDelBuffers(GLsizei n, const GLuint* bufs)
+{
+	nbuffers -= n;
+	OutputDebug("[DELBUFFERS] Deleted ", n, " buffers. There are ", nbuffers, " buffers\n");
+	oldDelBuffers(n, bufs);
+}
+
 int main()
 {
 	glfwInit();
@@ -125,6 +142,11 @@ int main()
 	ogl_LoadFunctions();
 
 	glfwSwapBuffers(win);
+
+	oldGenBuffers = glGenBuffers;
+	glGenBuffers = newGenBuffers;
+	oldDelBuffers = glDeleteBuffers;
+	glDeleteBuffers = newDelBuffers;
 
 	aspect = 1.5;
 

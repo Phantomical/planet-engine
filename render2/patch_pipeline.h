@@ -5,6 +5,7 @@
 #include "buffer_manager.h"
 #include "any_of.h"
 
+#include <map>
 #include <queue>
 #include <unordered_map>
 
@@ -74,11 +75,11 @@ namespace planet_engine
 		{
 			enum execution_state : uint_least8_t
 			{
-				START,
-				GEN_VERTEX_ARRAY,
-				GEN_MESH,
-				DONE,
-				ERROR_STATE
+				START = 0,
+				GEN_VERTEX_ARRAY = 1,
+				GEN_MESH = 2,
+				DONE = 3,
+				ERROR_STATE = 0xFF
 			};
 
 			execution_state state;
@@ -99,9 +100,9 @@ namespace planet_engine
 		{
 			enum execution_state : uint_least8_t
 			{
-				START,
-				DONE,
-				ERROR_STATE
+				START = 0,
+				DONE = 1,
+				ERROR_STATE = 0xFF
 			};
 
 			execution_state state;
@@ -121,9 +122,9 @@ namespace planet_engine
 		{
 			enum execution_state : uint_least8_t
 			{
-				START,
-				DONE,
-				ERROR_STATE
+				START = 0,
+				DONE = 1,
+				ERROR_STATE = 0xFF
 			};
 
 			execution_state state;
@@ -131,6 +132,8 @@ namespace planet_engine
 			std::shared_ptr<patch> target_patch;
 
 			GLuint offset;
+
+			size_t ctr;
 
 			bool is_done() const;
 			void step();
@@ -144,7 +147,7 @@ namespace planet_engine
 
 		std::queue<exec_type> _waiting;
 		std::deque<exec_type> _executing;
-		std::unordered_map<std::shared_ptr<patch>, GLuint> _offsets;
+		std::map<std::shared_ptr<patch>, GLuint> _offsets;
 
 		GLuint _meshgen;
 		GLuint _vertex_gen;
@@ -152,6 +155,9 @@ namespace planet_engine
 
 	public:
 		patch_pipeline(size_t num_blocks);
+		patch_pipeline(const patch_pipeline&) = delete;
+		patch_pipeline(patch_pipeline&&) = delete;
+		~patch_pipeline();
 
 		void upsample(std::shared_ptr<patch> patch);
 		void generate(std::shared_ptr<patch> patch);
@@ -159,7 +165,8 @@ namespace planet_engine
 
 		void cull();
 
-		const buffer_manager& manager() const;
+		buffer_manager& manager();
+		const decltype(_offsets)& patches() const;
 
 		update_state process(size_t n = 4);
 

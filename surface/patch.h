@@ -38,7 +38,7 @@ namespace planet_engine
 	struct patch : std::enable_shared_from_this<patch>
 	{
 	public:
-		static constexpr size_t SIDE_LEN = 129;
+		static constexpr size_t SIDE_LEN = 9;
 		static constexpr size_t NUM_VERTICES = num_vertices(SIDE_LEN);
 		static constexpr size_t NUM_INDICES = num_indices(SIDE_LEN);
 		static constexpr double SKIRT_DEPTH = 5.0;
@@ -101,7 +101,8 @@ namespace planet_engine
 		double planet_radius;
 		contig_vector<std::shared_ptr<patch>> leaf_patches;
 		contig_vector<std::shared_ptr<patch>> leaf_parents;
-		std::vector<std::shared_ptr<patch>> to_subdivide;
+		std::vector<std::shared_ptr<patch>> to_add;
+		std::vector<std::shared_ptr<patch>> to_remove;
 		std::vector<std::shared_ptr<patch>> to_merge;
 		glm::dmat4 model_matrix;
 	};

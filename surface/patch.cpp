@@ -1,6 +1,5 @@
 #include "patch.h"
-
-#include <algorithm>
+#include "findutils.h"
 
 namespace planet_engine
 {
@@ -47,6 +46,18 @@ namespace planet_engine
 			if (it != data->leaf_patches.end())
 				data->leaf_patches.erase(it);
 		}
+		{
+			auto it = std::find(data->leaf_parents.begin(), data->leaf_parents.end(), parent.lock());
+			if (it != data->leaf_parents.end())
+				data->leaf_parents.erase(it);
+		}
+
+		data->to_remove.push_back(shared_from_this());
+		data->to_add.push_back(nw);
+		data->to_add.push_back(ne);
+		data->to_add.push_back(sw);
+		data->to_add.push_back(se);
+
 		data->leaf_parents.push_back(shared_from_this());
 
 		data->leaf_patches.push_back(nw);
@@ -68,8 +79,14 @@ namespace planet_engine
 			if (it != data->leaf_parents.end())
 				data->leaf_parents.erase(it);
 		}
+		{
+			auto parent = this->parent.lock();
+			if (parent != nullptr && !util::contains(data->leaf_parents, parent))
+				data->leaf_parents.push_back(parent);
+		}
 
 		data->leaf_patches.push_back(shared_from_this());
+		data->to_merge.push_back(shared_from_this());
 	}
 
 	bool patch::should_subdivide(const glm::dvec3& cam_pos) const

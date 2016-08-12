@@ -54,9 +54,15 @@ struct Vertex
 
 #define STRIDE 8
 
+
+dvec3 to_sphere(in dvec3 v)
+{
+	return planet_radius * normalize(v);
+}
+
 Vertex array_access(in uvec2 index, in uint arrayID)
 {
-	uint idx = dot(index, uvec2(STRIDE, SIDE_LEN * STRIDE));
+	uint idx = uint(dot(index, uvec2(STRIDE, SIDE_LEN * STRIDE)));
 
 	Vertex vtx;
 	vtx.vertex = vec3(dvec3(
@@ -74,7 +80,7 @@ Vertex array_access(in uvec2 index, in uint arrayID)
 }
 Vertex access_value(in uvec2 index)
 {
-	uint cond = (index.x < hsl) + (index.y < hsl) * 2;
+	uint cond = uint(index.x < hsl) + uint(index.y < hsl) * 2;
 
 	switch (cond)
 	{
@@ -92,7 +98,7 @@ Vertex access_value(in uvec2 index)
 void main()
 {
 	const uint SL2 = SIDE_LEN * SIDE_LEN;
-	const uint index = GlobalInvokationIndex;
+	const uint index = GlobalInvocationIndex;
 
 	Vertex vtx;
 

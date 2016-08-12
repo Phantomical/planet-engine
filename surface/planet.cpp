@@ -41,29 +41,25 @@ namespace planet_engine
 
 		for (auto side : sides)
 		{
-			data->to_subdivide.push_back(side);
-		}
-		for (auto side : sides)
-		{
-			data->to_merge.push_back(side);
+			data->to_add.push_back(side);
 		}
 	}
 
 	void planet::update(const glm::dvec3& cam_pos)
 	{
-		for (auto& leaf : data->leaf_patches)
+		for (auto& patch : data->leaf_patches)
 		{
-			if (leaf->should_subdivide(cam_pos))
+			if (patch->should_subdivide(cam_pos))
 			{
-				data->to_subdivide.push_back(leaf);
+				patch->split();
 			}
 		}
 
-		for (auto& lp : data->leaf_parents)
+		for (auto& patch : data->leaf_parents)
 		{
-			if (lp->should_merge(cam_pos))
+			if (patch->should_merge(cam_pos))
 			{
-				data->to_merge.push_back(lp);
+				patch->merge();
 			}
 		}
 	}

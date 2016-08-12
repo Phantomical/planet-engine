@@ -177,7 +177,7 @@
     <CustomBuild Include="max.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="mesh_gen.glsl">
+    <CustomBuild Include="mesh_gen3.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
     <CustomBuild Include="planet_shader_frag.glsl">
@@ -188,9 +188,15 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <None Include="mesh_gen2.glsl" />
-    <None Include="upsample.glsl" />
-    <None Include="vertex_gen.glsl" />
+    <CustomBuild Include="mesh_gen.glsl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="upsample.glsl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="vertex_gen.glsl">
+      <FileType>Document</FileType>
+    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

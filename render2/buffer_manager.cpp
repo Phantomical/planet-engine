@@ -64,7 +64,7 @@ namespace planet_engine
 
 		_offsets.insert(index);
 
-		//OutputDebug("[BUFMGR][At ", this, "] Allocated offset ", index, ".\n");
+		OutputDebug("[BUFMGR][At ", this, "] Allocated offset ", index, ".\n");
 
 		return index;
 	}
@@ -95,7 +95,7 @@ namespace planet_engine
 			return_index(offset);
 	}
 
-	GLuint buffer_manager::buffer()
+	GLuint buffer_manager::buffer() const
 	{
 		return _buffer;
 	}
@@ -123,6 +123,8 @@ namespace planet_engine
 	}
 	GLuint buffer_manager::current_max() const
 	{
+		if (_offsets.empty())
+			return 0;
 		return *std::max_element(_offsets.begin(), _offsets.end()) + 1;
 	}
 

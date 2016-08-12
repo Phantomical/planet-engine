@@ -5,6 +5,12 @@
 
 namespace planet_engine
 {
+	template<typename T>
+	bool is_failed(const T& v)
+	{
+		return v.state == T::ERROR_STATE;
+	}
+
 	void patch_pipeline::upsample(std::shared_ptr<patch> patch)
 	{
 		if (!can_upsample(patch))
@@ -21,11 +27,7 @@ namespace planet_engine
 	}
 	void patch_pipeline::remove(std::shared_ptr<patch> patch)
 	{
-		auto it = _offsets.find(patch);
-		if (it == _offsets.end())
-			return;
 		_waiting.emplace(remove_state(patch, this));
-		_offsets.erase(it);
 	}
 
 	void patch_pipeline::cull()
@@ -34,7 +36,7 @@ namespace planet_engine
 
 		for (const auto& p : _offsets)
 		{
-			if (p.first->parent.expired())
+			if (p.first->parent.expired() && p.first->level != 0)
 				tr.push_back(p.first);
 		}
 
@@ -184,6 +186,8 @@ namespace planet_engine
 			// Make effects visible to other shaders down the pipeline
 			glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT);
 
+			glDeleteBuffers(1, &uniforms);
+
 			break;
 		}
 		case DONE:
@@ -203,8 +207,13 @@ namespace planet_engine
 			auto it = pipeline->_offsets.find(target_patch);
 			if (it == pipeline->_offsets.end())
 			{
-				assert(false);
-				state = ERROR_STATE;
+				if (ctr++ < 10)
+					state = START;
+				else
+				{
+					state = ERROR_STATE;
+					assert(false);
+				}
 				return;
 			}
 
@@ -213,6 +222,7 @@ namespace planet_engine
 
 			pipeline->_manager.dealloc_block(offset);
 
+			state = DONE;
 			break;
 		}
 		case DONE:
@@ -229,7 +239,7 @@ namespace planet_engine
 		pipeline(pipeline),
 		target_patch(p)
 	{
-
+		OutputDebug("[PIPELINE] Generating patch ", target_patch.get(), '\n');
 	}
 	patch_pipeline::upsample_state::upsample_state(std::shared_ptr<patch> p, patch_pipeline* pipeline) :
 		state(START),
@@ -257,20 +267,34 @@ namespace planet_engine
 				children[3] = p->se;
 			}
 		}
+
+		OutputDebug("[PIPELINE] Upsampling patch ", target_patch.get(), '\n');
+
+		OutputDebug("[PIPELINE] Removing patch ", children[0].get(), '\n');
+		OutputDebug("[PIPELINE] Removing patch ", children[1].get(), '\n');
+		OutputDebug("[PIPELINE] Removing patch ", children[2].get(), '\n');
+		OutputDebug("[PIPELINE] Removing patch ", children[3].get(), '\n');
 	}
 	patch_pipeline::remove_state::remove_state(std::shared_ptr<patch> p, patch_pipeline* pipeline) :
 		state(START),
 		pipeline(pipeline),
-		target_patch(p)
+		target_patch(p),
+		ctr(0)
 	{
-
+		OutputDebug("[PIPELINE] Removing patch ", target_patch.get(), '\n');
 	}
 
 	update_state patch_pipeline::process(size_t n)
 	{
-		for (size_t i = 0; i < n && !_waiting.empty(); ++i)
+		for (size_t i = 0; i < n && !_waiting.empty();)
 		{
 			_executing.push_back(_waiting.front());
+
+			// Removing costs next to nothing so we
+			// can do many of them at once
+			if (!_waiting.front().is<remove_state>())
+				++i;
+
 			_waiting.pop();
 		}
 
@@ -294,20 +318,35 @@ namespace planet_engine
 		std::set<GLuint> to_erase;
 
 		bool cond = false;
+		bool failed = false;
 		do
 		{
+			if (_executing.empty())
+				break;
 			auto& exec = _executing.front();
 			switch (exec.active_index())
 			{
 			case 0:
-				cond = exec.get<exec_type::type_at<0>>().is_done();
+			{
+				auto& var = exec.get<exec_type::type_at<0>>();
+				cond = var.is_done();
+				failed = is_failed(var);
 				break;
+			}
 			case 1:
-				cond = exec.get<exec_type::type_at<1>>().is_done();
+			{
+				auto& var = exec.get<exec_type::type_at<1>>();
+				cond = var.is_done();
+				failed = is_failed(var);
 				break;
+			}
 			case 2:
-				cond = exec.get<exec_type::type_at<2>>().is_done();
+			{
+				auto& var = exec.get<exec_type::type_at<2>>();
+				cond = var.is_done();
+				failed = is_failed(var);
 				break;
+			}
 			default:
 				assert(false);
 			}
@@ -372,7 +411,7 @@ namespace planet_engine
 
 				_executing.pop_front();
 			}
-
+			assert(!failed);
 		} while (cond);
 
 		for (GLuint offset : to_erase)
@@ -388,9 +427,13 @@ namespace planet_engine
 		return ustate;
 	}
 
-	const buffer_manager& patch_pipeline::manager() const
+	buffer_manager& patch_pipeline::manager()
 	{
 		return _manager;
+	}
+	auto patch_pipeline::patches() const -> const decltype(_offsets)&
+	{
+		return _offsets;
 	}
 
 	patch_pipeline::patch_pipeline(size_t num_blocks) :
@@ -402,7 +445,7 @@ namespace planet_engine
 		shader vertex_gen(false);
 		shader upsampler(false);
 
-		meshgen.compute(read_file("mesh_gen2.glsl"));
+		meshgen.compute(read_file("mesh_gen.glsl"));
 		meshgen.link();
 
 		vertex_gen.compute(read_file("vertex_gen.glsl"));
@@ -411,13 +454,28 @@ namespace planet_engine
 		upsampler.compute(read_file("upsample.glsl"));
 		upsampler.link();
 
-		meshgen.link_status();
-		vertex_gen.link_status();
-		upsampler.link_status();
+		meshgen.check_errors({ GL_COMPUTE_SHADER });
+		vertex_gen.check_errors({ GL_COMPUTE_SHADER });
+		upsampler.check_errors({ GL_COMPUTE_SHADER });
 
 		_meshgen = meshgen.program();
 		_vertex_gen = vertex_gen.program();
 		_upsampler = upsampler.program();
+
+		glProgramUniform1ui(_meshgen, 0, SIDE_LEN);
+		glProgramUniform1ui(_vertex_gen, 0, SIDE_LEN);
+		glProgramUniform1ui(_upsampler, 0, SIDE_LEN);
+	}
+	patch_pipeline::~patch_pipeline()
+	{
+		while (!_waiting.empty() && !_executing.empty())
+		{
+			process(64);
+		}
+
+		glDeleteProgram(_meshgen);
+		glDeleteProgram(_vertex_gen);
+		glDeleteProgram(_upsampler);
 	}
 
 	bool patch_pipeline::can_upsample(std::shared_ptr<patch> p)
