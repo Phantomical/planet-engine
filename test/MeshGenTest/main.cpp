@@ -16,7 +16,7 @@ constexpr size_t SIDE_LEN = 512;
 constexpr size_t NUM_VERTICES = planet_engine::num_vertices(SIDE_LEN);
 constexpr size_t NUM_ELEMENTS = planet_engine::num_indices(SIDE_LEN);
 constexpr size_t COMPUTE_GROUP_SIZE = 128;
-static constexpr double radius = 50.0;
+static constexpr double radius = 10.0;
 
 using glm::dvec3;
 using glm::dvec4;
@@ -78,7 +78,7 @@ public:
 		prg.fragment(read_file("frag.glsl"));
 		prg.link();
 
-		prg.check_errors({ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER });
+		prg.check_errors({ GL_VERTEX_SHADER, GL_FRAGMENT_SHADER }, fail);
 
 		program = prg.program();
 
@@ -127,7 +127,7 @@ public:
 		glUniform1ui(0, NUM_VERTICES);
 		glUniform1ui(1, SIDE_LEN);
 
-		glDispatchCompute((NUM_VERTICES + COMPUTE_GROUP_SIZE - 1) / COMPUTE_GROUP_SIZE, 1, 1);
+		glDispatchCompute(1, (NUM_VERTICES + COMPUTE_GROUP_SIZE - 1) / COMPUTE_GROUP_SIZE, 1);
 
 		glMemoryBarrier(GL_ALL_BARRIER_BITS);
 	}
@@ -136,7 +136,7 @@ public:
 	{
 		UniformLayout vals =
 		{
-			dvec3(0.0, 50.0, 50.0),
+			dvec3(0.0, 10.0, 0.0),
 			radius,
 			dvec3(radius, radius, -radius),
 			2.0, // Skirt Depth

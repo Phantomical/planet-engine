@@ -564,10 +564,15 @@ void calc_vertex(in uvec2 p, out vec3 vertex, out float displacement)
 
 #define STRIDE 7
 
+const uint WorkGroupIndex = gl_WorkGroupID.z * gl_NumWorkGroups.x * gl_NumWorkGroups.y
++ gl_WorkGroupID.y * gl_NumWorkGroups.x + gl_WorkGroupID.x;
+const uint GlobalInvocationIndex = WorkGroupIndex * gl_WorkGroupSize.x * gl_WorkGroupSize.y
+* gl_WorkGroupSize.z + gl_LocalInvocationIndex;
+
 void main()
 {
 
-	uint index = gl_GlobalInvocationID.x;
+	uint index = GlobalInvocationIndex;
 
 	if (index >= size)
 		return;
