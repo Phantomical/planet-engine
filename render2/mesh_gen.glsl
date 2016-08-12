@@ -98,21 +98,35 @@ void main()
 	}
 	else
 	{
+		uvec2 p;
+
 		dvec3 vtx;
 		if (index < SIDE_LEN * SIDE_LEN + SIDE_LEN)
+		{
 			vtx = to_sphere(mix(nwc, swc, INTERP * double(index - (SIDE_LEN * SIDE_LEN))));
+			p = uvec2(0, index - SIDE_LEN * SIDE_LEN);
+		}
 		else if (index < SIDE_LEN * SIDE_LEN + SIDE_LEN * 2)
+		{
 			vtx = to_sphere(mix(swc, sec, INTERP * double(index - (SIDE_LEN * SIDE_LEN + SIDE_LEN))));
+			p = uvec2(index - SIDE_LEN * SIDE_LEN - SIDE_LEN, SIDE_LEN);
+		}
 		else if (index < SIDE_LEN * SIDE_LEN + SIDE_LEN * 3)
+		{
 			vtx = to_sphere(mix(nec, sec, INTERP * double(index - (SIDE_LEN * SIDE_LEN + SIDE_LEN * 2))));
+			p = uvec2(SIDE_LEN, -(index - SIDE_LEN * SIDE_LEN - 2 * SIDE_LEN));
+		}
 		else
+		{
 			vtx = to_sphere(mix(nwc, nec, INTERP * double(index - (SIDE_LEN * SIDE_LEN + SIDE_LEN * 3))));
+			p = uvec2(-(index - SIDE_LEN * SIDE_LEN - 3 * SIDE_LEN), SIDE_LEN);
+		}
 
 		dvec3 nrm = normalize(vtx);
 		vtx -= nrm * skirt_depth + pos;
 
 		vertex = vec3(vtx);
-		normal = vec3(nrm);
+		normal = calc_normal(p, read(p + uvec2(1)).xyz);
 		displacement = float(-skirt_depth);
 	}
 

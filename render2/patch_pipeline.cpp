@@ -224,7 +224,7 @@ namespace planet_engine
 				else
 				{
 					state = ERROR_STATE;
-					assert(false);
+					OutputDebug("[PIPELINE][ERROR] Unable to find offset for patch ", target_patch.get(), ".\n");
 				}
 				return;
 			}
@@ -418,8 +418,13 @@ namespace planet_engine
 
 				_executing.pop_front();
 			}
-			assert(!failed);
-		} while (cond);
+
+			if (failed)
+			{
+				OutputDebug("[PIPELINE][ERROR] A command failed!\n");
+				_executing.pop_front();
+			}
+		} while (cond && !failed);
 
 
 		return ustate;

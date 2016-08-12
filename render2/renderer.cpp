@@ -229,7 +229,7 @@ namespace planet_engine
 		{
 			std::vector<std::shared_ptr<patch>> to_compute;
 
-			pipeline.cull();
+			//pipeline.cull();
 
 			for (auto p : data->to_add)
 			{
@@ -290,7 +290,7 @@ namespace planet_engine
 			data->to_merge.clear();
 			data->to_remove.clear();
 
-			ustate = pipeline.process(1);
+			ustate = pipeline.process(2);
 
 			if (!to_compute.empty())
 				compute_states.push_back(compute_bounds(std::initializer_list<std::shared_ptr<patch>>(
