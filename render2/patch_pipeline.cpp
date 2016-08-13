@@ -329,6 +329,64 @@ namespace planet_engine
 		++counter;
 	}
 
+	void patch_pipeline::generate_state::gen_vertices()
+	{
+		glGenBuffers(1, &vertex_buffer);
+		glGenBuffers(1, &uniforms);
+
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, vertex_buffer);
+		glBufferStorage(GL_SHADER_STORAGE_BUFFER, VERTEX_BUFFER_SIZE, nullptr, 0);
+
+		mesh_info info =
+		{
+			patch->pos,
+			patch->data->planet_radius,
+			patch->nwc,
+			SKIRT_DEPTH,
+			patch->nec,
+			1.0, // Scale
+			patch->swc,
+			0.0, //Padding
+			patch->sec
+		};
+
+		glBindBuffer(GL_UNIFORM_BUFFER, uniforms);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(mesh_info), &info, GL_STATIC_DRAW);
+
+		offset = pipeline->manager().alloc_block();
+
+		glUseProgram(pipeline->_vertex_gen);
+		// Bind output buffer
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertex_buffer);
+		// Bind uniforms
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniforms);
+		// Dispatch compute shader to fill the output buffer
+		glDispatchCompute(GEN_VERTEX_INVOCATIONS, GEN_VERTEX_INVOCATIONS, 1);
+		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+		++counter;
+	}
+	void patch_pipeline::generate_state::gen_mesh()
+	{
+		glUseProgram(pipeline->_meshgen);
+		// Bind input buffer
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertex_buffer);
+		// Bind output buffer range
+		glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, pipeline->manager().buffer(),
+			offset * pipeline->manager().block_size(), pipeline->manager().block_size());
+		// Bind uniforms
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniforms);
+		// Dispatch compute shader to fill the output buffer range
+		glDispatchCompute(NUM_INVOCATIONS, 1, 1);
+		glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT);
+
+		// Delete buffers
+		glDeleteBuffers(1, &uniforms);
+		glDeleteBuffers(1, &vertex_buffer);
+
+		++counter;
+	}
+
 	bool patch_pipeline::merge_state::can_finalize()
 	{
 		return counter == 2;
@@ -385,6 +443,40 @@ namespace planet_engine
 				ptr->gen_mesh(i);
 			});
 		}
+
+		_exec_queue.emplace(ptr);
+	}
+	void patch_pipeline::merge(std::shared_ptr<patch> patch)
+	{
+		std::shared_ptr<merge_state> ptr = std::make_shared<merge_state>(patch, this);
+
+		_job_queue.push([=]() {
+			ptr->gen_vertices();
+		});
+		_job_queue.push([=]() {
+			ptr->gen_mesh();
+		});
+
+		_exec_queue.push(ptr);
+	}
+	void patch_pipeline::generate(std::shared_ptr<patch> patch)
+	{
+		std::shared_ptr<generate_state> ptr = std::make_shared<generate_state>(patch, this);
+
+		_job_queue.push([=]() {
+			ptr->gen_vertices();
+		});
+		_job_queue.push([=]() {
+			ptr->gen_mesh();
+		});
+
+		_exec_queue.push(exec_type(ptr));
+	}
+	void patch_pipeline::remove(std::shared_ptr<patch> patch)
+	{
+		std::shared_ptr<remove_state> ptr = std::make_shared<remove_state>(patch, this);
+
+		_exec_queue.push(exec_type(ptr));
 	}
 
 	update_state patch_pipeline::process(size_t n)

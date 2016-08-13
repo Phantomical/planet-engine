@@ -148,6 +148,8 @@ namespace planet_engine
 			GLuint vertex_buffer;
 			GLuint uniforms;
 
+			merge_state(std::shared_ptr<patch> patch, patch_pipeline* pipeline);
+
 			void gen_vertices();
 			void gen_mesh();
 
@@ -156,17 +158,36 @@ namespace planet_engine
 		};
 		struct remove_state
 		{
-			std::shared_ptr<patch> patch;
+			remove_state(std::shared_ptr<patch> patch, patch_pipeline* pipeline);
 
 			bool can_finalize();
 			void get_state(update_state& ustate);
+
+			std::shared_ptr<patch> patch;
+			patch_pipeline* pipeline;
 		};
 		struct generate_state
 		{
-			size_t counter;
+			static constexpr size_t VERTEX_BUFFER_SIZE = (SIDE_LEN + 2) * (SIDE_LEN + 2) * sizeof(float) * 4;
+			static constexpr size_t NUM_INVOCATIONS = ((SIDE_LEN + 2) * (SIDE_LEN + 2) + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
+			static constexpr size_t GEN_VERTEX_INVOCATIONS = (SIDE_LEN + 2 + 7) / 7;
+
+			generate_state(std::shared_ptr<patch> patch, patch_pipeline* pipeline);
+
+			void gen_vertices();
+			void gen_mesh();
 
 			bool can_finalize();
 			void get_state(update_state& ustate);
+
+			size_t counter;
+			patch_pipeline* pipeline;
+
+			std::shared_ptr<patch> patch;
+			GLuint offset;
+
+			GLuint uniforms;
+			GLuint vertex_buffer;
 		};
 
 		typedef util::any_of<
