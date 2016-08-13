@@ -21,7 +21,7 @@ namespace planet_engine
 
 		_page_size = static_cast<GLuint>(val);
 
-		_max_pages = (num_blocks * _block_size + _page_size - 1) / _page_size;
+		_max_pages = (uint64_t(num_blocks) * _block_size + _page_size - 1) / _page_size;
 
 		glGenBuffers(1, &_buffer);
 		glBindBuffer(GL_ARRAY_BUFFER, _buffer);
