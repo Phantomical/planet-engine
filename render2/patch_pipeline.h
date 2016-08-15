@@ -59,6 +59,9 @@ namespace planet_engine
 		static constexpr size_t SHADER_GROUP_SIZE = 128;
 		static constexpr size_t VERTEX_SIZE = sizeof(float) * 8;
 		static constexpr size_t MESH_SIZE = NUM_VERTICES * VERTEX_SIZE;
+		static constexpr size_t VERTEX_BUFFER_SIZE = (SIDE_LEN + 2) * (SIDE_LEN + 2) * sizeof(float) * 4;
+		static constexpr size_t NUM_INVOCATIONS = ((SIDE_LEN + 2) * (SIDE_LEN + 2) + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
+		static constexpr size_t GEN_VERTEX_INVOCATIONS = (SIDE_LEN + 2 + 7) / 7;
 
 		struct _upsample_state
 		{
@@ -107,15 +110,10 @@ namespace planet_engine
 
 		struct subdivide_state
 		{
-			static constexpr size_t VERTEX_BUFFER_SIZE = (SIDE_LEN + 2) * (SIDE_LEN + 2) * sizeof(float) * 4;
-			static constexpr size_t NUM_INVOCATIONS = ((SIDE_LEN + 2) * (SIDE_LEN + 2) + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
-			static constexpr size_t GEN_VERTEX_INVOCATIONS = (SIDE_LEN + 2 + 7) / 7;
-
 			size_t counter;
 			patch_pipeline* pipeline;
 
-			GLuint vertex_buffers[4];
-			GLuint uniforms[4];
+			GLuint buffers[4][2]
 
 			GLuint offsets[4];
 			std::shared_ptr<patch> children[4];
@@ -132,10 +130,6 @@ namespace planet_engine
 		};
 		struct merge_state
 		{
-			static constexpr size_t VERTEX_BUFFER_SIZE = (SIDE_LEN + 2) * (SIDE_LEN + 2) * sizeof(float) * 4;
-			static constexpr size_t NUM_INVOCATIONS = ((SIDE_LEN + 2) * (SIDE_LEN + 2) + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
-			static constexpr size_t GEN_VERTEX_INVOCATIONS = (SIDE_LEN + 2 + 7) / 7;
-
 			size_t counter;
 			patch_pipeline* pipeline;
 
@@ -145,8 +139,7 @@ namespace planet_engine
 			GLuint offset;
 			GLuint offsets[4];
 
-			GLuint vertex_buffer;
-			GLuint uniforms;
+			GLuint buffers[2];
 
 			merge_state(std::shared_ptr<patch> patch, patch_pipeline* pipeline);
 
@@ -168,10 +161,6 @@ namespace planet_engine
 		};
 		struct generate_state
 		{
-			static constexpr size_t VERTEX_BUFFER_SIZE = (SIDE_LEN + 2) * (SIDE_LEN + 2) * sizeof(float) * 4;
-			static constexpr size_t NUM_INVOCATIONS = ((SIDE_LEN + 2) * (SIDE_LEN + 2) + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
-			static constexpr size_t GEN_VERTEX_INVOCATIONS = (SIDE_LEN + 2 + 7) / 7;
-
 			generate_state(std::shared_ptr<patch> patch, patch_pipeline* pipeline);
 
 			void gen_vertices();
@@ -206,6 +195,9 @@ namespace planet_engine
 		GLuint _meshgen;
 		GLuint _vertex_gen;
 		GLuint _upsampler;
+
+		void gen_vertices(GLuint buffers[2], std::shared_ptr<patch> patch, GLuint* offset);
+		void gen_mesh(GLuint buffers[2], std::shared_ptr<patch> patch, GLuint* offset);
 
 	public:
 		patch_pipeline(size_t num_blocks);
