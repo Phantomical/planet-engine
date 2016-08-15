@@ -222,7 +222,7 @@ namespace planet_engine
 		//	}
 		//}
 	}
-	void renderer::update_meshes()
+	void renderer::update_meshes(size_t n)
 	{
 		update_state ustate;
 
@@ -242,10 +242,12 @@ namespace planet_engine
 				pipeline.remove(p);
 			}
 
-			ustate = pipeline.process(8);
+			ustate = pipeline.process(n);
 
 			data->to_add.clear();
 			data->to_remove.clear();
+
+			//pipeline.cull();
 
 			//if (!to_compute.empty())
 			//	compute_states.push_back(compute_bounds(std::initializer_list<std::shared_ptr<patch>>(
@@ -273,8 +275,7 @@ namespace planet_engine
 			//
 			//glDeleteBuffers(2, buffers);
 
-			DrawElementsIndirectCommand* commands = (DrawElementsIndirectCommand*)glMapNamedBufferRange(drawcommands, 0,
-				sizeof(DrawElementsIndirectCommand) * pipeline.manager().max_index(), GL_MAP_WRITE_BIT);
+			DrawElementsIndirectCommand* commands = (DrawElementsIndirectCommand*)glMapNamedBuffer(drawcommands, GL_READ_WRITE);
 
 			//std::memset(commands, 0, sizeof(DrawElementsIndirectCommand) * pipeline.manager().max_index());
 			//
@@ -312,7 +313,7 @@ namespace planet_engine
 		// Update compute shaders
 		step_compute_states();
 		// Add and remove meshes
-		update_meshes();
+		update_meshes(4);
 	}
 	void renderer::render(const glm::dmat4& mvp_mat)
 	{
@@ -346,7 +347,7 @@ namespace planet_engine
 
 		glBindVertexArray(0);
 	}
-
+	
 	/* Constructors and Destructors */
 	renderer::renderer(GLuint shader, double planet_radius) :
 		pipeline(NUM_BLOCKS),
@@ -390,6 +391,9 @@ namespace planet_engine
 		glGenBuffers(1, &drawcommands);
 		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, drawcommands);
 		glBufferData(GL_DRAW_INDIRECT_BUFFER, sizeof(DrawElementsIndirectCommand) * NUM_BLOCKS, nullptr, GL_STATIC_DRAW);
+
+		GLuint zero = 0;
+		glClearBufferData(GL_DRAW_INDIRECT_BUFFER, GL_R32UI, GL_RED, GL_UNSIGNED_INT, &zero);
 
 		glGenBuffers(1, &matbuffer);
 

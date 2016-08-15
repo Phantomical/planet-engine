@@ -82,8 +82,8 @@ namespace planet_engine
 				else if (index == 1)
 				{
 					auto& val = _exec_queue[i].get<std::shared_ptr<generate_state>>();
-					if (val->target == patch)
-						OutputDebug("[PIPELINE] Patch ", patch.get(), " generated twice in a row\n");
+					//if (val->target == patch)
+					//	OutputDebug("[PIPELINE] Patch ", patch.get(), " generated twice in a row\n");
 				}
 				else
 					assert(false);
@@ -129,8 +129,8 @@ namespace planet_engine
 				if (index == 0)
 				{
 					auto& val = _exec_queue[i].get<std::shared_ptr<remove_state>>();
-					if (val->target == patch)
-						OutputDebug("[PIPELINE] Patch ", patch.get(), " removed twice in a row\n");
+					//if (val->target == patch)
+					//	OutputDebug("[PIPELINE] Patch ", patch.get(), " removed twice in a row\n");
 				}
 				else if (index == 1)
 				{
@@ -276,6 +276,8 @@ namespace planet_engine
 
 		if (buffers[0] != 0)
 			glDeleteBuffers(2, buffers);
+		if (offset != 0)
+			pipeline->manager().dealloc_block(offset);
 	}
 	void patch_pipeline::remove_state::cancel()
 	{
@@ -315,9 +317,10 @@ namespace planet_engine
 		auto it = pipeline->_offsets.find(target);
 		if (it == pipeline->_offsets.end())
 		{
-			OutputDebug("[PIPELINE] Attempted to remove patch that wasn't present.\n");
+			OutputDebug("[PIPELINE] Attempted to remove patch ", target.get(), ". Patch wasn't present.\n");
 			return;//assert(false);
 		}
+		OutputDebug("[PIPELINE] Removed patch ", target.get(), ".\n");
 
 		GLuint offset = it->second;
 

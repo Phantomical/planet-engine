@@ -114,12 +114,12 @@ void main()
 		else if (index < SIDE_LEN * SIDE_LEN + SIDE_LEN * 3)
 		{
 			vtx = to_sphere(mix(nec, sec, INTERP * double(index - (SIDE_LEN * SIDE_LEN + SIDE_LEN * 2))));
-			p = uvec2(SIDE_LEN, -(index - SIDE_LEN * SIDE_LEN - 2 * SIDE_LEN));
+			p = uvec2(SIDE_LEN, (SIDE_LEN * SIDE_LEN + 2 * SIDE_LEN - index));
 		}
 		else
 		{
 			vtx = to_sphere(mix(nwc, nec, INTERP * double(index - (SIDE_LEN * SIDE_LEN + SIDE_LEN * 3))));
-			p = uvec2(-(index - SIDE_LEN * SIDE_LEN - 3 * SIDE_LEN), SIDE_LEN);
+			p = uvec2(SIDE_LEN * SIDE_LEN + 3 * SIDE_LEN - index, SIDE_LEN);
 		}
 
 		dvec3 nrm = normalize(vtx);

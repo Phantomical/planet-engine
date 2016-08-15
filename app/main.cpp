@@ -194,16 +194,6 @@ int main()
 
 			HandleInput(win);
 
-			if (glfwGetKey(win, GLFW_KEY_C) == GLFW_PRESS)
-			{
-				ren.planet.reset();
-				cDown = true;
-			}
-			else
-			{
-				cDown = false;
-			}
-
 			glfwPollEvents();
 			glfwSwapBuffers(win);
 

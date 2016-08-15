@@ -49,7 +49,7 @@ namespace planet_engine
 		static constexpr size_t NUM_VERTICES = num_vertices(SIDE_LEN);
 		static constexpr size_t NUM_INDICES = num_indices(SIDE_LEN);
 		static constexpr double SKIRT_DEPTH = 5.0;
-		static constexpr size_t MAX_LEVEL = 0;
+		static constexpr size_t MAX_LEVEL = 10;
 
 		struct info
 		{

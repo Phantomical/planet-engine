@@ -121,16 +121,16 @@ namespace planet_engine
 					stack.push(p->se);
 				}
 
-				data->to_remove.push_back(p);
+				if (p->level != 0)
+					data->to_remove.push_back(p);
 			}
 		}
 
-		data->to_add.push_back(sides[0]);
-		data->to_add.push_back(sides[1]);
-		data->to_add.push_back(sides[2]);
-		data->to_add.push_back(sides[3]);
-		data->to_add.push_back(sides[4]);
-		data->to_add.push_back(sides[5]);
+		for (size_t i = 0; i < 6; ++i)
+		{
+			if (sides[i]->subdivided())
+				data->to_add.push_back(sides[i]);
+		}
 	}
 
 	size_t planet::get_max_level() const

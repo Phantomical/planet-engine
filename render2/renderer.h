@@ -21,7 +21,7 @@ namespace planet_engine
 		static constexpr size_t VERTEX_SIZE = sizeof(float) * 8;
 		static constexpr size_t MESH_SIZE = NUM_VERTICES * VERTEX_SIZE;
 		// The maximum number of mesh blocks that can be allocated in GPU memory
-		static constexpr size_t NUM_BLOCKS = 1 << 4;
+		static constexpr size_t NUM_BLOCKS = 1 << 10;
 		static constexpr size_t COMPUTE_GROUP_SIZE = 128;
 		static constexpr double SCALE = 2.0;
 
@@ -87,10 +87,9 @@ namespace planet_engine
 
 		compute_state compute_bounds(std::initializer_list<std::shared_ptr<patch>> meshes);
 
-
 		void step_compute_states();
-		void update_meshes();
-		
+		void update_meshes(size_t n);
+
 	public:
 		planet planet;
 		std::shared_ptr<planet_data> data;

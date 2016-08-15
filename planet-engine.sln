@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "surface", "surface\surface.vcxproj", "{0F5FFA5F-785B-405D-BD47-8DFE2D84CEDE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FD04F2E2-DA2F-4C84-AA74-D9FCCDBD1BF0} = {FD04F2E2-DA2F-4C84-AA74-D9FCCDBD1BF0}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "app", "app\app.vcxproj", "{C50D9870-9F88-4996-88E2-C6CE1B11BF2E}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -28,6 +31,12 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "utils", "utils\utils.vcxproj", "{FD04F2E2-DA2F-4C84-AA74-D9FCCDBD1BF0}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MeshGenTest2", "test\MeshGenTest2\MeshGenTest2.vcxproj", "{ADD5350F-D378-4D78-93CB-A6AF22907FCD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0F5FFA5F-785B-405D-BD47-8DFE2D84CEDE} = {0F5FFA5F-785B-405D-BD47-8DFE2D84CEDE}
+		{FD04F2E2-DA2F-4C84-AA74-D9FCCDBD1BF0} = {FD04F2E2-DA2F-4C84-AA74-D9FCCDBD1BF0}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShaderTest", "ShaderTest\ShaderTest.vcxproj", "{5FC282F8-A978-490A-A859-20264B8805D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +108,16 @@ Global
 		{ADD5350F-D378-4D78-93CB-A6AF22907FCD}.Release|x64.Build.0 = Release|x64
 		{ADD5350F-D378-4D78-93CB-A6AF22907FCD}.Release|x86.ActiveCfg = Release|Win32
 		{ADD5350F-D378-4D78-93CB-A6AF22907FCD}.Release|x86.Build.0 = Release|Win32
+		{5FC282F8-A978-490A-A859-20264B8805D5}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{5FC282F8-A978-490A-A859-20264B8805D5}.Debug|x64.ActiveCfg = Debug|x64
+		{5FC282F8-A978-490A-A859-20264B8805D5}.Debug|x64.Build.0 = Debug|x64
+		{5FC282F8-A978-490A-A859-20264B8805D5}.Debug|x86.ActiveCfg = Debug|Win32
+		{5FC282F8-A978-490A-A859-20264B8805D5}.Debug|x86.Build.0 = Debug|Win32
+		{5FC282F8-A978-490A-A859-20264B8805D5}.Release|Any CPU.ActiveCfg = Release|Win32
+		{5FC282F8-A978-490A-A859-20264B8805D5}.Release|x64.ActiveCfg = Release|x64
+		{5FC282F8-A978-490A-A859-20264B8805D5}.Release|x64.Build.0 = Release|x64
+		{5FC282F8-A978-490A-A859-20264B8805D5}.Release|x86.ActiveCfg = Release|Win32
+		{5FC282F8-A978-490A-A859-20264B8805D5}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,5 +125,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{32D9A3BD-D68A-4F71-AB5A-7B855A5D7600} = {C161F7C4-B228-4386-9F26-47709708DF07}
 		{ADD5350F-D378-4D78-93CB-A6AF22907FCD} = {C161F7C4-B228-4386-9F26-47709708DF07}
+		{5FC282F8-A978-490A-A859-20264B8805D5} = {C161F7C4-B228-4386-9F26-47709708DF07}
 	EndGlobalSection
 EndGlobal
