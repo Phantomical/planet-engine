@@ -143,10 +143,10 @@ int main()
 
 	glfwSwapBuffers(win);
 
-	oldGenBuffers = glGenBuffers;
-	glGenBuffers = newGenBuffers;
-	oldDelBuffers = glDeleteBuffers;
-	glDeleteBuffers = newDelBuffers;
+	//oldGenBuffers = glGenBuffers;
+	//glGenBuffers = newGenBuffers;
+	//oldDelBuffers = glDeleteBuffers;
+	//glDeleteBuffers = newDelBuffers;
 
 	aspect = 1.5;
 

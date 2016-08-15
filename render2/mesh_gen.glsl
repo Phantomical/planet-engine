@@ -126,7 +126,7 @@ void main()
 		vtx -= nrm * skirt_depth + pos;
 
 		vertex = vec3(vtx);
-		normal = calc_normal(p, read(p + uvec2(1)).xyz);
+		normal = normalize(vertex);//calc_normal(p, read(p + uvec2(1)).xyz);
 		displacement = float(-skirt_depth);
 	}
 

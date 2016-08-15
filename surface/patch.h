@@ -110,7 +110,6 @@ namespace planet_engine
 		contig_vector<std::shared_ptr<patch>> leaf_parents;
 		std::vector<std::shared_ptr<patch>> to_add;
 		std::vector<std::shared_ptr<patch>> to_remove;
-		std::vector<std::shared_ptr<patch>> to_merge;
 		glm::dmat4 model_matrix;
 	};
 }

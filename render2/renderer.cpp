@@ -208,19 +208,19 @@ namespace planet_engine
 
 	void renderer::step_compute_states()
 	{
-		for (auto& state : compute_states)
-		{
-			state.compute_next();
-		}
-
-		if (!compute_states.empty())
-		{
-			if (compute_states.front().is_done())
-			{
-				compute_states.front().update_patches();
-				compute_states.pop_front();
-			}
-		}
+		//for (auto& state : compute_states)
+		//{
+		//	state.compute_next();
+		//}
+		//
+		//if (!compute_states.empty())
+		//{
+		//	if (compute_states.front().is_done())
+		//	{
+		//		compute_states.front().update_patches();
+		//		compute_states.pop_front();
+		//	}
+		//}
 	}
 	void renderer::update_meshes()
 	{
@@ -228,9 +228,7 @@ namespace planet_engine
 
 		{
 			std::vector<std::shared_ptr<patch>> to_compute;
-
-			//pipeline.cull();
-
+			
 			for (auto p : data->to_add)
 			{
 				pipeline.generate(p);
@@ -239,26 +237,19 @@ namespace planet_engine
 					to_compute.push_back(p);
 			}
 
-			for (auto p : data->to_merge)
-			{
-				
-				pipeline.merge(p);
-			}
-
 			for (auto p : data->to_remove)
 			{
 				pipeline.remove(p);
 			}
 
-			data->to_add.clear();
-			data->to_merge.clear();
-			data->to_remove.clear();
-
 			ustate = pipeline.process(2);
 
-			if (!to_compute.empty())
-				compute_states.push_back(compute_bounds(std::initializer_list<std::shared_ptr<patch>>(
-					to_compute.data(), to_compute.data() + to_compute.size())));
+			data->to_add.clear();
+			data->to_remove.clear();
+
+			//if (!to_compute.empty())
+			//	compute_states.push_back(compute_bounds(std::initializer_list<std::shared_ptr<patch>>(
+			//		to_compute.data(), to_compute.data() + to_compute.size())));
 		}
 
 		if (ustate.movecommands.size() != 0)

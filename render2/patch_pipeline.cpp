@@ -3,10 +3,10 @@
 #include "shader.h"
 #include "load_file.h"
 
+#include <iostream>
+
 namespace planet_engine
 {
-	static size_t n = 0;
-
 	/* Patch Pipeline */
 	void patch_pipeline::gen_vertices(GLuint buffers[2], std::shared_ptr<patch> patch, GLuint* offset)
 	{
@@ -45,7 +45,7 @@ namespace planet_engine
 	{
 		glUseProgram(_meshgen);
 		// Bind input buffer
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[1]);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[0]);
 		// Bind output buffer range
 		glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, _manager.buffer(),
 			*offset * _manager.block_size(), _manager.block_size());
@@ -62,6 +62,41 @@ namespace planet_engine
 
 	void patch_pipeline::generate(std::shared_ptr<patch> patch)
 	{
+		bool cancelled = false;
+
+		for (auto& exec : _exec_queue)
+		{
+			switch (exec.active_index())
+			{
+			case 0: 
+			{
+				auto& val = exec.get<std::shared_ptr<remove_state>>();
+				if (val->target == patch)
+				{
+					val->cancel();
+					cancelled = true;
+				}
+				break;
+			}
+			case 1:
+			{
+				auto& val = exec.get<std::shared_ptr<generate_state>>();
+				if (val->target == patch)
+				{
+					val->cancel();
+					cancelled = false;
+				}
+				break;
+			}
+			default:
+				// A new type was added and this method must be updated
+				assert(false);
+			}
+		}
+
+		if (cancelled)
+			return;
+
 		auto ptr = std::make_shared<generate_state>(patch, this);
 
 		_job_queue.push([ptr = ptr, pipeline = this]() {
@@ -79,6 +114,7 @@ namespace planet_engine
 				return false;
 
 			pipeline->gen_mesh(ptr->buffers, ptr->target, &ptr->offset);
+			++ptr->counter;
 
 			return true;
 		});
@@ -87,6 +123,41 @@ namespace planet_engine
 	}
 	void patch_pipeline::remove(std::shared_ptr<patch> patch)
 	{
+		bool cancelled = false;
+
+		for (auto& exec : _exec_queue)
+		{
+			switch (exec.active_index())
+			{
+			case 0:
+			{
+				auto& val = exec.get<exec_type::type_at<0>>();
+				if (val->target == patch)
+				{
+					val->cancel();
+					cancelled = false;
+				}
+				break;
+			}
+			case 1:
+			{
+				auto& val = exec.get<exec_type::type_at<1>>();
+				if (val->target == patch)
+				{
+					val->cancel();
+					cancelled = true;
+				}
+				break;
+			}
+			default:
+				// A new type was added and this method must be updated
+				assert(false);
+			}
+		}
+
+		if (cancelled)
+			return;
+
 		auto ptr = std::make_shared<remove_state>(patch, this);
 
 		_exec_queue.push_back(ptr);
@@ -96,11 +167,10 @@ namespace planet_engine
 	{
 		for (size_t i = 0; i < n && !_job_queue.empty();)
 		{
-			bool val = _job_queue.front()();
-			_job_queue.pop();
-
-			if (!val)
+			if (_job_queue.front()())
 				++i;
+
+			_job_queue.pop();
 		}
 
 		update_state ustate;
@@ -219,7 +289,7 @@ namespace planet_engine
 	{
 		MoveCommand mvcmd;
 		mvcmd.is_new = GL_TRUE;
-		mvcmd.source = ustate.commands.size();
+		mvcmd.source = (GLuint)ustate.commands.size();
 		mvcmd.dest = offset;
 
 		DrawElementsIndirectCommand cmd;
