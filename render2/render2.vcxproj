@@ -176,9 +176,6 @@
     <CustomBuild Include="max.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
-    <CustomBuild Include="mesh_gen3.glsl">
-      <FileType>Document</FileType>
-    </CustomBuild>
     <CustomBuild Include="planet_shader_frag.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
@@ -188,9 +185,6 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mesh_gen.glsl">
-      <FileType>Document</FileType>
-    </CustomBuild>
-    <CustomBuild Include="upsample.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
     <CustomBuild Include="vertex_gen.glsl">

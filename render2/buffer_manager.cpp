@@ -57,7 +57,7 @@ namespace planet_engine
 
 		while (_max_index * _block_size > _num_pages * _page_size)
 		{
-			assert((_num_pages + 1) < _max_pages);
+			assert((_num_pages + 1) <= _max_pages);
 			//Commits the next page allowing it to be used for mesh data
 			glNamedBufferPageCommitmentEXT(_buffer,
 				_num_pages++ * _page_size, _page_size, GL_TRUE);
