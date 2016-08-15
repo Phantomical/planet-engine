@@ -61,7 +61,7 @@ namespace planet_engine
 		static constexpr size_t MESH_SIZE = NUM_VERTICES * VERTEX_SIZE;
 		static constexpr size_t VERTEX_BUFFER_SIZE = (SIDE_LEN + 2) * (SIDE_LEN + 2) * sizeof(float) * 4;
 		static constexpr size_t NUM_INVOCATIONS = ((SIDE_LEN + 2) * (SIDE_LEN + 2) + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
-		static constexpr size_t GEN_VERTEX_INVOCATIONS = (SIDE_LEN + 2 + 7) / 7;
+		static constexpr size_t GEN_VERTEX_INVOCATIONS = (SIDE_LEN + 2 + 7) / 8;
 		static constexpr size_t CANCELLED_COUNTER_VALUE = 0xFF;
 
 		struct generate_state

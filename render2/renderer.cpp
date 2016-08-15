@@ -242,7 +242,7 @@ namespace planet_engine
 				pipeline.remove(p);
 			}
 
-			ustate = pipeline.process(2);
+			ustate = pipeline.process(8);
 
 			data->to_add.clear();
 			data->to_remove.clear();

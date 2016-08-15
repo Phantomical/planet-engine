@@ -64,35 +64,35 @@ namespace planet_engine
 	{
 		bool cancelled = false;
 
-		for (auto& exec : _exec_queue)
-		{
-			switch (exec.active_index())
-			{
-			case 0: 
-			{
-				auto& val = exec.get<std::shared_ptr<remove_state>>();
-				if (val->target == patch)
-				{
-					val->cancel();
-					cancelled = true;
-				}
-				break;
-			}
-			case 1:
-			{
-				auto& val = exec.get<std::shared_ptr<generate_state>>();
-				if (val->target == patch)
-				{
-					val->cancel();
-					cancelled = false;
-				}
-				break;
-			}
-			default:
-				// A new type was added and this method must be updated
-				assert(false);
-			}
-		}
+		//for (auto& exec : _exec_queue)
+		//{
+		//	switch (exec.active_index())
+		//	{
+		//	case 0: 
+		//	{
+		//		auto& val = exec.get<std::shared_ptr<remove_state>>();
+		//		if (val->target == patch)
+		//		{
+		//			val->cancel();
+		//			cancelled = true;
+		//		}
+		//		break;
+		//	}
+		//	case 1:
+		//	{
+		//		auto& val = exec.get<std::shared_ptr<generate_state>>();
+		//		if (val->target == patch)
+		//		{
+		//			val->cancel();
+		//			cancelled = false;
+		//		}
+		//		break;
+		//	}
+		//	default:
+		//		// A new type was added and this method must be updated
+		//		assert(false);
+		//	}
+		//}
 
 		if (cancelled)
 			return;
@@ -125,35 +125,35 @@ namespace planet_engine
 	{
 		bool cancelled = false;
 
-		for (auto& exec : _exec_queue)
-		{
-			switch (exec.active_index())
-			{
-			case 0:
-			{
-				auto& val = exec.get<exec_type::type_at<0>>();
-				if (val->target == patch)
-				{
-					val->cancel();
-					cancelled = false;
-				}
-				break;
-			}
-			case 1:
-			{
-				auto& val = exec.get<exec_type::type_at<1>>();
-				if (val->target == patch)
-				{
-					val->cancel();
-					cancelled = true;
-				}
-				break;
-			}
-			default:
-				// A new type was added and this method must be updated
-				assert(false);
-			}
-		}
+		//for (auto& exec : _exec_queue)
+		//{
+		//	switch (exec.active_index())
+		//	{
+		//	case 0:
+		//	{
+		//		auto& val = exec.get<exec_type::type_at<0>>();
+		//		if (val->target == patch)
+		//		{
+		//			val->cancel();
+		//			cancelled = false;
+		//		}
+		//		break;
+		//	}
+		//	case 1:
+		//	{
+		//		auto& val = exec.get<exec_type::type_at<1>>();
+		//		if (val->target == patch)
+		//		{
+		//			val->cancel();
+		//			cancelled = true;
+		//		}
+		//		break;
+		//	}
+		//	default:
+		//		// A new type was added and this method must be updated
+		//		assert(false);
+		//	}
+		//}
 
 		if (cancelled)
 			return;

@@ -27,6 +27,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "render2", "render2\render2.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "utils", "utils\utils.vcxproj", "{FD04F2E2-DA2F-4C84-AA74-D9FCCDBD1BF0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MeshGenTest2", "test\MeshGenTest2\MeshGenTest2.vcxproj", "{ADD5350F-D378-4D78-93CB-A6AF22907FCD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,11 +89,22 @@ Global
 		{FD04F2E2-DA2F-4C84-AA74-D9FCCDBD1BF0}.Release|x64.Build.0 = Release|x64
 		{FD04F2E2-DA2F-4C84-AA74-D9FCCDBD1BF0}.Release|x86.ActiveCfg = Release|Win32
 		{FD04F2E2-DA2F-4C84-AA74-D9FCCDBD1BF0}.Release|x86.Build.0 = Release|Win32
+		{ADD5350F-D378-4D78-93CB-A6AF22907FCD}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{ADD5350F-D378-4D78-93CB-A6AF22907FCD}.Debug|x64.ActiveCfg = Debug|x64
+		{ADD5350F-D378-4D78-93CB-A6AF22907FCD}.Debug|x64.Build.0 = Debug|x64
+		{ADD5350F-D378-4D78-93CB-A6AF22907FCD}.Debug|x86.ActiveCfg = Debug|Win32
+		{ADD5350F-D378-4D78-93CB-A6AF22907FCD}.Debug|x86.Build.0 = Debug|Win32
+		{ADD5350F-D378-4D78-93CB-A6AF22907FCD}.Release|Any CPU.ActiveCfg = Release|Win32
+		{ADD5350F-D378-4D78-93CB-A6AF22907FCD}.Release|x64.ActiveCfg = Release|x64
+		{ADD5350F-D378-4D78-93CB-A6AF22907FCD}.Release|x64.Build.0 = Release|x64
+		{ADD5350F-D378-4D78-93CB-A6AF22907FCD}.Release|x86.ActiveCfg = Release|Win32
+		{ADD5350F-D378-4D78-93CB-A6AF22907FCD}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{32D9A3BD-D68A-4F71-AB5A-7B855A5D7600} = {C161F7C4-B228-4386-9F26-47709708DF07}
+		{ADD5350F-D378-4D78-93CB-A6AF22907FCD} = {C161F7C4-B228-4386-9F26-47709708DF07}
 	EndGlobalSection
 EndGlobal
