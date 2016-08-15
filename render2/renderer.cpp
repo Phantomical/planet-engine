@@ -228,7 +228,7 @@ namespace planet_engine
 
 		{
 			std::vector<std::shared_ptr<patch>> to_compute;
-			
+
 			for (auto p : data->to_add)
 			{
 				pipeline.generate(p);
@@ -242,7 +242,7 @@ namespace planet_engine
 				pipeline.remove(p);
 			}
 
-			ustate = pipeline.process(16);
+			ustate = pipeline.process(8);
 
 			data->to_add.clear();
 			data->to_remove.clear();

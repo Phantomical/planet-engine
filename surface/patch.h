@@ -49,7 +49,7 @@ namespace planet_engine
 		static constexpr size_t NUM_VERTICES = num_vertices(SIDE_LEN);
 		static constexpr size_t NUM_INDICES = num_indices(SIDE_LEN);
 		static constexpr double SKIRT_DEPTH = 5.0;
-		static constexpr size_t MAX_LEVEL = 15;
+		static constexpr size_t MAX_LEVEL = 0;
 
 		struct info
 		{
@@ -61,6 +61,8 @@ namespace planet_engine
 			std::weak_ptr<patch> parent;
 			std::shared_ptr<planet_data> data;
 		};
+
+		bool is;
 
 		std::shared_ptr<patch> nw;
 		std::shared_ptr<patch> ne;
@@ -81,7 +83,7 @@ namespace planet_engine
 		std::shared_ptr<planet_data> data;
 
 		std::weak_ptr<patch> parent;
-
+		
 		patch(const info& info);
 
 		void split(update_info& info);
@@ -98,6 +100,11 @@ namespace planet_engine
 		double side_length() const;
 
 		size_t get_max_level() const;
+
+		void update()
+		{
+			is = subdivided();
+		}
 
 	private:
 		void remove_internal(update_info& info);

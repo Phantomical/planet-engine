@@ -124,6 +124,8 @@ namespace planet_engine
 		void generate(std::shared_ptr<patch> patch);
 		void remove(std::shared_ptr<patch> patch);
 
+		void cull();
+
 		buffer_manager& manager();
 		const decltype(_offsets)& patches() const;
 

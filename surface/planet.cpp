@@ -55,6 +55,7 @@ namespace planet_engine
 
 		for (auto& patch : data->leaf_patches)
 		{
+			assert(!patch->is);
 			if (patch->should_subdivide(cam_pos))
 			{
 				patch->split(uinfo);
@@ -63,7 +64,7 @@ namespace planet_engine
 
 		for (auto& patch : data->leaf_parents)
 		{
-			if (patch->should_merge(cam_pos))
+			if (patch->should_merge(cam_pos) && patch->subdivided())
 			{
 				patch->merge(uinfo);
 			}

@@ -58,6 +58,8 @@ namespace planet_engine
 		uinfo.leafs_to_add.push_back(ne);
 		uinfo.leafs_to_add.push_back(sw);
 		uinfo.leafs_to_add.push_back(se);
+
+		update();
 	}
 	void patch::merge(update_info& uinfo)
 	{
@@ -78,6 +80,8 @@ namespace planet_engine
 		uinfo.leafs_to_add.push_back(shared_from_this());
 
 		data->to_add.push_back(shared_from_this());
+
+		update();
 	}
 
 	bool patch::should_subdivide(const glm::dvec3& cam_pos) const
@@ -135,6 +139,8 @@ namespace planet_engine
 		uinfo.parents_to_erase.push_back(shared_from_this());
 
 		data->to_remove.push_back(shared_from_this());
+
+		update();
 	}
 
 	patch::patch(const info& info) :
@@ -156,5 +162,7 @@ namespace planet_engine
 		auto v = glm::ivec3(pos);
 		auto h = std::hash<int>();
 		hash = h(v.x) ^ (v.y) + v.z;
+
+		update();
 	}
 }

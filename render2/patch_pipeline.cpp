@@ -83,7 +83,7 @@ namespace planet_engine
 				{
 					auto& val = _exec_queue[i].get<std::shared_ptr<generate_state>>();
 					if (val->target == patch)
-						OutputDebug("[PIPELINE] Patch generated twice in a row\n");
+						OutputDebug("[PIPELINE] Patch ", patch.get(), " generated twice in a row\n");
 				}
 				else
 					assert(false);
@@ -130,7 +130,7 @@ namespace planet_engine
 				{
 					auto& val = _exec_queue[i].get<std::shared_ptr<remove_state>>();
 					if (val->target == patch)
-						OutputDebug("[PIPELINE] Patch removed twice in a row\n");
+						OutputDebug("[PIPELINE] Patch ", patch.get(), " removed twice in a row\n");
 				}
 				else if (index == 1)
 				{
@@ -208,6 +208,20 @@ namespace planet_engine
 		}
 
 		return ustate;
+	}
+
+	void patch_pipeline::cull()
+	{
+		std::vector<std::shared_ptr<patch>> to_cull;
+
+		for (auto& p : _offsets)
+		{
+			if (p.first->parent.expired() && p.first->level != 0)
+				to_cull.push_back(p.first);
+		}
+
+		for (auto& p : to_cull)
+			remove(p);
 	}
 
 	buffer_manager& patch_pipeline::manager()
