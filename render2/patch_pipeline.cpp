@@ -62,39 +62,35 @@ namespace planet_engine
 
 	void patch_pipeline::generate(std::shared_ptr<patch> patch)
 	{
-		bool cancelled = false;
+		bool canceled = false;
 
-		//for (auto& exec : _exec_queue)
-		//{
-		//	switch (exec.active_index())
-		//	{
-		//	case 0: 
-		//	{
-		//		auto& val = exec.get<std::shared_ptr<remove_state>>();
-		//		if (val->target == patch)
-		//		{
-		//			val->cancel();
-		//			cancelled = true;
-		//		}
-		//		break;
-		//	}
-		//	case 1:
-		//	{
-		//		auto& val = exec.get<std::shared_ptr<generate_state>>();
-		//		if (val->target == patch)
-		//		{
-		//			val->cancel();
-		//			cancelled = false;
-		//		}
-		//		break;
-		//	}
-		//	default:
-		//		// A new type was added and this method must be updated
-		//		assert(false);
-		//	}
-		//}
+		if (!_exec_queue.empty())
+		{
+			for (size_t i = _exec_queue.size() - 1; i != 0; --i)
+			{
+				size_t index = _exec_queue[i].active_index();
+				if (index == 0)
+				{
+					auto& val = _exec_queue[i].get<std::shared_ptr<remove_state>>();
+					if (val->target == patch)
+					{
+						val->cancel();
+						canceled = true;
+						break;
+					}
+				}
+				else if (index == 1)
+				{
+					auto& val = _exec_queue[i].get<std::shared_ptr<generate_state>>();
+					if (val->target == patch)
+						OutputDebug("[PIPELINE] Patch generated twice in a row\n");
+				}
+				else
+					assert(false);
+			}
+		}
 
-		if (cancelled)
+		if (canceled)
 			return;
 
 		auto ptr = std::make_shared<generate_state>(patch, this);
@@ -123,39 +119,35 @@ namespace planet_engine
 	}
 	void patch_pipeline::remove(std::shared_ptr<patch> patch)
 	{
-		bool cancelled = false;
+		bool canceled = false;
 
-		//for (auto& exec : _exec_queue)
-		//{
-		//	switch (exec.active_index())
-		//	{
-		//	case 0:
-		//	{
-		//		auto& val = exec.get<exec_type::type_at<0>>();
-		//		if (val->target == patch)
-		//		{
-		//			val->cancel();
-		//			cancelled = false;
-		//		}
-		//		break;
-		//	}
-		//	case 1:
-		//	{
-		//		auto& val = exec.get<exec_type::type_at<1>>();
-		//		if (val->target == patch)
-		//		{
-		//			val->cancel();
-		//			cancelled = true;
-		//		}
-		//		break;
-		//	}
-		//	default:
-		//		// A new type was added and this method must be updated
-		//		assert(false);
-		//	}
-		//}
+		if (!_exec_queue.empty())
+		{
+			for (size_t i = _exec_queue.size() - 1; i != 0; --i)
+			{
+				size_t index = _exec_queue[i].active_index();
+				if (index == 0)
+				{
+					auto& val = _exec_queue[i].get<std::shared_ptr<remove_state>>();
+					if (val->target == patch)
+						OutputDebug("[PIPELINE] Patch removed twice in a row\n");
+				}
+				else if (index == 1)
+				{
+					auto& val = _exec_queue[i].get<std::shared_ptr<generate_state>>();
+					if (val->target == patch)
+					{
+						val->cancel();
+						canceled = true;
+						break;
+					}
+				}
+				else
+					assert(false);
+			}
+		}
 
-		if (cancelled)
+		if (canceled)
 			return;
 
 		auto ptr = std::make_shared<remove_state>(patch, this);
@@ -308,7 +300,10 @@ namespace planet_engine
 	{
 		auto it = pipeline->_offsets.find(target);
 		if (it == pipeline->_offsets.end())
-			assert(false);
+		{
+			OutputDebug("[PIPELINE] Attempted to remove patch that wasn't present.\n");
+			return;//assert(false);
+		}
 
 		GLuint offset = it->second;
 

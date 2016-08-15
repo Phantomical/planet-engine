@@ -45,11 +45,11 @@ namespace planet_engine
 	struct patch : std::enable_shared_from_this<patch>
 	{
 	public:
-		static constexpr size_t SIDE_LEN = 33;
+		static constexpr size_t SIDE_LEN = 65;
 		static constexpr size_t NUM_VERTICES = num_vertices(SIDE_LEN);
 		static constexpr size_t NUM_INDICES = num_indices(SIDE_LEN);
 		static constexpr double SKIRT_DEPTH = 5.0;
-		static constexpr size_t MAX_LEVEL = 0;
+		static constexpr size_t MAX_LEVEL = 15;
 
 		struct info
 		{
