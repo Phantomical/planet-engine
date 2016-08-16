@@ -316,7 +316,7 @@ namespace planet_engine
 			OutputDebug("[PIPELINE] Attempted to remove patch ", target.get(), ". Patch wasn't present.\n");
 			return;//assert(false);
 		}
-		OutputDebug("[PIPELINE] Removed patch ", target.get(), ".\n");
+		//OutputDebug("[PIPELINE] Removed patch ", target.get(), ".\n");
 
 		GLuint offset = it->second;
 

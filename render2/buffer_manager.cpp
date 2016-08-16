@@ -110,15 +110,17 @@ namespace planet_engine
 
 		glBindBuffer(GL_ARRAY_BUFFER, _buffer);
 		
-		for (GLuint page = ((max + _page_size - 1) / _page_size); page < _num_pages; ++page)
+		for (GLuint page = ((max * _block_size + _page_size - 1) / _page_size); page < _num_pages; ++page)
 		{
 			glBufferPageCommitmentARB(GL_ARRAY_BUFFER, page * _page_size, _page_size, GL_FALSE);
 		}
 
 		for (GLuint open : used)
 			_free_list.push(open);
+		_num_pages = ((max * _block_size + _page_size - 1) / _page_size);
+		_max_index = max;
 
-		_max_index = max + 1;
+		OutputDebug("[BUFMGR] Compacted buffer ", _buffer, ".\n");
 	}
 
 	GLuint buffer_manager::buffer() const

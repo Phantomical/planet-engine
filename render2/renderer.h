@@ -24,7 +24,7 @@ namespace planet_engine
 		static constexpr size_t NUM_BLOCKS = 1 << 10;
 		static constexpr size_t COMPUTE_GROUP_SIZE = 128;
 		static constexpr double SCALE = 100.0;
-		static constexpr size_t COMMANDS_PER_FRAME = 4;
+		static constexpr size_t COMMANDS_PER_FRAME = 32;
 
 		typedef GLuint offset_type;
 		typedef std::priority_queue<offset_type,
