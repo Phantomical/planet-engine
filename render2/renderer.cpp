@@ -313,7 +313,7 @@ namespace planet_engine
 		// Update compute shaders
 		step_compute_states();
 		// Add and remove meshes
-		update_meshes(4);
+		update_meshes(COMMANDS_PER_FRAME);
 	}
 	void renderer::render(const glm::dmat4& mvp_mat)
 	{
@@ -374,6 +374,7 @@ namespace planet_engine
 		this->command_update = command_update.program();
 
 		data = planet.data;
+		data->scale = SCALE;
 
 		unsigned int* indices = gen_indices(SIDE_LEN);
 

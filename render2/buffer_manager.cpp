@@ -117,6 +117,8 @@ namespace planet_engine
 
 		for (GLuint open : used)
 			_free_list.push(open);
+
+		_max_index = max + 1;
 	}
 
 	GLuint buffer_manager::buffer() const

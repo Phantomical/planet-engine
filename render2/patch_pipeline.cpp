@@ -4,6 +4,7 @@
 #include "load_file.h"
 
 #include <iostream>
+#include <algorithm>
 
 namespace planet_engine
 {
@@ -21,7 +22,7 @@ namespace planet_engine
 			patch->nwc,
 			SKIRT_DEPTH,
 			patch->nec,
-			1.0, // Scale
+			patch->data->scale,
 			patch->swc,
 			0.0, // Padding
 			patch->sec
@@ -66,7 +67,7 @@ namespace planet_engine
 
 		if (!_exec_queue.empty())
 		{
-			for (size_t i = _exec_queue.size() - 1; i != 0; --i)
+			for (size_t i = _exec_queue.size() - 1, j = 0; i != 0 && j < MAX_SCAN_DEPTH; --i, ++j)
 			{
 				size_t index = _exec_queue[i].active_index();
 				if (index == 0)
@@ -123,7 +124,7 @@ namespace planet_engine
 
 		if (!_exec_queue.empty())
 		{
-			for (size_t i = _exec_queue.size() - 1; i != 0; --i)
+			for (size_t i = _exec_queue.size() - 1, j = 0; i != 0 && j < MAX_SCAN_DEPTH; --i, ++j)
 			{
 				size_t index = _exec_queue[i].active_index();
 				if (index == 0)
@@ -207,6 +208,9 @@ namespace planet_engine
 			}
 		}
 
+		if (_manager.current_max() * 2 < _manager.max_index())
+			_manager.uncommit_unused();
+
 		return ustate;
 	}
 
@@ -240,7 +244,6 @@ namespace planet_engine
 
 		shader meshgen(false);
 		shader vertex_gen(false);
-		shader upsampler(false);
 
 		meshgen.compute(read_file("mesh_gen.glsl"));
 		meshgen.link();
@@ -248,28 +251,21 @@ namespace planet_engine
 		vertex_gen.compute(read_file("vertex_gen.glsl"));
 		vertex_gen.link();
 
-		upsampler.compute(read_file("upsample.glsl"));
-		upsampler.link();
-
 		meshgen.check_errors({ GL_COMPUTE_SHADER });
 		vertex_gen.check_errors({ GL_COMPUTE_SHADER });
-		upsampler.check_errors({ GL_COMPUTE_SHADER });
 
 		_meshgen = meshgen.program();
 		_vertex_gen = vertex_gen.program();
-		_upsampler = upsampler.program();
 
 		glProgramUniform1ui(_meshgen, 0, SIDE_LEN);
 		glProgramUniform1ui(_vertex_gen, 0, SIDE_LEN);
-		glProgramUniform1ui(_upsampler, 0, SIDE_LEN);
 	}
 	patch_pipeline::~patch_pipeline()
 	{
 		glDeleteProgram(_meshgen);
 		glDeleteProgram(_vertex_gen);
-		glDeleteProgram(_upsampler);
 	}
-	
+
 	void patch_pipeline::generate_state::cancel()
 	{
 		counter = CANCELLED_COUNTER_VALUE;

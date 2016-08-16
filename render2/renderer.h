@@ -23,7 +23,8 @@ namespace planet_engine
 		// The maximum number of mesh blocks that can be allocated in GPU memory
 		static constexpr size_t NUM_BLOCKS = 1 << 10;
 		static constexpr size_t COMPUTE_GROUP_SIZE = 128;
-		static constexpr double SCALE = 2.0;
+		static constexpr double SCALE = 100.0;
+		static constexpr size_t COMMANDS_PER_FRAME = 4;
 
 		typedef GLuint offset_type;
 		typedef std::priority_queue<offset_type,

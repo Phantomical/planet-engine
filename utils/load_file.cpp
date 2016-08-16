@@ -13,7 +13,11 @@ namespace planet_engine
 		{
 			std::ifstream t(path);
 
-			assert(t.is_open());
+			if (!t.is_open())
+			{
+				std::cout << "Unable to open " << path << std::endl;
+				assert(false);
+			}
 
 			std::stringstream buffer;
 			buffer << t.rdbuf();

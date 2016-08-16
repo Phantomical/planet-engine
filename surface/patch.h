@@ -45,11 +45,11 @@ namespace planet_engine
 	struct patch : std::enable_shared_from_this<patch>
 	{
 	public:
-		static constexpr size_t SIDE_LEN = 65;
+		static constexpr size_t SIDE_LEN = 45;
 		static constexpr size_t NUM_VERTICES = num_vertices(SIDE_LEN);
 		static constexpr size_t NUM_INDICES = num_indices(SIDE_LEN);
-		static constexpr double SKIRT_DEPTH = 5.0;
-		static constexpr size_t MAX_LEVEL = 10;
+		static constexpr double SKIRT_DEPTH = 50.0;
+		static constexpr size_t MAX_LEVEL = 20;
 
 		struct info
 		{
@@ -113,6 +113,7 @@ namespace planet_engine
 	struct planet_data
 	{
 		double planet_radius;
+		double scale;
 		contig_vector<std::shared_ptr<patch>> leaf_patches;
 		contig_vector<std::shared_ptr<patch>> leaf_parents;
 		std::vector<std::shared_ptr<patch>> to_add;

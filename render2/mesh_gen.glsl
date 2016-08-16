@@ -123,11 +123,11 @@ void main()
 		}
 
 		dvec3 nrm = normalize(vtx);
-		vtx -= nrm * skirt_depth + pos;
+		vtx -= nrm * min(skirt_depth * scale, planet_radius / 2) + pos;
 
 		vertex = vec3(vtx);
 		normal = normalize(vertex);//calc_normal(p, read(p + uvec2(1)).xyz);
-		displacement = float(-skirt_depth);
+		displacement = float(-skirt_depth * scale);
 	}
 
 	values[index * STRIDE + 0] = vertex.x;
