@@ -158,6 +158,7 @@ namespace planet_engine
 		farthest_vertex(std::numeric_limits<float>::max())
 	{
 		pos = to_sphere(nwc + nec + swc + sec, data->planet_radius);
+		actual_pos = pos;
 
 		auto v = glm::ivec3(pos);
 		auto h = std::hash<int>();

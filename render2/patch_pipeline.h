@@ -64,6 +64,7 @@ namespace planet_engine
 		static constexpr size_t GEN_VERTEX_INVOCATIONS = (SIDE_LEN + 2 + 7) / 8;
 		static constexpr size_t CANCELLED_COUNTER_VALUE = 0xFF;
 		static constexpr size_t MAX_SCAN_DEPTH = 100;
+		static constexpr size_t LENGTH_CACHE_SIZE = 32;
 
 		struct generate_state
 		{
@@ -71,7 +72,7 @@ namespace planet_engine
 			size_t counter;
 			patch_pipeline* pipeline;
 
-			GLuint buffers[2];
+			GLuint buffers[3];
 			GLuint offset;
 
 			void cancel();
@@ -133,6 +134,10 @@ namespace planet_engine
 		GLuint _vertex_gen;
 		GLuint _length_calc;
 		GLuint _max_calc;
+
+		// Cache for downloading all buffer lengths at once
+		GLuint _lengths;
+		std::vector<std::weak_ptr<patch>> _patches;
 
 		void gen_vertices(GLuint buffers[2], std::shared_ptr<patch> patch, GLuint* offset);
 		void gen_mesh(GLuint buffers[2], std::shared_ptr<patch> patch, const GLuint* offset);

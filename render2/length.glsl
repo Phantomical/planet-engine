@@ -11,7 +11,8 @@ const uint GlobalInvocationIndex =
 		gl_WorkGroupSize.y * gl_WorkGroupSize.z + 
 		gl_LocalInvocationIndex;
 
-layout (location = 0) uniform uint size;
+layout(location = 0) uniform uint size;
+layout(location = 1) uniform vec3 pos;
 
 layout (binding = 0, std430) buffer MeshData
 {
@@ -33,6 +34,6 @@ void main()
 			values[GlobalInvocationIndex * 8 + 1],
 			values[GlobalInvocationIndex * 8 + 2]);
 
-		lengths[GlobalInvocationIndex] = length(vertex);
+		lengths[GlobalInvocationIndex] = distance(pos, vertex);
 	}
 }

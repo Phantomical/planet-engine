@@ -30,9 +30,8 @@ public:
 bool xDown = false;
 bool isLine = false;
 
-void HandleInput(GLFWwindow* win)
+void HandleInput(GLFWwindow* win, double displacement)
 {
-	static constexpr double displacement = 5.0f;
 
 	KeyboardInterface Keyboard(win);
 	dmat4 rot = (dmat4)CamRot;

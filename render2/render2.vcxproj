@@ -89,7 +89,7 @@
       <PreprocessorDefinitions>LOG_TO_FILE</PreprocessorDefinitions>
     </ClCompile>
     <CustomBuild>
-      <Command>copy "%(Identity)" "$(TargetDir)%(Identity)" &gt; nul</Command>
+      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)%(Identity)" "-I$(ProjectDir)"</Command>
     </CustomBuild>
     <CustomBuild>
       <Outputs>null</Outputs>
@@ -105,7 +105,7 @@
       <PreprocessorDefinitions>LOG_TO_FILE</PreprocessorDefinitions>
     </ClCompile>
     <CustomBuild>
-      <Command>copy "%(Identity)" "$(TargetDir)%(Identity)" &gt; nul</Command>
+      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)%(Identity)" "-I$(ProjectDir)"</Command>
     </CustomBuild>
     <CustomBuild>
       <Outputs>null</Outputs>
@@ -127,7 +127,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <CustomBuild>
-      <Command>copy "%(Identity)" "$(TargetDir)%(Identity)" &gt; nul</Command>
+      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)%(Identity)" "-I$(ProjectDir)"</Command>
     </CustomBuild>
     <CustomBuild>
       <Outputs>null</Outputs>
@@ -149,7 +149,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <CustomBuild>
-      <Command>copy "%(Identity)" "$(TargetDir)%(Identity)" &gt; nul</Command>
+      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)%(Identity)" "-I$(ProjectDir)"</Command>
     </CustomBuild>
     <CustomBuild>
       <Outputs>null</Outputs>

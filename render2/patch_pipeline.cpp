@@ -11,9 +11,9 @@
 namespace planet_engine
 {
 	/* Patch Pipeline */
-	void patch_pipeline::gen_vertices(GLuint buffers[2], std::shared_ptr<patch> patch, GLuint* offset)
+	void patch_pipeline::gen_vertices(GLuint buffers[3], std::shared_ptr<patch> patch, GLuint* offset)
 	{
-		glGenBuffers(2, buffers);
+		glGenBuffers(3, buffers);
 
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffers[0]);
 		glBufferStorage(GL_SHADER_STORAGE_BUFFER, VERTEX_BUFFER_SIZE, nullptr, 0);
@@ -33,18 +33,23 @@ namespace planet_engine
 		glBindBuffer(GL_UNIFORM_BUFFER, buffers[1]);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(mesh_info), &info, GL_STATIC_DRAW);
 
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffers[2]);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(double) * 4, nullptr, GL_DYNAMIC_READ);
+
 		*offset = _manager.alloc_block();
 
 		glUseProgram(_vertex_gen);
 		// Bind output buffer
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[0]);
+		// Bind position readback buffer
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, buffers[3]);
 		// Bind uniforms
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0, buffers[1]);
 		// Dispatch compute shader to fill the output buffer
 		glDispatchCompute(GEN_VERTEX_INVOCATIONS, GEN_VERTEX_INVOCATIONS, 1);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	}
-	void patch_pipeline::gen_mesh(GLuint buffers[2], std::shared_ptr<patch> patch, const GLuint* offset)
+	void patch_pipeline::gen_mesh(GLuint buffers[3], std::shared_ptr<patch> patch, const GLuint* offset)
 	{
 		glUseProgram(_meshgen);
 		// Bind input buffer
@@ -56,11 +61,15 @@ namespace planet_engine
 		glDispatchCompute(NUM_INVOCATIONS, 1, 1);
 		glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT);
 
+		glBindBuffer(GL_COPY_READ_BUFFER, buffers[2]);
+		glGetBufferSubData(GL_COPY_READ_BUFFER, 0, sizeof(glm::dvec3), &patch->actual_pos);
+
 		// Delete buffers
-		glDeleteBuffers(2, buffers);
+		glDeleteBuffers(3, buffers);
 
 		buffers[0] = 0;
 		buffers[1] = 0;
+		buffers[2] = 0;
 	}
 
 	void patch_pipeline::generate(std::shared_ptr<patch> patch)
@@ -170,7 +179,7 @@ namespace planet_engine
 	{
 		auto ptr = std::make_shared<discalc_state>(patch, this);
 
-		_job_queue.push([ptr = ptr](){
+		_job_queue.push([ptr = ptr]() {
 			if (ptr->counter == CANCELLED_COUNTER_VALUE)
 				return false;
 
@@ -338,6 +347,10 @@ namespace planet_engine
 
 		glProgramUniform1ui(_meshgen, 0, SIDE_LEN);
 		glProgramUniform1ui(_vertex_gen, 0, SIDE_LEN);
+
+		glGenBuffers(1, &_lengths);
+		glBindBuffer(GL_COPY_WRITE_BUFFER, _lengths);
+		glBufferData(GL_COPY_WRITE_BUFFER, LENGTH_CACHE_SIZE * sizeof(float), nullptr, GL_DYNAMIC_READ);
 	}
 	patch_pipeline::~patch_pipeline()
 	{
@@ -349,14 +362,17 @@ namespace planet_engine
 	{
 		static constexpr size_t NUM_RESULT_ELEMS = SIDE_LEN * SIDE_LEN;
 		static constexpr size_t NUM_COMPUTE_GROUPS = (NUM_RESULT_ELEMS + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
-		
+
 		glUseProgram(pipeline->_length_calc);
 
 		glGenBuffers(1, &tmpbuf);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, tmpbuf);
 		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * NUM_RESULT_ELEMS, nullptr, GL_STATIC_DRAW);
 
+		glm::vec3 pos = target->actual_pos - target->pos;
+
 		glUniform1ui(0, NUM_RESULT_ELEMS);
+		glUniform3f(1, pos[0], pos[1], pos[2]);
 
 		auto it = util::find_if(pipeline->patches(), [&](const auto& p) { return p.first == target; });
 		if (it == pipeline->patches().end())
@@ -378,11 +394,11 @@ namespace planet_engine
 	void patch_pipeline::discalc_state::sum_result(size_t s)
 	{
 		glUseProgram(pipeline->_max_calc);
-		
-		glUniform1ui(0, s);
+
+		glUniform1ui(0, (GLuint)s);
 
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, tmpbuf);
-		
+
 		glDispatchCompute((s + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE, 1, 1);
 
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT);
@@ -390,7 +406,28 @@ namespace planet_engine
 	void patch_pipeline::discalc_state::download_result()
 	{
 		glBindBuffer(GL_COPY_READ_BUFFER, tmpbuf);
-		glGetBufferSubData(GL_COPY_READ_BUFFER, 0, sizeof(float), &target->farthest_vertex);
+		glBindBuffer(GL_COPY_WRITE_BUFFER, pipeline->_lengths);
+
+		if (pipeline->_patches.size() == LENGTH_CACHE_SIZE)
+		{
+			glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
+
+			float bufvals[LENGTH_CACHE_SIZE];
+
+			glGetBufferSubData(GL_COPY_WRITE_BUFFER, 0, LENGTH_CACHE_SIZE * sizeof(float), bufvals);
+
+			for (size_t i = 0; i < LENGTH_CACHE_SIZE; ++i)
+			{
+				if (!pipeline->_patches[i].expired())
+					pipeline->_patches[i].lock()->farthest_vertex = bufvals[i];
+			}
+
+			pipeline->_patches.clear();
+		}
+
+		glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, pipeline->_patches.size() * sizeof(float), sizeof(float));
+
+		pipeline->_patches.push_back(target);
 
 		glDeleteBuffers(1, &tmpbuf);
 		tmpbuf = 0;
@@ -454,7 +491,7 @@ namespace planet_engine
 		auto it = pipeline->_offsets.find(target);
 		if (it == pipeline->_offsets.end())
 		{
-			OutputDebug("[PIPELINE] Attempted to remove patch ", target.get(), ". Patch wasn't present.\n");
+			//OutputDebug("[PIPELINE] Attempted to remove patch ", target.get(), ". Patch wasn't present.\n");
 			return;//assert(false);
 		}
 		//OutputDebug("[PIPELINE] Removed patch ", target.get(), ".\n");

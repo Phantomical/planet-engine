@@ -101,127 +101,12 @@ namespace planet_engine
 	}
 
 	/* Mesh Manipulation and Calculation Functions */
-	renderer::compute_state renderer::compute_bounds(std::initializer_list<std::shared_ptr<patch>> _meshes)
-	{
-		static constexpr size_t NUM_RESULT_ELEMS = compute_state::NUM_RESULT_ELEMS;
-		static constexpr size_t NUM_COMPUTE_GROUPS = compute_state::NUM_COMPUTE_GROUPS;
-
-		size_t result_size = roundup<size_t>(NUM_RESULT_ELEMS * sizeof(float), ssbo_offset_alignment);
-
-		compute_state state;
-
-		state.parent = this;
-		state.size = NUM_RESULT_ELEMS;
-
-		glUseProgram(length_calc);
-		glGenBuffers(1, &state.result_buffer);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, state.result_buffer);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, result_size * _meshes.size(), nullptr, GL_STATIC_DRAW);
-
-		glUniform1ui(0, NUM_RESULT_ELEMS);
-
-		for (auto patch : _meshes)
-		{
-			auto it = util::find_if(pipeline.patches(), [&](auto p) { return p.first == patch; });
-			if (it == pipeline.patches().end())
-				continue;
-
-			GLuint offset = it->second;
-			pipeline.manager().lock(offset);
-			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, pipeline.manager().buffer(), pipeline.manager().block_size() * offset, NUM_RESULT_ELEMS * VERTEX_SIZE);
-			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, state.result_buffer, result_size * state.offsets.size(), result_size);
-
-			glDispatchCompute(NUM_COMPUTE_GROUPS, 1, 1);
-
-			state.offsets.push_back(offset);
-		}
-
-		state.patches.insert(state.patches.end(), _meshes.begin(), _meshes.end());
-
-		return state;
-	}
-
 	void update_state::concat(const update_state& ust)
 	{
 		commands.insert(commands.end(), ust.commands.begin(), ust.commands.end());
 		movecommands.insert(movecommands.end(), ust.movecommands.begin(), ust.movecommands.end());
 	}
 
-	void renderer::compute_state::compute_next()
-	{
-		if (size > 1)
-		{
-			size_t result_size = roundup<size_t>(NUM_RESULT_ELEMS * sizeof(float), parent->ssbo_offset_alignment);
-
-			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-
-			glUseProgram(parent->max_calc);
-
-			glUniform1ui(0, size);
-
-			size = (size + COMPUTE_GROUP_SIZE - 1) / COMPUTE_GROUP_SIZE;
-
-			for (size_t i = 0; i < offsets.size(); ++i)
-			{
-				glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, result_buffer, result_size * i, result_size);
-
-				glDispatchCompute(size, 1, 1);
-			}
-		}
-	}
-	bool renderer::compute_state::is_done() const
-	{
-		return size <= 1;
-	}
-	void renderer::compute_state::update_patches()
-	{
-		while (!is_done())
-			compute_next();
-
-		/* Get Results */
-		float temp[1];
-
-		std::vector<std::pair<GLuint, float>> result;
-
-		glBindBuffer(GL_COPY_READ_BUFFER, result_buffer);
-		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
-
-		size_t result_size = roundup<size_t>(NUM_RESULT_ELEMS * sizeof(float), parent->ssbo_offset_alignment);
-
-		for (size_t i = 0; i < offsets.size(); ++i)
-		{
-			glGetBufferSubData(GL_COPY_READ_BUFFER, result_size * i, sizeof(float), temp);
-			parent->pipeline.manager().unlock(offsets[i]);
-
-			if (!patches[i].expired())
-			{
-				auto patch = patches[i].lock();
-				patch->farthest_vertex = *temp;
-			}
-		}
-
-		/* Cleanup */
-		glDeleteBuffers(1, &result_buffer);
-		offsets.clear();
-		size = 0;
-	}
-
-	void renderer::step_compute_states()
-	{
-		//for (auto& state : compute_states)
-		//{
-		//	state.compute_next();
-		//}
-		//
-		//if (!compute_states.empty())
-		//{
-		//	if (compute_states.front().is_done())
-		//	{
-		//		compute_states.front().update_patches();
-		//		compute_states.pop_front();
-		//	}
-		//}
-	}
 	void renderer::update_meshes(size_t n)
 	{
 		update_state ustate;
@@ -242,7 +127,7 @@ namespace planet_engine
 			data->to_add.clear();
 			data->to_remove.clear();
 
-			//pipeline.cull();
+			pipeline.cull();
 
 			//if (!to_compute.empty())
 			//	compute_states.push_back(compute_bounds(std::initializer_list<std::shared_ptr<patch>>(
@@ -305,8 +190,6 @@ namespace planet_engine
 	{
 		planet.update(cam_pos);
 
-		// Update compute shaders
-		step_compute_states();
 		// Add and remove meshes
 		update_meshes(COMMANDS_PER_FRAME);
 	}

@@ -11,6 +11,10 @@ using namespace planet_engine::util;
 
 #define TARGET_DIR "D:\\Projects\\Projects\\C++\\planet-engine\\x64\\Debug\\"
 
+void tick();
+void launch_watchdog();
+void terminate_watchdog();
+
 namespace
 {
 	std::string concat(const std::string& appendix)
@@ -95,11 +99,15 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 		break;
 	case GL_DEBUG_SEVERITY_NOTIFICATION:
 		severitystr = "[NOTIFICATION]";
-		return;
+		break;
 	default:
 		severitystr = "[UNKNOWN]";
 		break;
 	}
+
+	std::string str = message;
+	if (*(str.end() - 1) == '\n')
+		*(str.end() - 1) = '\0';
 
 	OutputDebug(typestr, severitystr, ' ', message, '\n');
 	OutputDebug("");
@@ -109,23 +117,6 @@ void WindowCallback(GLFWwindow* win, int xsz, int ysz)
 {
 	glViewport(0, 0, xsz, ysz);
 	aspect = double(xsz) / double(ysz);
-}
-
-long nbuffers;
-
-void(WINAPI*oldGenBuffers)(GLsizei n, GLuint* bufs);
-void(WINAPI*oldDelBuffers)(GLsizei n, const GLuint* bufs);
-void WINAPI newGenBuffers(GLsizei n, GLuint* bufs)
-{
-	nbuffers += n;
-	//OutputDebug("[GENBUFFERS] Generated ", n, " buffers. There are ", nbuffers, " buffers\n");
-	oldGenBuffers(n, bufs);
-}
-void WINAPI newDelBuffers(GLsizei n, const GLuint* bufs)
-{
-	nbuffers -= n;
-	//OutputDebug("[DELBUFFERS] Deleted ", n, " buffers. There are ", nbuffers, " buffers\n");
-	oldDelBuffers(n, bufs);
 }
 
 int main()
@@ -142,15 +133,12 @@ int main()
 	ogl_LoadFunctions();
 
 	glfwSwapBuffers(win);
-
-	//oldGenBuffers = glGenBuffers;
-	//glGenBuffers = newGenBuffers;
-	//oldDelBuffers = glDeleteBuffers;
-	//glDeleteBuffers = newDelBuffers;
-
+	
 	aspect = 1.5;
 
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	launch_watchdog();
+
+	//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(DebugProc, nullptr);
 
 	glClearColor(0.0, 1.0, 1.0, 1.0);
@@ -174,7 +162,7 @@ int main()
 			glProgramUniform3f(program, 1, 0.0, 0.5, 0.5);
 		}
 
-		renderer ren{ program, 670.0 };
+		renderer ren{ program, 670000.0 };
 
 		CamPos = glm::dvec3(0.0, 0.0, -ren.planet.data->planet_radius - 1000.0);
 		CamRot = glm::dquat(1.0, 0.0, 0.0, 0.0);
@@ -192,16 +180,20 @@ int main()
 			ren.render(vp_mat);
 			ren.update(CamPos);
 
-			HandleInput(win);
+			HandleInput(win, 500);
 
 			glfwPollEvents();
 			glfwSwapBuffers(win);
 
 			//std::cout << "[FRAME] Ended Frame " << ++i << std::endl;
+
+			tick();
 		}
 
 		glDeleteProgram(program);
 	}
+
+	terminate_watchdog();
 
 	glfwDestroyWindow(win);
 	glfwTerminate();
