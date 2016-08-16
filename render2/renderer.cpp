@@ -227,14 +227,9 @@ namespace planet_engine
 		update_state ustate;
 
 		{
-			std::vector<std::shared_ptr<patch>> to_compute;
-
 			for (auto p : data->to_add)
 			{
 				pipeline.generate(p);
-
-				if (p->farthest_vertex == std::numeric_limits<float>::max())
-					to_compute.push_back(p);
 			}
 
 			for (auto p : data->to_remove)

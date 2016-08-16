@@ -123,7 +123,7 @@ void main()
 		}
 
 		dvec3 nrm = normalize(vtx);
-		vtx -= nrm * min(skirt_depth * scale, planet_radius / 2) + pos;
+		vtx -= nrm * min(skirt_depth * scale, planet_radius / 8) + pos;
 
 		vertex = vec3(vtx);
 		normal = normalize(vertex);//calc_normal(p, read(p + uvec2(1)).xyz);

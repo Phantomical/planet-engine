@@ -2,6 +2,8 @@
 
 #include "shader.h"
 #include "load_file.h"
+#include "findutils.h"
+#include "templateutils.h"
 
 #include <iostream>
 #include <algorithm>
@@ -70,7 +72,7 @@ namespace planet_engine
 			for (size_t i = _exec_queue.size() - 1, j = 0; i != 0 && j < MAX_SCAN_DEPTH; --i, ++j)
 			{
 				size_t index = _exec_queue[i].active_index();
-				if (index == 0)
+				if (index == exec_type::index_of<std::shared_ptr<remove_state>>::value)
 				{
 					auto& val = _exec_queue[i].get<std::shared_ptr<remove_state>>();
 					if (val->target == patch)
@@ -80,11 +82,9 @@ namespace planet_engine
 						break;
 					}
 				}
-				else if (index == 1)
+				else if (index == 1 || index == 2)
 				{
-					auto& val = _exec_queue[i].get<std::shared_ptr<generate_state>>();
-					//if (val->target == patch)
-					//	OutputDebug("[PIPELINE] Patch ", patch.get(), " generated twice in a row\n");
+					// Do Nothing
 				}
 				else
 					assert(false);
@@ -117,6 +117,9 @@ namespace planet_engine
 		});
 
 		_exec_queue.push_back(ptr);
+
+		if (patch->farthest_vertex == std::numeric_limits<float>::max())
+			discalc(patch);
 	}
 	void patch_pipeline::remove(std::shared_ptr<patch> patch)
 	{
@@ -129,11 +132,9 @@ namespace planet_engine
 				size_t index = _exec_queue[i].active_index();
 				if (index == 0)
 				{
-					auto& val = _exec_queue[i].get<std::shared_ptr<remove_state>>();
-					//if (val->target == patch)
-					//	OutputDebug("[PIPELINE] Patch ", patch.get(), " removed twice in a row\n");
+					// Do Nothing
 				}
-				else if (index == 1)
+				else if (index == exec_type::index_of<std::shared_ptr<generate_state>>::value)
 				{
 					auto& val = _exec_queue[i].get<std::shared_ptr<generate_state>>();
 					if (val->target == patch)
@@ -141,6 +142,16 @@ namespace planet_engine
 						val->cancel();
 						canceled = true;
 						break;
+					}
+				}
+				else if (index == exec_type::index_of<std::shared_ptr<discalc_state>>::value)
+				{
+					// Cancel unnecessary distance calculations
+					auto& val = _exec_queue[i].get<std::shared_ptr<discalc_state>>();
+					if (val->target == patch)
+					{
+						val->cancel();
+						canceled = true;
 					}
 				}
 				else
@@ -154,6 +165,48 @@ namespace planet_engine
 		auto ptr = std::make_shared<remove_state>(patch, this);
 
 		_exec_queue.push_back(ptr);
+	}
+	void patch_pipeline::discalc(std::shared_ptr<patch> patch)
+	{
+		auto ptr = std::make_shared<discalc_state>(patch, this);
+
+		_job_queue.push([ptr = ptr](){
+			if (ptr->counter == CANCELLED_COUNTER_VALUE)
+				return false;
+
+			++ptr->counter;
+			ptr->calc_lengths();
+
+			if (ptr->counter == CANCELLED_COUNTER_VALUE)
+				return false;
+
+			return true;
+		});
+
+		for (size_t s = SIDE_LEN * SIDE_LEN; s > 1; s = (s + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE)
+		{
+			_job_queue.push([ptr = ptr, s = s]() {
+				if (ptr->counter == CANCELLED_COUNTER_VALUE)
+					return false;
+
+				ptr->sum_result(s);
+				++ptr->counter;
+
+				return true;
+			});
+		}
+
+		_job_queue.push([ptr = ptr]() {
+			if (ptr->counter == CANCELLED_COUNTER_VALUE)
+				return false;
+
+			ptr->download_result();
+			++ptr->counter;
+
+			return true;
+		});
+
+		_exec_queue.push_back(exec_type(ptr));
 	}
 
 	update_state patch_pipeline::process(size_t n)
@@ -192,6 +245,20 @@ namespace planet_engine
 			case 1:
 			{
 				auto& val = *exec.get<exec_type::type_at<1>>();
+				if (val.counter == CANCELLED_COUNTER_VALUE)
+					_exec_queue.pop_front();
+				else if (val.can_finalize())
+				{
+					val.finalize(ustate);
+					_exec_queue.pop_front();
+				}
+				else
+					cond = false;
+				break;
+			}
+			case 2:
+			{
+				auto& val = *exec.get<exec_type::type_at<2>>();
 				if (val.counter == CANCELLED_COUNTER_VALUE)
 					_exec_queue.pop_front();
 				else if (val.can_finalize())
@@ -244,6 +311,8 @@ namespace planet_engine
 
 		shader meshgen(false);
 		shader vertex_gen(false);
+		shader length_calc(false);
+		shader max_calc(false);
 
 		meshgen.compute(read_file("mesh_gen.glsl"));
 		meshgen.link();
@@ -251,11 +320,21 @@ namespace planet_engine
 		vertex_gen.compute(read_file("vertex_gen.glsl"));
 		vertex_gen.link();
 
+		length_calc.compute(read_file("length.glsl"));
+		length_calc.link();
+
+		max_calc.compute(read_file("max.glsl"));
+		max_calc.link();
+
 		meshgen.check_errors({ GL_COMPUTE_SHADER });
 		vertex_gen.check_errors({ GL_COMPUTE_SHADER });
+		length_calc.check_errors({ GL_COMPUTE_SHADER });
+		max_calc.check_errors({ GL_COMPUTE_SHADER });
 
 		_meshgen = meshgen.program();
 		_vertex_gen = vertex_gen.program();
+		_length_calc = length_calc.program();
+		_max_calc = max_calc.program();
 
 		glProgramUniform1ui(_meshgen, 0, SIDE_LEN);
 		glProgramUniform1ui(_vertex_gen, 0, SIDE_LEN);
@@ -264,6 +343,57 @@ namespace planet_engine
 	{
 		glDeleteProgram(_meshgen);
 		glDeleteProgram(_vertex_gen);
+	}
+
+	void patch_pipeline::discalc_state::calc_lengths()
+	{
+		static constexpr size_t NUM_RESULT_ELEMS = SIDE_LEN * SIDE_LEN;
+		static constexpr size_t NUM_COMPUTE_GROUPS = (NUM_RESULT_ELEMS + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
+		
+		glUseProgram(pipeline->_length_calc);
+
+		glGenBuffers(1, &tmpbuf);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, tmpbuf);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * NUM_RESULT_ELEMS, nullptr, GL_STATIC_DRAW);
+
+		glUniform1ui(0, NUM_RESULT_ELEMS);
+
+		auto it = util::find_if(pipeline->patches(), [&](const auto& p) { return p.first == target; });
+		if (it == pipeline->patches().end())
+		{
+			counter = CANCELLED_COUNTER_VALUE;
+			return;
+		}
+
+		GLuint offset = it->second;
+
+		glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, pipeline->manager().buffer(),
+			pipeline->manager().block_size() * offset, pipeline->manager().block_size());
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, tmpbuf);
+
+		glDispatchCompute(NUM_COMPUTE_GROUPS, 1, 1);
+
+		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	}
+	void patch_pipeline::discalc_state::sum_result(size_t s)
+	{
+		glUseProgram(pipeline->_max_calc);
+		
+		glUniform1ui(0, s);
+
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, tmpbuf);
+		
+		glDispatchCompute((s + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE, 1, 1);
+
+		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT);
+	}
+	void patch_pipeline::discalc_state::download_result()
+	{
+		glBindBuffer(GL_COPY_READ_BUFFER, tmpbuf);
+		glGetBufferSubData(GL_COPY_READ_BUFFER, 0, sizeof(float), &target->farthest_vertex);
+
+		glDeleteBuffers(1, &tmpbuf);
+		tmpbuf = 0;
 	}
 
 	void patch_pipeline::generate_state::cancel()
@@ -279,6 +409,13 @@ namespace planet_engine
 	{
 		counter = CANCELLED_COUNTER_VALUE;
 	}
+	void patch_pipeline::discalc_state::cancel()
+	{
+		counter = CANCELLED_COUNTER_VALUE;
+
+		if (tmpbuf != 0)
+			glDeleteBuffers(1, &tmpbuf);
+	}
 
 	bool patch_pipeline::generate_state::can_finalize() const
 	{
@@ -287,6 +424,10 @@ namespace planet_engine
 	bool patch_pipeline::remove_state::can_finalize() const
 	{
 		return true;
+	}
+	bool patch_pipeline::discalc_state::can_finalize() const
+	{
+		return counter == util::log<SIDE_LEN * SIDE_LEN, SHADER_GROUP_SIZE>::value + 2;
 	}
 
 	void patch_pipeline::generate_state::finalize(update_state& ustate)
@@ -330,6 +471,10 @@ namespace planet_engine
 		pipeline->_offsets.erase(it);
 		pipeline->manager().dealloc_block(offset);
 	}
+	void patch_pipeline::discalc_state::finalize(update_state& ustate)
+	{
+
+	}
 
 	patch_pipeline::generate_state::generate_state(std::shared_ptr<patch> tgt, patch_pipeline* pipeline) :
 		target(tgt),
@@ -344,6 +489,14 @@ namespace planet_engine
 		target(tgt),
 		counter(0),
 		pipeline(pipeline)
+	{
+
+	}
+	patch_pipeline::discalc_state::discalc_state(std::shared_ptr<patch> tgt, patch_pipeline* pipeline) :
+		target(tgt),
+		counter(0),
+		pipeline(pipeline),
+		tmpbuf(0)
 	{
 
 	}

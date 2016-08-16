@@ -94,10 +94,30 @@ namespace planet_engine
 
 			remove_state(std::shared_ptr<patch> tgt, patch_pipeline* pipeline);
 		};
+		struct discalc_state
+		{
+			std::shared_ptr<patch> target;
+			size_t counter;
+			patch_pipeline* pipeline;
+
+			GLuint tmpbuf;
+
+			void calc_lengths();
+			void sum_result(size_t s);
+			void download_result();
+
+			void cancel();
+
+			bool can_finalize() const;
+			void finalize(update_state& ustate);
+
+			discalc_state(std::shared_ptr<patch> tgt, patch_pipeline* pipeline);
+		};
 
 		typedef util::any_of<
 			std::shared_ptr<remove_state>,
-			std::shared_ptr<generate_state>> exec_type;
+			std::shared_ptr<generate_state>,
+			std::shared_ptr<discalc_state>> exec_type;
 
 		buffer_manager _manager;
 
@@ -111,6 +131,8 @@ namespace planet_engine
 
 		GLuint _meshgen;
 		GLuint _vertex_gen;
+		GLuint _length_calc;
+		GLuint _max_calc;
 
 		void gen_vertices(GLuint buffers[2], std::shared_ptr<patch> patch, GLuint* offset);
 		void gen_mesh(GLuint buffers[2], std::shared_ptr<patch> patch, const GLuint* offset);
@@ -123,6 +145,7 @@ namespace planet_engine
 
 		void generate(std::shared_ptr<patch> patch);
 		void remove(std::shared_ptr<patch> patch);
+		void discalc(std::shared_ptr<patch> patch);
 
 		void cull();
 
