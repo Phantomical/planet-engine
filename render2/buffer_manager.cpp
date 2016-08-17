@@ -57,7 +57,7 @@ namespace planet_engine
 
 		while (_max_index * _block_size > _num_pages * _page_size)
 		{
-			assert((_num_pages + 1) < _max_pages);
+			assert((_num_pages + 1) <= _max_pages);
 			//Commits the next page allowing it to be used for mesh data
 			glNamedBufferPageCommitmentEXT(_buffer,
 				_num_pages++ * _page_size, _page_size, GL_TRUE);
@@ -110,13 +110,17 @@ namespace planet_engine
 
 		glBindBuffer(GL_ARRAY_BUFFER, _buffer);
 		
-		for (GLuint page = ((max + _page_size - 1) / _page_size); page < _num_pages; ++page)
+		for (GLuint page = ((max * _block_size + _page_size - 1) / _page_size); page < _num_pages; ++page)
 		{
 			glBufferPageCommitmentARB(GL_ARRAY_BUFFER, page * _page_size, _page_size, GL_FALSE);
 		}
 
 		for (GLuint open : used)
 			_free_list.push(open);
+		_num_pages = ((max * _block_size + _page_size - 1) / _page_size);
+		_max_index = max;
+
+		OutputDebug("[BUFMGR] Compacted buffer ", _buffer, ".\n");
 	}
 
 	GLuint buffer_manager::buffer() const

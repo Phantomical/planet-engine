@@ -58,6 +58,8 @@ namespace planet_engine
 		uinfo.leafs_to_add.push_back(ne);
 		uinfo.leafs_to_add.push_back(sw);
 		uinfo.leafs_to_add.push_back(se);
+
+		update();
 	}
 	void patch::merge(update_info& uinfo)
 	{
@@ -78,6 +80,8 @@ namespace planet_engine
 		uinfo.leafs_to_add.push_back(shared_from_this());
 
 		data->to_add.push_back(shared_from_this());
+
+		update();
 	}
 
 	bool patch::should_subdivide(const glm::dvec3& cam_pos) const
@@ -85,14 +89,14 @@ namespace planet_engine
 		double dis = farthest_vertex;
 		if (farthest_vertex == std::numeric_limits<float>::max())
 			dis = side_length();
-		return level < MAX_LEVEL && length2(cam_pos - pos) * MULT < dis * dis;
+		return level < MAX_LEVEL && length2(cam_pos - actual_pos) * MULT < dis * dis;
 	}
 	bool patch::should_merge(const glm::dvec3& cam_pos) const
 	{
 		double dis = farthest_vertex;
 		if (farthest_vertex == std::numeric_limits<float>::max())
 			dis = side_length();
-		return length2(cam_pos - pos) * MULT > dis * dis;
+		return length2(cam_pos - actual_pos) * MULT > dis * dis;
 	}
 
 	bool patch::subdivided() const
@@ -135,6 +139,8 @@ namespace planet_engine
 		uinfo.parents_to_erase.push_back(shared_from_this());
 
 		data->to_remove.push_back(shared_from_this());
+
+		update();
 	}
 
 	patch::patch(const info& info) :
@@ -152,9 +158,12 @@ namespace planet_engine
 		farthest_vertex(std::numeric_limits<float>::max())
 	{
 		pos = to_sphere(nwc + nec + swc + sec, data->planet_radius);
+		actual_pos = pos;
 
 		auto v = glm::ivec3(pos);
 		auto h = std::hash<int>();
 		hash = h(v.x) ^ (v.y) + v.z;
+
+		update();
 	}
 }

@@ -45,10 +45,10 @@ namespace planet_engine
 	struct patch : std::enable_shared_from_this<patch>
 	{
 	public:
-		static constexpr size_t SIDE_LEN = 129;
+		static constexpr size_t SIDE_LEN = 33;
 		static constexpr size_t NUM_VERTICES = num_vertices(SIDE_LEN);
 		static constexpr size_t NUM_INDICES = num_indices(SIDE_LEN);
-		static constexpr double SKIRT_DEPTH = 5.0;
+		static constexpr double SKIRT_DEPTH = 500.0;
 		static constexpr size_t MAX_LEVEL = 20;
 
 		struct info
@@ -62,6 +62,8 @@ namespace planet_engine
 			std::shared_ptr<planet_data> data;
 		};
 
+		bool is;
+
 		std::shared_ptr<patch> nw;
 		std::shared_ptr<patch> ne;
 		std::shared_ptr<patch> sw;
@@ -73,6 +75,7 @@ namespace planet_engine
 		glm::dvec3 sec; // Quadrant 3
 
 		glm::dvec3 pos; // Position in planet space
+		glm::dvec3 actual_pos; // pos transformed by the noise function
 
 		unsigned int level;  // Level within the quadtree
 		float farthest_vertex;
@@ -81,14 +84,14 @@ namespace planet_engine
 		std::shared_ptr<planet_data> data;
 
 		std::weak_ptr<patch> parent;
-
+		
 		patch(const info& info);
 
 		void split(update_info& info);
 		void merge(update_info& info);
 
 	private:
-		static constexpr double MULT = 1.0 / (2.5);
+		static constexpr double MULT = 1.0 / (10.0);
 
 	public:
 		bool should_subdivide(const glm::dvec3& cam_pos) const;
@@ -99,6 +102,11 @@ namespace planet_engine
 
 		size_t get_max_level() const;
 
+		void update()
+		{
+			is = subdivided();
+		}
+
 	private:
 		void remove_internal(update_info& info);
 	};
@@ -106,11 +114,11 @@ namespace planet_engine
 	struct planet_data
 	{
 		double planet_radius;
+		double scale;
 		contig_vector<std::shared_ptr<patch>> leaf_patches;
 		contig_vector<std::shared_ptr<patch>> leaf_parents;
 		std::vector<std::shared_ptr<patch>> to_add;
 		std::vector<std::shared_ptr<patch>> to_remove;
-		std::vector<std::shared_ptr<patch>> to_merge;
 		glm::dmat4 model_matrix;
 	};
 }

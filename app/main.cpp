@@ -11,6 +11,10 @@ using namespace planet_engine::util;
 
 #define TARGET_DIR "D:\\Projects\\Projects\\C++\\planet-engine\\x64\\Debug\\"
 
+void tick();
+void launch_watchdog();
+void terminate_watchdog();
+
 namespace
 {
 	std::string concat(const std::string& appendix)
@@ -71,7 +75,7 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 		break;
 	case GL_DEBUG_TYPE_PERFORMANCE:
 		typestr = "[PERFORMANCE]";
-		break;
+		return;break;
 	case GL_DEBUG_TYPE_PORTABILITY:
 		typestr = "[PERFORMANCE]";
 		break;
@@ -95,11 +99,15 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 		break;
 	case GL_DEBUG_SEVERITY_NOTIFICATION:
 		severitystr = "[NOTIFICATION]";
-		return;
+		return;break;
 	default:
 		severitystr = "[UNKNOWN]";
 		break;
 	}
+
+	std::string str = message;
+	if (*(str.end() - 1) == '\n')
+		*(str.end() - 1) = '\0';
 
 	OutputDebug(typestr, severitystr, ' ', message, '\n');
 	OutputDebug("");
@@ -109,23 +117,6 @@ void WindowCallback(GLFWwindow* win, int xsz, int ysz)
 {
 	glViewport(0, 0, xsz, ysz);
 	aspect = double(xsz) / double(ysz);
-}
-
-long nbuffers;
-
-void(WINAPI*oldGenBuffers)(GLsizei n, GLuint* bufs);
-void(WINAPI*oldDelBuffers)(GLsizei n, const GLuint* bufs);
-void WINAPI newGenBuffers(GLsizei n, GLuint* bufs)
-{
-	nbuffers += n;
-	//OutputDebug("[GENBUFFERS] Generated ", n, " buffers. There are ", nbuffers, " buffers\n");
-	oldGenBuffers(n, bufs);
-}
-void WINAPI newDelBuffers(GLsizei n, const GLuint* bufs)
-{
-	nbuffers -= n;
-	//OutputDebug("[DELBUFFERS] Deleted ", n, " buffers. There are ", nbuffers, " buffers\n");
-	oldDelBuffers(n, bufs);
 }
 
 int main()
@@ -142,15 +133,12 @@ int main()
 	ogl_LoadFunctions();
 
 	glfwSwapBuffers(win);
-
-	oldGenBuffers = glGenBuffers;
-	glGenBuffers = newGenBuffers;
-	oldDelBuffers = glDeleteBuffers;
-	glDeleteBuffers = newDelBuffers;
-
+	
 	aspect = 1.5;
 
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	//launch_watchdog();
+
+	//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(DebugProc, nullptr);
 
 	glClearColor(0.0, 1.0, 1.0, 1.0);
@@ -174,9 +162,9 @@ int main()
 			glProgramUniform3f(program, 1, 0.0, 0.5, 0.5);
 		}
 
-		renderer ren{ program, 50.0 };
+		renderer ren{ program, 6700000.0 };
 
-		CamPos = glm::dvec3(0.0, 0.0, -10.0/*-12000.0*/);
+		CamPos = glm::dvec3(0.0, 0.0, -ren.planet.data->planet_radius - 1000.0);
 		CamRot = glm::dquat(1.0, 0.0, 0.0, 0.0);
 
 		ren.update(CamPos);
@@ -186,32 +174,26 @@ int main()
 		{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glm::dmat4 view_mat = glm::inverse(glm::translate(glm::dmat4(1.0), CamPos) * (glm::dmat4)CamRot);
-			glm::dmat4 proj_mat = projection(deg2rad(60.0), aspect, 0.05, 100.0);
+			glm::dmat4 proj_mat = projection(deg2rad(60.0), aspect, 10.0, 1000000.0);
 			auto vp_mat = proj_mat * view_mat;
 
 			ren.render(vp_mat);
 			ren.update(CamPos);
 
-			HandleInput(win);
-
-			if (glfwGetKey(win, GLFW_KEY_C) == GLFW_PRESS)
-			{
-				ren.planet.reset();
-				cDown = true;
-			}
-			else
-			{
-				cDown = false;
-			}
+			HandleInput(win, 200);
 
 			glfwPollEvents();
 			glfwSwapBuffers(win);
 
 			//std::cout << "[FRAME] Ended Frame " << ++i << std::endl;
+
+			tick();
 		}
 
 		glDeleteProgram(program);
 	}
+
+	//terminate_watchdog();
 
 	glfwDestroyWindow(win);
 	glfwTerminate();

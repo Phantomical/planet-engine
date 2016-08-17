@@ -7,4 +7,4 @@
 extern glm::dvec3 CamPos;
 extern glm::dquat CamRot;
 
-void HandleInput(GLFWwindow* win);
+void HandleInput(GLFWwindow* win, double displacement = 5.0);

@@ -56,19 +56,19 @@ vec3 calc_normal(in uvec2 idx, in vec3 v)
 	uvec2 actual = idx + uvec2(1);
 
 	// Order N, E, S, W
-	vec3 vs[3] = {
+	vec3 vs[4] = {
 		v - read(actual - uvec2(0, 1)).xyz,
 		v - read(actual + uvec2(1, 0)).xyz,
-		v - read(actual + uvec2(0, 1)).xyz//,
-		//v - read(actual - uvec2(1, 0)).xyz
+		v - read(actual + uvec2(0, 1)).xyz,
+		v - read(actual - uvec2(1, 0)).xyz
 	};
 
 	vec3 nrm = vec3(0.0);
 
 	nrm += cross(vs[0], vs[1]);
 	nrm += cross(vs[1], vs[2]);
-	nrm += cross(vs[2], vs[0]);
-	//nrm += cross(vs[3], vs[0]);
+	nrm += cross(vs[2], vs[3]);
+	nrm += cross(vs[3], vs[0]);
 
 	return normalize(nrm);
 }
@@ -114,20 +114,20 @@ void main()
 		else if (index < SIDE_LEN * SIDE_LEN + SIDE_LEN * 3)
 		{
 			vtx = to_sphere(mix(nec, sec, INTERP * double(index - (SIDE_LEN * SIDE_LEN + SIDE_LEN * 2))));
-			p = uvec2(SIDE_LEN, (SIDE_LEN * SIDE_LEN + 2 * SIDE_LEN - index));
+			p = uvec2(SIDE_LEN, -(index - SIDE_LEN * SIDE_LEN - 2 * SIDE_LEN));
 		}
 		else
 		{
 			vtx = to_sphere(mix(nwc, nec, INTERP * double(index - (SIDE_LEN * SIDE_LEN + SIDE_LEN * 3))));
-			p = uvec2(SIDE_LEN * SIDE_LEN + 3 * SIDE_LEN - index, SIDE_LEN);
+			p = uvec2(-(index - SIDE_LEN * SIDE_LEN - 3 * SIDE_LEN), SIDE_LEN);
 		}
 
 		dvec3 nrm = normalize(vtx);
-		vtx -= nrm * (planet_radius / 4) + pos;
+		vtx -= nrm * skirt_depth + pos;
 
 		vertex = vec3(vtx);
 		normal = normalize(vertex);//calc_normal(p, read(p + uvec2(1)).xyz);
-		displacement = float(-skirt_depth * scale);
+		displacement = float(-skirt_depth);
 	}
 
 	values[index * STRIDE + 0] = vertex.x;

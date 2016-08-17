@@ -23,37 +23,14 @@ namespace planet_engine
 		// The maximum number of mesh blocks that can be allocated in GPU memory
 		static constexpr size_t NUM_BLOCKS = 1 << 16;
 		static constexpr size_t COMPUTE_GROUP_SIZE = 128;
-		static constexpr double SCALE = 2.0;
+		static constexpr double SCALE = 100.0;
+		static constexpr size_t COMMANDS_PER_FRAME = 16;
 
 		typedef GLuint offset_type;
 		typedef std::priority_queue<offset_type,
 			std::vector<offset_type>,
 			std::greater<offset_type>> pqueue_type;
-
-		friend struct compute_state;
-
-		struct compute_state
-		{
-			static constexpr size_t NUM_RESULT_ELEMS = SIDE_LEN * SIDE_LEN;
-			static constexpr size_t COMPUTE_GROUP_SIZE = COMPUTE_GROUP_SIZE;
-			static constexpr size_t NUM_COMPUTE_GROUPS = (NUM_RESULT_ELEMS + COMPUTE_GROUP_SIZE - 1) / COMPUTE_GROUP_SIZE;
-
-			renderer* parent;
-			std::vector<GLuint> offsets;
-			std::vector<std::weak_ptr<patch>> patches;
-			GLuint size;
-			GLuint result_buffer;
-
-			// Dispatches the next step in the sequence
-			void compute_next();
-			// Indicates whether all the steps in the sequence are done
-			bool is_done() const;
-			// Returns the results and deletes all the buffers
-			void update_patches();
-		};
 		
-		//buffer_manager meshes;
-
 		patch_pipeline pipeline;
 
 		// The buffer for the draw commands
@@ -82,15 +59,9 @@ namespace planet_engine
 		GLuint ubo_offset_alignment;
 		// Required offset alignment for shader storage buffers
 		GLuint ssbo_offset_alignment;
-
-		std::deque<compute_state> compute_states;
-
-		compute_state compute_bounds(std::initializer_list<std::shared_ptr<patch>> meshes);
-
-
-		void step_compute_states();
-		void update_meshes();
 		
+		void update_meshes(size_t n);
+
 	public:
 		planet planet;
 		std::shared_ptr<planet_data> data;

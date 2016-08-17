@@ -7,6 +7,7 @@
 
 #include <map>
 #include <queue>
+#include <functional>
 #include <unordered_map>
 
 namespace planet_engine
@@ -48,18 +49,6 @@ namespace planet_engine
 		double _pad5;
 	};
 
-	struct pipeline_item
-	{
-		enum item_type : uint_least8_t
-		{
-			ADD,
-			REMOVE
-		};
-
-		item_type type;
-		std::weak_ptr<patch> patch;
-	};
-
 	class patch_pipeline
 	{
 	private:
@@ -70,88 +59,89 @@ namespace planet_engine
 		static constexpr size_t SHADER_GROUP_SIZE = 128;
 		static constexpr size_t VERTEX_SIZE = sizeof(float) * 8;
 		static constexpr size_t MESH_SIZE = NUM_VERTICES * VERTEX_SIZE;
-		
+		static constexpr size_t VERTEX_BUFFER_SIZE = (SIDE_LEN + 2) * (SIDE_LEN + 2) * sizeof(float) * 4;
+		static constexpr size_t NUM_INVOCATIONS = ((SIDE_LEN + 2) * (SIDE_LEN + 2) + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
+		static constexpr size_t GEN_VERTEX_INVOCATIONS = (SIDE_LEN + 2 + 7) / 8;
+		static constexpr size_t CANCELLED_COUNTER_VALUE = 0xFF;
+		static constexpr size_t MAX_SCAN_DEPTH = 100;
+		static constexpr size_t LENGTH_CACHE_SIZE = 32;
+
 		struct generate_state
 		{
-			enum execution_state : uint_least8_t
-			{
-				START = 0,
-				GEN_VERTEX_ARRAY = 1,
-				GEN_MESH = 2,
-				DONE = 3,
-				ERROR_STATE = 0xFF
-			};
-
-			execution_state state;
+			std::shared_ptr<patch> target;
+			size_t counter;
 			patch_pipeline* pipeline;
-			std::shared_ptr<patch> target_patch;
 
-			GLuint vertex_buffer;
-			GLuint uniform;
-
+			GLuint buffers[3];
 			GLuint offset;
 
-			bool is_done() const;
-			void step();
+			void cancel();
 
-			generate_state(std::shared_ptr<patch> p, patch_pipeline* pipeline);
-		};
-		struct upsample_state
-		{
-			enum execution_state : uint_least8_t
-			{
-				START = 0,
-				DONE = 1,
-				ERROR_STATE = 0xFF
-			};
+			bool can_finalize() const;
+			void finalize(update_state& ustate);
 
-			execution_state state;
-			patch_pipeline* pipeline;
-			std::shared_ptr<patch> target_patch;
-			// Order: NW, NE, SW, SE
-			std::shared_ptr<patch> children[4];
-
-			GLuint offset;
-
-			bool is_done() const;
-			void step();
-
-			upsample_state(std::shared_ptr<patch> p, patch_pipeline* pipeline);
+			generate_state(std::shared_ptr<patch> tgt, patch_pipeline* pipeline);
 		};
 		struct remove_state
 		{
-			enum execution_state : uint_least8_t
-			{
-				START = 0,
-				DONE = 1,
-				ERROR_STATE = 0xFF
-			};
-
-			execution_state state;
+			std::shared_ptr<patch> target;
+			size_t counter;
 			patch_pipeline* pipeline;
-			std::shared_ptr<patch> target_patch;
 
-			GLuint offset;
+			void cancel();
 
-			size_t ctr;
+			bool can_finalize() const;
+			void finalize(update_state& ustate);
 
-			bool is_done() const;
-			void step();
+			remove_state(std::shared_ptr<patch> tgt, patch_pipeline* pipeline);
+		};
+		struct discalc_state
+		{
+			std::shared_ptr<patch> target;
+			size_t counter;
+			patch_pipeline* pipeline;
 
-			remove_state(std::shared_ptr<patch> p, patch_pipeline* pipeline);
+			GLuint tmpbuf;
+
+			void calc_lengths();
+			void sum_result(size_t s);
+			void download_result();
+
+			void cancel();
+
+			bool can_finalize() const;
+			void finalize(update_state& ustate);
+
+			discalc_state(std::shared_ptr<patch> tgt, patch_pipeline* pipeline);
 		};
 
-		typedef util::any_of<generate_state, upsample_state, remove_state> exec_type;
+		typedef util::any_of<
+			std::shared_ptr<remove_state>,
+			std::shared_ptr<generate_state>,
+			std::shared_ptr<discalc_state>> exec_type;
 
 		buffer_manager _manager;
 
-		std::queue<exec_type> _waiting;
-		std::deque<exec_type> _executing;
+		// Returns a boolean indicating if the job
+		// had been cancelled. False indicates that
+		// the job had been cancelled
+		std::queue<std::function<bool()>> _job_queue;
+		std::deque<exec_type> _exec_queue;
+
 		std::map<std::shared_ptr<patch>, GLuint> _offsets;
 
 		GLuint _meshgen;
 		GLuint _vertex_gen;
-		GLuint _upsampler;
+		GLuint _length_calc;
+		GLuint _max_calc;
+		GLuint _get_pos;
+
+		// Cache for downloading all buffer lengths at once
+		GLuint _lengths;
+		std::vector<std::weak_ptr<patch>> _patches;
+
+		void gen_vertices(GLuint buffers[3], std::shared_ptr<patch> patch, GLuint* offset);
+		void gen_mesh(GLuint buffers[3], std::shared_ptr<patch> patch, const GLuint* offset);
 
 	public:
 		patch_pipeline(size_t num_blocks);
@@ -159,9 +149,9 @@ namespace planet_engine
 		patch_pipeline(patch_pipeline&&) = delete;
 		~patch_pipeline();
 
-		void upsample(std::shared_ptr<patch> patch);
 		void generate(std::shared_ptr<patch> patch);
 		void remove(std::shared_ptr<patch> patch);
+		void discalc(std::shared_ptr<patch> patch);
 
 		void cull();
 
@@ -169,7 +159,5 @@ namespace planet_engine
 		const decltype(_offsets)& patches() const;
 
 		update_state process(size_t n = 4);
-
-		static bool can_upsample(std::shared_ptr<patch> patch);
 	};
 }

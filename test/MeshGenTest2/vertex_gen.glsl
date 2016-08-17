@@ -1,14 +1,13 @@
 #version 430
 
-layout(local_size_x = 128) in;
+layout(local_size_x = 8, local_size_y = 8) in;
 
-// Vertex Information Layout:
-//   vec3 vertex
-//   vec3 normal
-//   float displacement
+layout(location = 0) uniform uint SIDE_LEN;
 
-layout(location = 0) uniform uint size;
-layout(location = 1) uniform uint SIDE_LEN;
+layout(binding = 0, std430) writeonly buffer Output
+{
+	vec4 vertices[];
+};
 
 layout(binding = 0, std140) uniform GeneratorInputs
 {
@@ -18,12 +17,6 @@ layout(binding = 0, std140) uniform GeneratorInputs
 	dvec4 _swc;
 	dvec4 _sec;
 };
-
-layout(binding = 0, std430) buffer OutputValues
-{
-	float values[];
-};
-
 
 //
 // Description : Array and textureless GLSL 2D/3D/4D simplex 
@@ -541,13 +534,14 @@ const double planet_radius = _pos.w;
 const double skirt_depth = _nwc.w;
 const double scale = _nec.w;
 const double INTERP = (1.0 / double(SIDE_LEN - 1));
+const uint array_size = SIDE_LEN + 2;
 
 dvec3 to_sphere(in dvec3 v)
 {
 	return planet_radius * normalize(v);
 }
 
-void calc_vertex(in uvec2 p, out vec3 vertex, out float displacement)
+void calc_vertex(in ivec2 p, out vec3 vertex, out float displacement)
 {
 	double interp = INTERP * double(p.x);
 	dvec3 v1 = mix(nwc, nec, interp);
@@ -561,63 +555,23 @@ void calc_vertex(in uvec2 p, out vec3 vertex, out float displacement)
 	displacement = float(disp);
 }
 
-const uint WorkGroupIndex = gl_WorkGroupID.z * gl_NumWorkGroups.x * gl_NumWorkGroups.y
-+ gl_WorkGroupID.y * gl_NumWorkGroups.x + gl_WorkGroupID.x;
-const uint GlobalInvocationIndex = WorkGroupIndex * gl_WorkGroupSize.x * gl_WorkGroupSize.y
-* gl_WorkGroupSize.z + gl_LocalInvocationIndex;
-
+void write(in uvec2 idx, in vec4 val)
+{
+	vertices[idx.y * array_size + idx.x] = val;
+}
 
 void main()
 {
-#define STRIDE 8
-
-	uint index = GlobalInvocationIndex;
-
-	if (index >= size)
+	if (gl_GlobalInvocationID.x > SIDE_LEN + 2 || gl_GlobalInvocationID.y > SIDE_LEN + 2)
+		// This shader doesn't have an output (it is out of bounds)
 		return;
 
+	ivec2 p = ivec2(gl_GlobalInvocationID.xy) - ivec2(1);
+
 	vec3 vertex;
-	vec3 normal;
 	float displacement;
 
-	if (index < SIDE_LEN * SIDE_LEN)
-	{
-		uvec2 p = uvec2(index / SIDE_LEN, index % SIDE_LEN);
+	calc_vertex(p, vertex, displacement);
 
-		vec3 vtx2, vtx3;
-		float scratch;
-
-		calc_vertex(p, vertex, displacement);
-		calc_vertex(p + uvec2(1, 0), vtx2, scratch);
-		calc_vertex(p + uvec2(0, 1), vtx3, scratch);
-
-		normal = normalize(cross(vertex - vtx2, vertex - vtx3));
-	}
-	else
-	{
-		dvec3 vtx;
-		if (index < SIDE_LEN * SIDE_LEN + SIDE_LEN)
-			vtx = to_sphere(mix(nwc, swc, INTERP * double(index - (SIDE_LEN * SIDE_LEN))));
-		else if (index < SIDE_LEN * SIDE_LEN + SIDE_LEN * 2)
-			vtx = to_sphere(mix(swc, sec, INTERP * double(index - (SIDE_LEN * SIDE_LEN + SIDE_LEN))));
-		else if (index < SIDE_LEN * SIDE_LEN + SIDE_LEN * 3)
-			vtx = to_sphere(mix(nec, sec, INTERP * double(index - (SIDE_LEN * SIDE_LEN + SIDE_LEN * 2))));
-		else
-			vtx = to_sphere(mix(nwc, nec, INTERP * double(index - (SIDE_LEN * SIDE_LEN + SIDE_LEN * 3))));
-
-		dvec3 nrm = normalize(vtx);
-		vtx -= nrm * skirt_depth + pos;
-
-		vertex = vec3(vtx);
-		normal = vec3(nrm);
-		displacement = float(-skirt_depth);
-	}
-
-	values[index * STRIDE + 0] = vertex.x;
-	values[index * STRIDE + 1] = vertex.y;
-	values[index * STRIDE + 2] = vertex.z;
-	values[index * STRIDE + 3] = normal.x;
-	values[index * STRIDE + 4] = normal.y;
-	values[index * STRIDE + 5] = normal.z;
-	values[index * STRIDE + 6] = displacement;
+	write(gl_GlobalInvocationID.xy, vec4(vertex, displacement));
 }

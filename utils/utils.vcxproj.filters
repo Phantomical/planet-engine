@@ -53,5 +53,8 @@
     <ClInclude Include="findutils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="templateutils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
