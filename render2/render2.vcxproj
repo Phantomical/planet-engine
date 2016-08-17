@@ -176,6 +176,8 @@
   <ItemGroup>
     <ClInclude Include="buffer_manager.h" />
     <ClInclude Include="constants.h" />
+    <ClInclude Include="is_glsl.h" />
+    <ClInclude Include="patch_data.h" />
     <ClInclude Include="patch_pipeline.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="stride.h" />
@@ -210,6 +212,7 @@
       <FileType>Document</FileType>
     </CustomBuild>
     <None Include="noise.glsl" />
+    <None Include="patch_subdivide.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -109,9 +109,15 @@ namespace planet_engine
 
 	void renderer::update_meshes(size_t n)
 	{
+		static size_t add_max = 0;
+		static size_t remove_max = 0;
+
 		update_state ustate;
 
 		{
+			add_max = std::max(add_max, data->to_add.size());
+			remove_max = std::max(remove_max, data->to_remove.size());
+
 			for (auto p : data->to_add)
 			{
 				pipeline.generate(p);

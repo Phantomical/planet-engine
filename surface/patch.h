@@ -25,15 +25,7 @@ namespace planet_engine
 
 	struct patch;
 	struct planet_data;
-
-	struct mesh_vertex
-	{
-		// Vertex position
-		glm::dvec3 vertex;
-		// Vector pointing outward from the centre of the planet
-		glm::dvec3 texcoord;
-	};
-
+	
 	struct update_info
 	{
 		std::vector<std::shared_ptr<patch>> parents_to_erase;

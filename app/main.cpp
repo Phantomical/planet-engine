@@ -138,8 +138,8 @@ int main()
 
 	//launch_watchdog();
 
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-	glDebugMessageCallback(DebugProc, nullptr);
+	//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	//glDebugMessageCallback(DebugProc, nullptr);
 
 	glClearColor(0.0, 1.0, 1.0, 1.0);
 	glEnable(GL_DEPTH_TEST);
