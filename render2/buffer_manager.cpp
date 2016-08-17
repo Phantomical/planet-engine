@@ -55,18 +55,18 @@ namespace planet_engine
 
 		GLuint index = _max_index++;
 
+		glBindBuffer(GL_ARRAY_BUFFER, _buffer);
+
 		while (_max_index * _block_size > _num_pages * _page_size)
 		{
 			assert((_num_pages + 1) <= _max_pages);
 			//Commits the next page allowing it to be used for mesh data
-			glNamedBufferPageCommitmentEXT(_buffer,
+			glBufferPageCommitmentARB(GL_ARRAY_BUFFER,
 				_num_pages++ * _page_size, _page_size, GL_TRUE);
 		}
 
 		_offsets.insert(index);
-
-		//OutputDebug("[BUFMGR][At ", this, "] Allocated offset ", index, ".\n");
-
+		
 		return index;
 	}
 	void buffer_manager::dealloc_block(GLuint offset)
