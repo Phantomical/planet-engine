@@ -133,7 +133,7 @@ int main()
 	ogl_LoadFunctions();
 
 	glfwSwapBuffers(win);
-	
+
 	aspect = 1.5;
 
 	//launch_watchdog();
@@ -159,33 +159,51 @@ int main()
 
 			program = shader.program();
 
-			glProgramUniform3f(program, 1, 0.0, 0.5, 0.5);
+			glProgramUniform3f(program, 1, 0.0, 0.0, 1.0);
 		}
 
 		renderer ren{ program, 6700000.0 };
+		renderer ren2{ program, 500000.0 };
 
-		CamPos = glm::dvec3(0.0, 0.0, -ren.planet.data->planet_radius - 1000.0);
+		CamPos = glm::dvec3(0.0, 0.0, -ren.planet.data->planet_radius - 10000.0);
 		CamRot = glm::dquat(1.0, 0.0, 0.0, 0.0);
 
 		ren.update(CamPos);
+		ren2.update(CamPos);
 
 		size_t i = 0;
 		while (!glfwWindowShouldClose(win))
 		{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 			glm::dmat4 view_mat = glm::inverse(glm::translate(glm::dmat4(1.0), CamPos) * (glm::dmat4)CamRot);
-			glm::dmat4 proj_mat = projection(deg2rad(60.0), aspect, 10.0, 1000000.0);
-			auto vp_mat = proj_mat * view_mat;
+			glm::dmat4 model_mat = glm::translate(glm::dmat4(1.0), glm::dvec3(10000000.0, 0.0, 0.0));
 
-			ren.render(vp_mat);
+			{
+				glm::dmat4 proj_mat = projection(deg2rad(60.0), aspect, 10000.0, 1000000000.0);
+				auto vp_mat = proj_mat * view_mat;
+
+				ren.render(vp_mat);
+				ren2.render(vp_mat * model_mat);
+			}
+
+			glClear(GL_DEPTH_BUFFER_BIT);
+
+			{
+				glm::dmat4 proj_mat = projection(deg2rad(60.0), aspect, 0.05, 10000.0);
+				auto vp_mat = proj_mat * view_mat;
+
+				ren.render(vp_mat);
+				ren2.render(vp_mat * model_mat);
+			}
+
 			ren.update(CamPos);
+			ren2.update(CamPos - glm::dvec3(10000000.0, 0.0, 0.0));
 
-			HandleInput(win, 200);
+			HandleInput(win, 20000);
 
 			glfwPollEvents();
 			glfwSwapBuffers(win);
-
-			//std::cout << "[FRAME] Ended Frame " << ++i << std::endl;
 
 			tick();
 		}

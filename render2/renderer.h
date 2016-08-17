@@ -25,7 +25,7 @@ namespace planet_engine
 		// The maximum number of mesh blocks that can be allocated in GPU memory
 		static constexpr size_t NUM_BLOCKS = 1 << 16;
 		static constexpr double SCALE = 100.0;
-		static constexpr size_t COMMANDS_PER_FRAME = 16;
+		static constexpr size_t COMMANDS_PER_FRAME = 32;
 
 	private:
 		/*
