@@ -304,6 +304,13 @@ namespace planet_engine
 		if (_manager.current_max() * 2 < _manager.max_index())
 			_manager.uncommit_unused();
 
+		if (_exec_queue.size() > n * 64 && cull_counter > 30)
+			// If the queue is too big perform a lookahead and
+			// try to remove unnecessary work
+			mesh_lookahead(n);
+
+		cull_counter++;
+
 		return ustate;
 	}
 
@@ -319,6 +326,50 @@ namespace planet_engine
 
 		for (auto& p : to_cull)
 			remove(p);
+	}
+	void patch_pipeline::mesh_lookahead(size_t n)
+	{
+		for (size_t i = _exec_queue.size() - 1; i > n; --i)
+		{
+			auto& exec = _exec_queue[i];
+
+			for (size_t j = i - n; j != 0; --j)
+			{
+				auto& exec2 = _exec_queue[i];
+				size_t st = exec.active_index() * 16 + exec2.active_index();
+
+				switch (st)
+				{
+				case 0x01:
+					if (exec.get<std::shared_ptr<remove_state>>()->target ==
+						exec2.get<std::shared_ptr<generate_state>>()->target)
+					{
+						exec.get<exec_type::type_at<0>>()->cancel();
+						exec.get<exec_type::type_at<1>>()->cancel();
+					}
+					break;
+				case 0x02:
+					if (exec.get<std::shared_ptr<remove_state>>()->target ==
+						exec2.get<std::shared_ptr<discalc_state>>()->target)
+					{
+						exec.get<exec_type::type_at<0>>()->cancel();
+						exec.get<exec_type::type_at<2>>()->cancel();
+					}
+					break;
+				case 0x10:
+					if (exec.get<std::shared_ptr<generate_state>>()->target ==
+						exec2.get<std::shared_ptr<remove_state>>()->target)
+					{
+						exec.get<exec_type::type_at<1>>()->cancel();
+						exec.get<exec_type::type_at<0>>()->cancel();
+					}
+					break;
+				}
+			}
+		}
+
+		cull_counter = 0;
+		OutputDebug("[PIPELINE] Performed a full-pipe lookahead.\n");
 	}
 
 	buffer_manager& patch_pipeline::manager()

@@ -28,6 +28,9 @@
     <Filter Include="Shaders\surface">
       <UniqueIdentifier>{60872dcc-05c3-485f-a5d4-2c3a880dbced}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\occlusion-culling">
+      <UniqueIdentifier>{e6f9f44b-b14b-4304-8b6a-b2a30446541c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="renderer.cpp">
@@ -93,6 +96,9 @@
     </None>
     <None Include="patch_subdivide.glsl">
       <Filter>Shaders\surface</Filter>
+    </None>
+    <None Include="occlusion-culling-frag.glsl">
+      <Filter>Shaders\occlusion-culling</Filter>
     </None>
   </ItemGroup>
 </Project>

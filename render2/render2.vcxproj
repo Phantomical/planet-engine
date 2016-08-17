@@ -212,6 +212,7 @@
       <FileType>Document</FileType>
     </CustomBuild>
     <None Include="noise.glsl" />
+    <None Include="occlusion-culling-frag.glsl" />
     <None Include="patch_subdivide.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
