@@ -151,37 +151,9 @@ namespace planet_engine
 			
 			glDispatchCompute((ustate.movecommands.size() + COMPUTE_GROUP_SIZE - 1) / COMPUTE_GROUP_SIZE, 1, 1);
 			
-			glMemoryBarrier(/*GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT*/ GL_ALL_BARRIER_BITS);
+			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT);
 			
 			glDeleteBuffers(2, buffers);
-
-			//DrawElementsIndirectCommand* commands = (DrawElementsIndirectCommand*)glMapNamedBuffer(drawcommands, GL_READ_WRITE);
-			//
-			////std::memset(commands, 0, sizeof(DrawElementsIndirectCommand) * pipeline.manager().max_index());
-			//
-			//for (auto p : pipeline.patches())
-			//{
-			//	DrawElementsIndirectCommand cmd;
-			//	cmd.baseInstance = 0;
-			//	cmd.baseVertex = p.second * pipeline.manager().block_size() / VERTEX_SIZE;
-			//	cmd.count = NUM_INDICES;
-			//	cmd.firstIndex = 0;
-			//	cmd.instanceCount = 1;
-			//}
-			//
-			//for (auto cmd : ustate.movecommands)
-			//{
-			//	if (cmd.is_new)
-			//	{
-			//		commands[cmd.dest] = ustate.commands[cmd.source];
-			//	}
-			//	else
-			//	{
-			//		std::memset(commands + cmd.dest, 0, sizeof(DrawElementsIndirectCommand));
-			//	}
-			//}
-			//
-			//glUnmapNamedBuffer(drawcommands);
 		}
 	}
 

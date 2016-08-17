@@ -39,7 +39,7 @@ void main()
 	cmd.dest =   commands[GlobalInvocationIndex * 3 + 1];
 	cmd.is_new = commands[GlobalInvocationIndex * 3 + 2];
 
-	if (is_new)
+	if (cmd.is_new == 1)
 		// The value is a new draw command
 	{
 		outputs[cmd.dest * 5]     = inputs[cmd.source * 5];
