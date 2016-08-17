@@ -333,9 +333,42 @@ namespace planet_engine
 		{
 			auto& exec = _exec_queue[i];
 
+			switch (exec.active_index())
+			{
+			case 0:
+				if (exec.get<exec_type::type_at<0>>()->counter == CANCELLED_COUNTER_VALUE)
+					continue;
+				break;
+			case 1:
+				if (exec.get<exec_type::type_at<1>>()->counter == CANCELLED_COUNTER_VALUE)
+					continue;
+				break;
+			case 2:
+				if (exec.get<exec_type::type_at<2>>()->counter == CANCELLED_COUNTER_VALUE)
+					continue;
+				break;
+			}
+
 			for (size_t j = i - n; j != 0; --j)
 			{
 				auto& exec2 = _exec_queue[i];
+
+				switch (exec.active_index())
+				{
+				case 0:
+					if (exec2.get<exec_type::type_at<0>>()->counter == CANCELLED_COUNTER_VALUE)
+						continue;
+					break;
+				case 1:
+					if (exec2.get<exec_type::type_at<1>>()->counter == CANCELLED_COUNTER_VALUE)
+						continue;
+					break;
+				case 2:
+					if (exec2.get<exec_type::type_at<2>>()->counter == CANCELLED_COUNTER_VALUE)
+						continue;
+					break;
+				}
+
 				size_t st = exec.active_index() * 16 + exec2.active_index();
 
 				switch (st)
