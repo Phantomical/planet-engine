@@ -15,10 +15,11 @@ namespace planet_engine
 		info.sec = sec;
 	}
 
-	planet::planet(double radius)
+	planet::planet(double radius, double scale)
 	{
 		data = std::make_shared<planet_data>();
 		data->planet_radius = radius;
+		data->scale = scale;
 
 		patch::info info;
 		info.level = 0;

@@ -9,7 +9,7 @@ namespace planet_engine
 		std::shared_ptr<patch> sides[6];
 		std::shared_ptr<planet_data> data;
 
-		planet(double radius);
+		planet(double radius, double scale = 1.0);
 
 		void update(const glm::dvec3& cam_pos);
 

@@ -199,9 +199,9 @@ namespace planet_engine
 	}
 	
 	/* Constructors and Destructors */
-	renderer::renderer(GLuint shader, double planet_radius) :
+	renderer::renderer(GLuint shader, double planet_radius, double scale) :
 		pipeline(NUM_BLOCKS),
-		planet(planet_radius),
+		planet(planet_radius, scale),
 		planet_shader(shader)
 	{
 		glsl_shader command_update = glsl_shader(false);
@@ -212,7 +212,6 @@ namespace planet_engine
 		this->command_update = command_update.program();
 
 		data = planet.data;
-		data->scale = SCALE;
 
 		unsigned int* indices = gen_indices(SIDE_LEN);
 		

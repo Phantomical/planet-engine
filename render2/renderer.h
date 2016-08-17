@@ -67,7 +67,7 @@ namespace planet_engine
 		void update(const glm::dvec3& cam_pos);
 		void render(const glm::dmat4& mvp_mat);
 
-		renderer(GLuint shader, double planet_radius);
+		renderer(GLuint shader, double planet_radius, double scale = SCALE);
 		renderer(const renderer&) = delete;
 
 		~renderer();
