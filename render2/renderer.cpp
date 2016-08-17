@@ -136,28 +136,28 @@ namespace planet_engine
 
 		if (ustate.movecommands.size() != 0)
 		{
-			//glUseProgram(command_update);
-			//glUniform1ui(0, ustate.movecommands.size());
-			//
-			//GLuint buffers[2];
-			//glCreateBuffers(2, buffers);
-			//
-			//glNamedBufferData(buffers[0], ustate.movecommands.size() * sizeof(MoveCommand), ustate.movecommands.data(), GL_STATIC_DRAW);
-			//glNamedBufferData(buffers[1], ustate.commands.size() * sizeof(DrawElementsIndirectCommand), ustate.commands.data(), GL_STATIC_DRAW);
-			//
-			//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[0]);
-			//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, buffers[1]);
-			//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, drawcommands);
-			//
-			//glDispatchCompute((ustate.movecommands.size() + COMPUTE_GROUP_SIZE - 1) / COMPUTE_GROUP_SIZE, 1, 1);
-			//
-			//glMemoryBarrier(/*GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT*/ GL_ALL_BARRIER_BITS);
-			//
-			//glDeleteBuffers(2, buffers);
+			glUseProgram(command_update);
+			glUniform1ui(0, ustate.movecommands.size());
+			
+			GLuint buffers[2];
+			glCreateBuffers(2, buffers);
+			
+			glNamedBufferData(buffers[0], ustate.movecommands.size() * sizeof(MoveCommand), ustate.movecommands.data(), GL_STATIC_DRAW);
+			glNamedBufferData(buffers[1], ustate.commands.size() * sizeof(DrawElementsIndirectCommand), ustate.commands.data(), GL_STATIC_DRAW);
+			
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[0]);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, buffers[1]);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, drawcommands);
+			
+			glDispatchCompute((ustate.movecommands.size() + COMPUTE_GROUP_SIZE - 1) / COMPUTE_GROUP_SIZE, 1, 1);
+			
+			glMemoryBarrier(/*GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT*/ GL_ALL_BARRIER_BITS);
+			
+			glDeleteBuffers(2, buffers);
 
-			DrawElementsIndirectCommand* commands = (DrawElementsIndirectCommand*)glMapNamedBuffer(drawcommands, GL_READ_WRITE);
-
-			//std::memset(commands, 0, sizeof(DrawElementsIndirectCommand) * pipeline.manager().max_index());
+			//DrawElementsIndirectCommand* commands = (DrawElementsIndirectCommand*)glMapNamedBuffer(drawcommands, GL_READ_WRITE);
+			//
+			////std::memset(commands, 0, sizeof(DrawElementsIndirectCommand) * pipeline.manager().max_index());
 			//
 			//for (auto p : pipeline.patches())
 			//{
@@ -168,20 +168,20 @@ namespace planet_engine
 			//	cmd.firstIndex = 0;
 			//	cmd.instanceCount = 1;
 			//}
-
-			for (auto cmd : ustate.movecommands)
-			{
-				if (cmd.is_new)
-				{
-					commands[cmd.dest] = ustate.commands[cmd.source];
-				}
-				else
-				{
-					std::memset(commands + cmd.dest, 0, sizeof(DrawElementsIndirectCommand));
-				}
-			}
-
-			glUnmapNamedBuffer(drawcommands);
+			//
+			//for (auto cmd : ustate.movecommands)
+			//{
+			//	if (cmd.is_new)
+			//	{
+			//		commands[cmd.dest] = ustate.commands[cmd.source];
+			//	}
+			//	else
+			//	{
+			//		std::memset(commands + cmd.dest, 0, sizeof(DrawElementsIndirectCommand));
+			//	}
+			//}
+			//
+			//glUnmapNamedBuffer(drawcommands);
 		}
 	}
 
@@ -232,23 +232,11 @@ namespace planet_engine
 		planet(planet_radius),
 		planet_shader(shader)
 	{
-		glsl_shader max_calc = glsl_shader(false);
-		max_calc.compute(read_file("max.glsl"));
-		max_calc.link();
-		max_calc.check_errors({ GL_COMPUTE_SHADER });
-
-		glsl_shader length_calc = glsl_shader(false);
-		length_calc.compute(read_file("length.glsl"));
-		length_calc.link();
-		length_calc.check_errors({ GL_COMPUTE_SHADER });
-
 		glsl_shader command_update = glsl_shader(false);
-		command_update.compute(read_file("length.glsl"));
+		command_update.compute(read_file("command_update.glsl"));
 		command_update.link();
 		command_update.check_errors({ GL_COMPUTE_SHADER });
 
-		this->max_calc = max_calc.program();
-		this->length_calc = length_calc.program();
 		this->command_update = command_update.program();
 
 		data = planet.data;
@@ -292,8 +280,6 @@ namespace planet_engine
 	}
 	renderer::~renderer()
 	{
-		glDeleteProgram(max_calc);
-		glDeleteProgram(length_calc);
 		glDeleteProgram(command_update);
 
 		glDeleteBuffers(1, &elements);

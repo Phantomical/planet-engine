@@ -53,12 +53,6 @@ namespace planet_engine
 		// Element buffer
 		GLuint elements;
 
-		// Mesh generation shader
-		//GLuint meshgen;
-		// Parallel maximum calculation shader
-		GLuint max_calc;
-		// Parallel distance calculation shader
-		GLuint length_calc;
 		// Compute shader for uploading new commands to the command buffer
 		GLuint command_update;
 		// The shader that is used for actually rendering the planet
