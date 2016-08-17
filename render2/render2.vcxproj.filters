@@ -46,12 +46,6 @@
     <CustomBuild Include="command_update.glsl">
       <Filter>Shaders</Filter>
     </CustomBuild>
-    <CustomBuild Include="length.glsl">
-      <Filter>Shaders</Filter>
-    </CustomBuild>
-    <CustomBuild Include="max.glsl">
-      <Filter>Shaders</Filter>
-    </CustomBuild>
     <CustomBuild Include="planet_shader_frag.glsl">
       <Filter>Shaders</Filter>
     </CustomBuild>
@@ -64,5 +58,19 @@
     <CustomBuild Include="vertex_gen.glsl">
       <Filter>Shaders\pipeline</Filter>
     </CustomBuild>
+    <CustomBuild Include="max.glsl">
+      <Filter>Shaders\pipeline</Filter>
+    </CustomBuild>
+    <CustomBuild Include="length.glsl">
+      <Filter>Shaders\pipeline</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="noise.glsl">
+      <Filter>Shaders\pipeline</Filter>
+    </None>
+    <None Include="get_pos.glsl">
+      <Filter>Shaders\pipeline</Filter>
+    </None>
   </ItemGroup>
 </Project>

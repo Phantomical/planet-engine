@@ -41,12 +41,17 @@ namespace planet_engine
 		glUseProgram(_vertex_gen);
 		// Bind output buffer
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[0]);
-		// Bind position readback buffer
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, buffers[3]);
 		// Bind uniforms
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0, buffers[1]);
 		// Dispatch compute shader to fill the output buffer
 		glDispatchCompute(GEN_VERTEX_INVOCATIONS, GEN_VERTEX_INVOCATIONS, 1);
+
+		glUseProgram(_get_pos);
+		// Bind position readback buffer
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[2]);
+		// Dispatch position calculation shader
+		glDispatchCompute(1, 1, 1);
+
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	}
 	void patch_pipeline::gen_mesh(GLuint buffers[3], std::shared_ptr<patch> patch, const GLuint* offset)
@@ -322,6 +327,7 @@ namespace planet_engine
 		shader vertex_gen(false);
 		shader length_calc(false);
 		shader max_calc(false);
+		shader get_pos(false);
 
 		meshgen.compute(read_file("mesh_gen.glsl"));
 		meshgen.link();
@@ -335,22 +341,27 @@ namespace planet_engine
 		max_calc.compute(read_file("max.glsl"));
 		max_calc.link();
 
+		get_pos.compute(read_file("get_pos.glsl"));
+		get_pos.link();
+
 		meshgen.check_errors({ GL_COMPUTE_SHADER });
 		vertex_gen.check_errors({ GL_COMPUTE_SHADER });
 		length_calc.check_errors({ GL_COMPUTE_SHADER });
 		max_calc.check_errors({ GL_COMPUTE_SHADER });
+		get_pos.check_errors({ GL_COMPUTE_SHADER });
 
 		_meshgen = meshgen.program();
 		_vertex_gen = vertex_gen.program();
 		_length_calc = length_calc.program();
 		_max_calc = max_calc.program();
+		_get_pos = get_pos.program();
 
 		glProgramUniform1ui(_meshgen, 0, SIDE_LEN);
 		glProgramUniform1ui(_vertex_gen, 0, SIDE_LEN);
 
 		glGenBuffers(1, &_lengths);
 		glBindBuffer(GL_COPY_WRITE_BUFFER, _lengths);
-		glBufferData(GL_COPY_WRITE_BUFFER, LENGTH_CACHE_SIZE * sizeof(float), nullptr, GL_DYNAMIC_READ);
+		glBufferData(GL_COPY_WRITE_BUFFER, LENGTH_CACHE_SIZE * sizeof(float), nullptr, GL_STREAM_READ);
 	}
 	patch_pipeline::~patch_pipeline()
 	{

@@ -89,12 +89,15 @@
       <PreprocessorDefinitions>LOG_TO_FILE</PreprocessorDefinitions>
     </ClCompile>
     <CustomBuild>
-      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)%(Identity)" "-I$(ProjectDir)"</Command>
+      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)%(Identity)" -I$(ProjectDir)</Command>
     </CustomBuild>
     <CustomBuild>
       <Outputs>null</Outputs>
       <Message>Copying %(Identity) to output</Message>
     </CustomBuild>
+    <PreBuildEvent>
+      <Command>D:\Projects\Projects\Python\noise-generator\result.bat</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -105,12 +108,15 @@
       <PreprocessorDefinitions>LOG_TO_FILE</PreprocessorDefinitions>
     </ClCompile>
     <CustomBuild>
-      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)%(Identity)" "-I$(ProjectDir)"</Command>
+      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)%(Identity)" -I$(ProjectDir)</Command>
     </CustomBuild>
     <CustomBuild>
       <Outputs>null</Outputs>
       <Message>Copying %(Identity) to output</Message>
     </CustomBuild>
+    <PreBuildEvent>
+      <Command>D:\Projects\Projects\Python\noise-generator\result.bat</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -127,12 +133,15 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <CustomBuild>
-      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)%(Identity)" "-I$(ProjectDir)"</Command>
+      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)%(Identity)" -I$(ProjectDir)</Command>
     </CustomBuild>
     <CustomBuild>
       <Outputs>null</Outputs>
       <Message>Copying %(Identity) to output</Message>
     </CustomBuild>
+    <PreBuildEvent>
+      <Command>D:\Projects\Projects\Python\noise-generator\result.bat</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -149,12 +158,15 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <CustomBuild>
-      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)%(Identity)" "-I$(ProjectDir)"</Command>
+      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)%(Identity)" -I$(ProjectDir)</Command>
     </CustomBuild>
     <CustomBuild>
       <Outputs>null</Outputs>
       <Message>Copying %(Identity) to output</Message>
     </CustomBuild>
+    <PreBuildEvent>
+      <Command>D:\Projects\Projects\Python\noise-generator\result.bat</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="buffer_manager.cpp" />
@@ -190,6 +202,12 @@
     <CustomBuild Include="vertex_gen.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="get_pos.glsl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <None Include="noise.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

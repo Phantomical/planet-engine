@@ -134,13 +134,14 @@ namespace planet_engine
 		GLuint _vertex_gen;
 		GLuint _length_calc;
 		GLuint _max_calc;
+		GLuint _get_pos;
 
 		// Cache for downloading all buffer lengths at once
 		GLuint _lengths;
 		std::vector<std::weak_ptr<patch>> _patches;
 
-		void gen_vertices(GLuint buffers[2], std::shared_ptr<patch> patch, GLuint* offset);
-		void gen_mesh(GLuint buffers[2], std::shared_ptr<patch> patch, const GLuint* offset);
+		void gen_vertices(GLuint buffers[3], std::shared_ptr<patch> patch, GLuint* offset);
+		void gen_mesh(GLuint buffers[3], std::shared_ptr<patch> patch, const GLuint* offset);
 
 	public:
 		patch_pipeline(size_t num_blocks);

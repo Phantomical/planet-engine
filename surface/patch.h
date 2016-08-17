@@ -45,7 +45,7 @@ namespace planet_engine
 	struct patch : std::enable_shared_from_this<patch>
 	{
 	public:
-		static constexpr size_t SIDE_LEN = 5;
+		static constexpr size_t SIDE_LEN = 33;
 		static constexpr size_t NUM_VERTICES = num_vertices(SIDE_LEN);
 		static constexpr size_t NUM_INDICES = num_indices(SIDE_LEN);
 		static constexpr double SKIRT_DEPTH = 500.0;
@@ -91,7 +91,7 @@ namespace planet_engine
 		void merge(update_info& info);
 
 	private:
-		static constexpr double MULT = 1.0 / (2.5);
+		static constexpr double MULT = 1.0 / (10.0);
 
 	public:
 		bool should_subdivide(const glm::dvec3& cam_pos) const;

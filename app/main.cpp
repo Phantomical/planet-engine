@@ -75,7 +75,7 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 		break;
 	case GL_DEBUG_TYPE_PERFORMANCE:
 		typestr = "[PERFORMANCE]";
-		break;
+		return;break;
 	case GL_DEBUG_TYPE_PORTABILITY:
 		typestr = "[PERFORMANCE]";
 		break;
@@ -99,7 +99,7 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 		break;
 	case GL_DEBUG_SEVERITY_NOTIFICATION:
 		severitystr = "[NOTIFICATION]";
-		break;
+		return;break;
 	default:
 		severitystr = "[UNKNOWN]";
 		break;
@@ -136,7 +136,7 @@ int main()
 	
 	aspect = 1.5;
 
-	launch_watchdog();
+	//launch_watchdog();
 
 	//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(DebugProc, nullptr);
@@ -162,7 +162,7 @@ int main()
 			glProgramUniform3f(program, 1, 0.0, 0.5, 0.5);
 		}
 
-		renderer ren{ program, 670000.0 };
+		renderer ren{ program, 6700000.0 };
 
 		CamPos = glm::dvec3(0.0, 0.0, -ren.planet.data->planet_radius - 1000.0);
 		CamRot = glm::dquat(1.0, 0.0, 0.0, 0.0);
@@ -180,7 +180,7 @@ int main()
 			ren.render(vp_mat);
 			ren.update(CamPos);
 
-			HandleInput(win, 500);
+			HandleInput(win, 200);
 
 			glfwPollEvents();
 			glfwSwapBuffers(win);
@@ -193,7 +193,7 @@ int main()
 		glDeleteProgram(program);
 	}
 
-	terminate_watchdog();
+	//terminate_watchdog();
 
 	glfwDestroyWindow(win);
 	glfwTerminate();
