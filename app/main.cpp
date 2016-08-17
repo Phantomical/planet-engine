@@ -75,7 +75,7 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 		break;
 	case GL_DEBUG_TYPE_PERFORMANCE:
 		typestr = "[PERFORMANCE]";
-		return;break;
+		break;
 	case GL_DEBUG_TYPE_PORTABILITY:
 		typestr = "[PERFORMANCE]";
 		break;
@@ -99,7 +99,7 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 		break;
 	case GL_DEBUG_SEVERITY_NOTIFICATION:
 		severitystr = "[NOTIFICATION]";
-		return;break;
+		break;
 	default:
 		severitystr = "[UNKNOWN]";
 		break;
@@ -109,7 +109,7 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 	if (*(str.end() - 1) == '\n')
 		*(str.end() - 1) = '\0';
 
-	OutputDebug(typestr, severitystr, ' ', message, '\n');
+	OutputDebug(typestr, severitystr, ' ', str.c_str(), '\n');
 	OutputDebug("");
 }
 
@@ -138,7 +138,7 @@ int main()
 
 	//launch_watchdog();
 
-	//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(DebugProc, nullptr);
 
 	glClearColor(0.0, 1.0, 1.0, 1.0);

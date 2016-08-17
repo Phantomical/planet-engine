@@ -40,7 +40,7 @@ namespace planet_engine
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(mesh_info), &info, GL_STATIC_DRAW);
 
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffers[2]);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(double) * 4, nullptr, GL_DYNAMIC_READ);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(double) * 4, nullptr, GL_STREAM_READ);
 
 		*offset = _manager.alloc_block();
 

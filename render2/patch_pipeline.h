@@ -63,7 +63,7 @@ namespace planet_engine
 		static constexpr size_t NUM_INVOCATIONS = ((SIDE_LEN + 2) * (SIDE_LEN + 2) + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
 		static constexpr size_t GEN_VERTEX_INVOCATIONS = (SIDE_LEN + 2 + 7) / 8;
 		static constexpr size_t CANCELLED_COUNTER_VALUE = 0xFF;
-		static constexpr size_t MAX_SCAN_DEPTH = 256;
+		static constexpr size_t MAX_SCAN_DEPTH = 512;
 		static constexpr size_t LENGTH_CACHE_SIZE = 32;
 
 		struct generate_state
