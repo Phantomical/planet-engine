@@ -10,6 +10,12 @@
 
 namespace planet_engine
 {
+	template<typename T>
+	T rounddown(T a, T b)
+	{
+		return (a / b) * b;
+	}
+
 	/* Patch Pipeline */
 	void patch_pipeline::gen_vertices(GLuint buffers[3], std::shared_ptr<patch> patch, GLuint* offset)
 	{
@@ -56,12 +62,18 @@ namespace planet_engine
 	}
 	void patch_pipeline::gen_mesh(GLuint buffers[3], std::shared_ptr<patch> patch, const GLuint* offset)
 	{
+		GLuint actual_offset = rounddown(*offset * _manager.block_size(), _ssbo_alignment);
+		GLuint offset_param = (*offset * _manager.block_size() - actual_offset) / sizeof(float);
+
 		glUseProgram(_meshgen);
 		// Bind input buffer
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[0]);
 		// Bind output buffer range
 		glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, _manager.buffer(),
-			*offset * _manager.block_size(), _manager.block_size());
+			actual_offset, _manager.block_size() + offset_param * sizeof(float));
+
+		glUniform1ui(1, offset_param);
+
 		// Dispatch compute shader to fill the output buffer range
 		glDispatchCompute(NUM_INVOCATIONS, 1, 1);
 		glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT);
@@ -362,6 +374,10 @@ namespace planet_engine
 		glGenBuffers(1, &_lengths);
 		glBindBuffer(GL_COPY_WRITE_BUFFER, _lengths);
 		glBufferData(GL_COPY_WRITE_BUFFER, LENGTH_CACHE_SIZE * sizeof(float), nullptr, GL_STREAM_READ);
+
+		GLint ssbo_alignment;
+		glGetIntegerv(GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT, &ssbo_alignment);
+		_ssbo_alignment = (GLuint)ssbo_alignment;
 	}
 	patch_pipeline::~patch_pipeline()
 	{
@@ -394,8 +410,13 @@ namespace planet_engine
 
 		GLuint offset = it->second;
 
+		GLuint actual_offset = rounddown(pipeline->manager().block_size() * offset, pipeline->_ssbo_alignment);
+		GLuint offset_param = (pipeline->manager().block_size() * offset - actual_offset) / sizeof(float);
+
+		glUniform1ui(2, offset_param);
+
 		glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, pipeline->manager().buffer(),
-			pipeline->manager().block_size() * offset, pipeline->manager().block_size());
+			actual_offset, pipeline->manager().block_size() + offset_param * sizeof(float));
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, tmpbuf);
 
 		glDispatchCompute(NUM_COMPUTE_GROUPS, 1, 1);

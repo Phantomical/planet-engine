@@ -1,8 +1,11 @@
 #version 430
 
+#include "stride.h"
+
 layout(local_size_x = 128) in;
 
 layout(location = 0) uniform uint SIDE_LEN;
+layout(location = 1) uniform uint offset;
 
 layout(binding = 0, std430) readonly buffer GeneratorOutputs
 {
@@ -75,8 +78,6 @@ vec3 calc_normal(in uvec2 idx, in vec3 v)
 
 void main()
 {
-#define STRIDE 8
-
 	const uint index = GlobalInvocationIndex;
 
 	if (index >= size)
@@ -84,6 +85,7 @@ void main()
 
 	vec3 vertex;
 	vec3 normal;
+	vec3 outdir;
 	float displacement;
 
 	if (index < SIDE_LEN * SIDE_LEN)
@@ -95,6 +97,8 @@ void main()
 		normal = calc_normal(p, result.xyz);
 		vertex = result.xyz;
 		displacement = result.w;
+
+		outdir = vec3(normalize(dvec3(vertex) + pos));
 	}
 	else
 	{
@@ -126,15 +130,19 @@ void main()
 		vtx -= nrm * (planet_radius / 4) + pos;
 
 		vertex = vec3(vtx);
-		normal = normalize(vertex);//calc_normal(p, read(p + uvec2(1)).xyz);
+		normal = vec3(nrm);
+		outdir = normal;
 		displacement = float(-skirt_depth * scale);
 	}
 
-	values[index * STRIDE + 0] = vertex.x;
-	values[index * STRIDE + 1] = vertex.y;
-	values[index * STRIDE + 2] = vertex.z;
-	values[index * STRIDE + 3] = normal.x;
-	values[index * STRIDE + 4] = normal.y;
-	values[index * STRIDE + 5] = normal.z;
-	values[index * STRIDE + 6] = displacement;
+	values[offset + index * STRIDE + 0] = vertex.x;
+	values[offset + index * STRIDE + 1] = vertex.y;
+	values[offset + index * STRIDE + 2] = vertex.z;
+	values[offset + index * STRIDE + 3] = normal.x;
+	values[offset + index * STRIDE + 4] = normal.y;
+	values[offset + index * STRIDE + 5] = normal.z;
+	values[offset + index * STRIDE + 6] = displacement;
+	values[offset + index * STRIDE + 7] = outdir.x;
+	values[offset + index * STRIDE + 8] = outdir.y;
+	values[offset + index * STRIDE + 9] = outdir.z;
 }

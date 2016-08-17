@@ -1,5 +1,6 @@
 #pragma once
 
+#include "constants.h"
 #include "planet.h"
 #include "gl_core.h"
 #include "buffer_manager.h"
@@ -14,17 +15,26 @@ namespace planet_engine
 {
 	class renderer
 	{
-	private:
-		static constexpr size_t NUM_VERTICES = patch::NUM_VERTICES;
-		static constexpr size_t NUM_INDICES = patch::NUM_INDICES;
-		static constexpr size_t SIDE_LEN = patch::SIDE_LEN;
-		static constexpr size_t VERTEX_SIZE = sizeof(float) * 8;
-		static constexpr size_t MESH_SIZE = NUM_VERTICES * VERTEX_SIZE;
+	public:
+		static constexpr size_t NUM_VERTICES = constants::NUM_VERTICES;
+		static constexpr size_t NUM_INDICES =  constants::NUM_ELEMENTS;
+		static constexpr size_t SIDE_LEN = constants::SIDE_LEN;
+		static constexpr size_t VERTEX_SIZE = constants::VERTEX_SIZE;
+		static constexpr size_t MESH_SIZE = constants::MESH_SIZE;
+		static constexpr size_t COMPUTE_GROUP_SIZE = constants::COMPUTE_GROUP_SIZE;
 		// The maximum number of mesh blocks that can be allocated in GPU memory
 		static constexpr size_t NUM_BLOCKS = 1 << 16;
-		static constexpr size_t COMPUTE_GROUP_SIZE = 128;
 		static constexpr double SCALE = 100.0;
 		static constexpr size_t COMMANDS_PER_FRAME = 16;
+
+	private:
+		/*
+		Vertex Data Layout:
+			vertex - 3 floats
+			normal - 3 floats
+			displacement - 1 float
+			outdir - 3 floats
+		*/
 
 		typedef GLuint offset_type;
 		typedef std::priority_queue<offset_type,
@@ -53,13 +63,7 @@ namespace planet_engine
 		GLuint command_update;
 		// The shader that is used for actually rendering the planet
 		GLuint planet_shader;
-
-		/* OpenGL constants */
-		// Required offset alignment for uniform buffer objects
-		GLuint ubo_offset_alignment;
-		// Required offset alignment for shader storage buffers
-		GLuint ssbo_offset_alignment;
-		
+				
 		void update_meshes(size_t n);
 
 	public:

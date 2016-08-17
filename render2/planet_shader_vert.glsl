@@ -13,6 +13,7 @@ layout(binding = 0, std140) buffer Matrices
 layout(location = 0) in vec3 in_vertex;
 layout(location = 1) in vec3 in_normal;
 layout(location = 2) in float in_displacement;
+layout(location = 3) in vec3 in_outdir;
 
 //layout(location = 0) uniform uint DrawID;
 

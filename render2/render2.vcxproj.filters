@@ -41,6 +41,12 @@
     <ClInclude Include="patch_pipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stride.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="command_update.glsl">
@@ -64,12 +70,10 @@
     <CustomBuild Include="length.glsl">
       <Filter>Shaders\pipeline</Filter>
     </CustomBuild>
+    <CustomBuild Include="get_pos.glsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="noise.glsl">
-      <Filter>Shaders\pipeline</Filter>
-    </None>
-    <None Include="get_pos.glsl">
       <Filter>Shaders\pipeline</Filter>
     </None>
   </ItemGroup>

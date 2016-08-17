@@ -631,8 +631,11 @@ double _mul_10(dvec3 v){
 double _add_11(dvec3 v){
 	return (_mix_7(v))+(_mul_10(v));
 }
+double _sub_12(dvec3 v){
+	return (_add_11(v))-(20.0);
+}
 double noise(dvec3 v)
 {
-	return _add_11(v);
+	return _sub_12(v);
 }
 

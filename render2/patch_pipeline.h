@@ -1,6 +1,6 @@
 #pragma once
 
-#include "patch.h"
+#include "constants.h"
 #include "gl_core.h"
 #include "buffer_manager.h"
 #include "any_of.h"
@@ -52,13 +52,13 @@ namespace planet_engine
 	class patch_pipeline
 	{
 	private:
-		static constexpr size_t SIDE_LEN = patch::SIDE_LEN;
-		static constexpr size_t NUM_VERTICES = patch::NUM_VERTICES;
-		static constexpr size_t NUM_ELEMENTS = patch::NUM_INDICES;
-		static constexpr double SKIRT_DEPTH = patch::SKIRT_DEPTH;
-		static constexpr size_t SHADER_GROUP_SIZE = 128;
-		static constexpr size_t VERTEX_SIZE = sizeof(float) * 8;
-		static constexpr size_t MESH_SIZE = NUM_VERTICES * VERTEX_SIZE;
+		static constexpr size_t SIDE_LEN = constants::SIDE_LEN;
+		static constexpr size_t NUM_VERTICES = constants::NUM_VERTICES;
+		static constexpr size_t NUM_ELEMENTS = constants::NUM_ELEMENTS;
+		static constexpr double SKIRT_DEPTH = constants::SKIRT_DEPTH;
+		static constexpr size_t SHADER_GROUP_SIZE = constants::COMPUTE_GROUP_SIZE;
+		static constexpr size_t VERTEX_SIZE = constants::VERTEX_SIZE;
+		static constexpr size_t MESH_SIZE = constants::MESH_SIZE;
 		static constexpr size_t VERTEX_BUFFER_SIZE = (SIDE_LEN + 2) * (SIDE_LEN + 2) * sizeof(float) * 4;
 		static constexpr size_t NUM_INVOCATIONS = ((SIDE_LEN + 2) * (SIDE_LEN + 2) + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
 		static constexpr size_t GEN_VERTEX_INVOCATIONS = (SIDE_LEN + 2 + 7) / 8;
@@ -130,11 +130,15 @@ namespace planet_engine
 
 		std::map<std::shared_ptr<patch>, GLuint> _offsets;
 
+		/* Shaders */
 		GLuint _meshgen;
 		GLuint _vertex_gen;
 		GLuint _length_calc;
 		GLuint _max_calc;
 		GLuint _get_pos;
+
+		/* Implementation Defined Constants */
+		GLuint _ssbo_alignment;
 
 		// Cache for downloading all buffer lengths at once
 		GLuint _lengths;

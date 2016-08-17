@@ -158,10 +158,11 @@ namespace planet_engine
 
 	buffer_manager::buffer_manager(GLuint block_size, GLuint num_blocks)
 	{
-		GLint alignment;
-		glGetIntegerv(GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT, &alignment);
-
-		_block_size = ((block_size + alignment - 1) / alignment) * alignment;
+		//GLint alignment;
+		//glGetIntegerv(GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT, &alignment);
+		//
+		//_block_size = ((block_size + alignment - 1) / alignment) * alignment;
+		_block_size = block_size;
 
 		alloc_buffer(num_blocks);
 	}

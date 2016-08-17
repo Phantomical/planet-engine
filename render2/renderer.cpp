@@ -255,14 +255,7 @@ namespace planet_engine
 		data->scale = SCALE;
 
 		unsigned int* indices = gen_indices(SIDE_LEN);
-
-		GLint ubo_align;
-		glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &ubo_align);
-		ubo_offset_alignment = ubo_align;
-		GLint ssbo_align;
-		glGetIntegerv(GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT, &ssbo_align);
-		ssbo_offset_alignment = ssbo_align;
-
+		
 		glGenBuffers(1, &elements);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, num_indices(SIDE_LEN) * sizeof(unsigned int), indices, GL_STATIC_DRAW);
@@ -286,12 +279,14 @@ namespace planet_engine
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(3);
 
 		glBindBuffer(GL_ARRAY_BUFFER, pipeline.manager().buffer());
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTEX_SIZE, vOffset(0));
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, VERTEX_SIZE, vOffset(sizeof(float) * 3));
 		glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, VERTEX_SIZE, vOffset(sizeof(float) * 6));
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, VERTEX_SIZE, vOffset(sizeof(float) * 7));
 
 		glBindVertexArray(0);
 	}
