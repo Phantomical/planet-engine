@@ -126,6 +126,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="appbase.cpp" />
+    <ClCompile Include="buffer_manager.cpp" />
     <ClCompile Include="gl_core.c" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="load_file.cpp" />
@@ -134,6 +135,7 @@
   <ItemGroup>
     <ClInclude Include="any_of.h" />
     <ClInclude Include="appbase.h" />
+    <ClInclude Include="buffer_manager.h" />
     <ClInclude Include="findutils.h" />
     <ClInclude Include="gl_core.h" />
     <ClInclude Include="input.h" />

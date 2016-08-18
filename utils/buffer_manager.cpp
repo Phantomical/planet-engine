@@ -71,8 +71,6 @@ namespace planet_engine
 	}
 	void buffer_manager::dealloc_block(GLuint offset)
 	{
-		//OutputDebug("[BUFMGR][At ", this, "] Deallocated offset ", offset, ".\n");
-
 		assert(offset < _max_index);
 
 		_offsets.erase(offset);
@@ -119,8 +117,6 @@ namespace planet_engine
 			_free_list.push(open);
 		_num_pages = ((max * _block_size + _page_size - 1) / _page_size);
 		_max_index = max;
-
-		OutputDebug("[BUFMGR] Compacted buffer ", _buffer, ".\n");
 	}
 
 	GLuint buffer_manager::buffer() const

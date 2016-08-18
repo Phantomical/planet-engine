@@ -169,12 +169,10 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="buffer_manager.cpp" />
     <ClCompile Include="patch_pipeline.cpp" />
     <ClCompile Include="renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="buffer_manager.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="is_glsl.h" />
     <ClInclude Include="patch_data.h" />

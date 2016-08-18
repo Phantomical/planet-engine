@@ -304,7 +304,7 @@ namespace planet_engine
 		if (_manager.current_max() * 2 < _manager.max_index())
 			_manager.uncommit_unused();
 
-		if (_exec_queue.size() > n * 64 && cull_counter > 30)
+		if (_exec_queue.size() > n * 64 && cull_counter > 500)
 			// If the queue is too big perform a lookahead and
 			// try to remove unnecessary work
 			mesh_lookahead(n);
@@ -344,9 +344,7 @@ namespace planet_engine
 					continue;
 				break;
 			case 2:
-				if (exec.get<exec_type::type_at<2>>()->counter == CANCELLED_COUNTER_VALUE)
-					continue;
-				break;
+				continue;
 			}
 
 			for (size_t j = i - n; j != 0; --j)

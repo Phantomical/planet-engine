@@ -1,7 +1,6 @@
 #pragma once
 
 #include "gl_core.h"
-#include "defs.h"
 
 #include <set>
 #include <queue>
