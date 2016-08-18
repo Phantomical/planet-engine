@@ -8,9 +8,11 @@
 
 namespace planet_engine
 {
-	struct buffer_manager
+	struct sparse_managed_buffer
 	{
 	private:
+		typedef sparse_managed_buffer buffer_manager;
+
 		typedef std::priority_queue<GLuint, std::vector<GLuint>,
 			std::greater<GLuint>> pqueue_type;
 
@@ -55,9 +57,9 @@ namespace planet_engine
 		// allocated range in the buffer
 		void uncommit_unused();
 
-		buffer_manager(GLuint block_size, GLuint num_blocks);
-		buffer_manager(const buffer_manager&) = delete;
+		sparse_managed_buffer(GLuint block_size, GLuint num_blocks);
+		sparse_managed_buffer(const buffer_manager&) = delete;
 
-		~buffer_manager();
+		~sparse_managed_buffer();
 	};
 }

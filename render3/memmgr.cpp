@@ -45,7 +45,7 @@ namespace planet_engine
 
 		size_t bufmgr::alloc(size_t size, size_t alignment)
 		{
-			AllocInfo result;
+			AllocInfo result = { ~0, ~0 };
 
 			auto it = _free_list.begin();
 			for (; it != _free_list.end(); ++it)
@@ -67,7 +67,8 @@ namespace planet_engine
 				}
 			}
 
-			_allocations.insert(result);
+			if (result.offset != ~0)
+				_allocations.insert(result);
 
 			return result.offset;
 		}

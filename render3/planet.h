@@ -1,6 +1,7 @@
 #pragma once
 
 #include "buffer_manager.h"
+#include "managed_buffer.h"
 #include "memmgr.h"
 
 #include "indexgen.h"
@@ -20,10 +21,9 @@ namespace planet_engine
 		static constexpr size_t MESH_SIZE = NUM_VERTICES * VERTEX_SIZE;
 
 	private:
-		buffer_manager _patch_buffer;
+		sparse_managed_buffer _patch_buffer;
 
-		GLuint _download_buffer;
-		mem::bufmgr _download_heap;
+		managed_buffer _download_buf;
 		void* _download_ptr;
 
 		GLuint _draw_command_buffer;
@@ -31,8 +31,8 @@ namespace planet_engine
 
 		GLuint _element_buffer;
 
-		double planet_radius;
-		double scale;
-		double skirt_depth;
+		double _planet_radius;
+		double _scale;
+		double _skirt_depth;
 	};
 }

@@ -40,6 +40,7 @@ namespace planet_engine
 		typedef std::priority_queue<offset_type,
 			std::vector<offset_type>,
 			std::greater<offset_type>> pqueue_type;
+		typedef sparse_managed_buffer buffer_manager;
 		
 		patch_pipeline pipeline;
 

@@ -14,7 +14,7 @@ namespace planet_engine
 		return std::find(std::begin(c), std::end(c), val);
 	}
 
-	void buffer_manager::alloc_buffer(GLuint num_blocks)
+	void sparse_managed_buffer::alloc_buffer(GLuint num_blocks)
 	{
 		GLint64 val;
 		glGetInteger64v(GL_SPARSE_BUFFER_PAGE_SIZE_ARB, &val);
@@ -36,12 +36,12 @@ namespace planet_engine
 		_max_index = 0;
 		_num_pages = 0;
 	}
-	void buffer_manager::return_index(GLuint block)
+	void sparse_managed_buffer::return_index(GLuint block)
 	{
 		_free_list.push(block);
 	}
 
-	GLuint buffer_manager::alloc_block()
+	GLuint sparse_managed_buffer::alloc_block()
 	{
 		if (!_free_list.empty())
 		{
@@ -69,7 +69,7 @@ namespace planet_engine
 		
 		return index;
 	}
-	void buffer_manager::dealloc_block(GLuint offset)
+	void sparse_managed_buffer::dealloc_block(GLuint offset)
 	{
 		assert(offset < _max_index);
 
@@ -81,11 +81,11 @@ namespace planet_engine
 		}
 	}
 
-	void buffer_manager::lock(GLuint offset)
+	void sparse_managed_buffer::lock(GLuint offset)
 	{
 		_locked.insert(offset);
 	}
-	void buffer_manager::unlock(GLuint offset)
+	void sparse_managed_buffer::unlock(GLuint offset)
 	{
 		_locked.erase(offset);
 
@@ -93,7 +93,7 @@ namespace planet_engine
 			return_index(offset);
 	}
 
-	void buffer_manager::uncommit_unused()
+	void sparse_managed_buffer::uncommit_unused()
 	{
 		GLuint max = current_max();
 
@@ -119,23 +119,23 @@ namespace planet_engine
 		_max_index = max;
 	}
 
-	GLuint buffer_manager::buffer() const
+	GLuint sparse_managed_buffer::buffer() const
 	{
 		return _buffer;
 	}
-	GLuint buffer_manager::max_size() const
+	GLuint sparse_managed_buffer::max_size() const
 	{
 		return _max_pages * _page_size;
 	}
-	GLuint buffer_manager::block_size() const
+	GLuint sparse_managed_buffer::block_size() const
 	{
 		return _block_size;
 	}
-	GLuint buffer_manager::size() const
+	GLuint sparse_managed_buffer::size() const
 	{
 		return _max_index;
 	}
-	GLuint buffer_manager::max_index() const
+	GLuint sparse_managed_buffer::max_index() const
 	{
 		if (_offsets.size() != 0)
 		{
@@ -145,14 +145,14 @@ namespace planet_engine
 		}
 		return _max_index;
 	}
-	GLuint buffer_manager::current_max() const
+	GLuint sparse_managed_buffer::current_max() const
 	{
 		if (_offsets.empty())
 			return 0;
 		return *std::max_element(_offsets.begin(), _offsets.end()) + 1;
 	}
 
-	buffer_manager::buffer_manager(GLuint block_size, GLuint num_blocks)
+	sparse_managed_buffer::sparse_managed_buffer(GLuint block_size, GLuint num_blocks)
 	{
 		//GLint alignment;
 		//glGetIntegerv(GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT, &alignment);
@@ -162,7 +162,7 @@ namespace planet_engine
 
 		alloc_buffer(num_blocks);
 	}
-	buffer_manager::~buffer_manager()
+	sparse_managed_buffer::~sparse_managed_buffer()
 	{
 		GLsync sync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 

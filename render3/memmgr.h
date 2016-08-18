@@ -72,10 +72,10 @@ namespace planet_engine
 			bufmgr(size_t size);
 
 			// Allocates an offset into a buffer
-			size_t alloc(size_t size, size_t alignment);
-			void dealloc(size_t offset);
+			size_t alloc(size_t size, size_t alignment) noexcept;
+			void dealloc(size_t offset) noexcept;
 
-			void defrag();
+			void defrag() noexcept;
 		};
 	}
 }
