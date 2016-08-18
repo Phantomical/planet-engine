@@ -1,5 +1,6 @@
 #include "patch_pipeline.h"
 
+#include "defs.h"
 #include "shader.h"
 #include "load_file.h"
 #include "findutils.h"
@@ -329,7 +330,7 @@ namespace planet_engine
 	}
 	void patch_pipeline::mesh_lookahead(size_t n)
 	{
-		for (size_t i = _exec_queue.size() - 1; i > n; --i)
+		for (size_t i = _exec_queue.size() - 1; i > 0; --i)
 		{
 			auto& exec = _exec_queue[i];
 
@@ -347,7 +348,7 @@ namespace planet_engine
 				continue;
 			}
 
-			for (size_t j = i - n; j != 0; --j)
+			for (size_t j = i - 1; j != 0; --j)
 			{
 				auto& exec2 = _exec_queue[i];
 

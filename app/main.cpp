@@ -1,3 +1,4 @@
+#include "defs.h"
 #include "renderer.h"
 #include "shader.h"
 #include "input.h"
