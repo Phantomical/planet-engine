@@ -87,6 +87,12 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)surface;D:\projects\src;$(SolutionDir)utils</AdditionalIncludeDirectories>
     </ClCompile>
+    <CustomBuild>
+      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)$(ProjectName)%(Identity)" -I$(ProjectDir)</Command>
+    </CustomBuild>
+    <CustomBuild>
+      <Outputs>null</Outputs>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -95,6 +101,12 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)surface;D:\projects\src;$(SolutionDir)utils</AdditionalIncludeDirectories>
     </ClCompile>
+    <CustomBuild>
+      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)$(ProjectName)%(Identity)" -I$(ProjectDir)</Command>
+    </CustomBuild>
+    <CustomBuild>
+      <Outputs>null</Outputs>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -109,6 +121,12 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <CustomBuild>
+      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)$(ProjectName)%(Identity)" -I$(ProjectDir)</Command>
+    </CustomBuild>
+    <CustomBuild>
+      <Outputs>null</Outputs>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -123,6 +141,12 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <CustomBuild>
+      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)$(ProjectName)%(Identity)" -I$(ProjectDir)</Command>
+    </CustomBuild>
+    <CustomBuild>
+      <Outputs>null</Outputs>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="managed_buffer.cpp" />
@@ -132,10 +156,31 @@
   <ItemGroup>
     <ClInclude Include="managed_buffer.h" />
     <ClInclude Include="memmgr.h" />
+    <ClInclude Include="patch_data.h" />
     <ClInclude Include="planet.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="get_pos.glsl" />
+    <CustomBuild Include="calc_pos.glsl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="merge_update.glsl">
+      <SubType>
+      </SubType>
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="patch_data.glsl">
+      <SubType>
+      </SubType>
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="subdivide_update.glsl">
+      <SubType>
+      </SubType>
+      <FileType>Document</FileType>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="noise.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

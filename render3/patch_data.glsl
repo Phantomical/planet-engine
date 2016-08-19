@@ -20,7 +20,7 @@ struct patch_data
 	uint parent; // Index of the parent of this patch
 	float farthest_vertex;
 
-	uint _vpad;
+	uint index;
 };
 
 #define INVALID_LEVEL (~0u)

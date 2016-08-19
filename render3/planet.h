@@ -21,6 +21,9 @@ namespace planet_engine
 
 	private:
 		static constexpr size_t COMPUTE_GROUP_SIZE = 128;
+		// per-patch shaders use a smaller group size since they
+		// have fewer operands
+		static constexpr size_t PER_PATCH_GROUP_SIZE = 4;
 
 	private:
 		/* Buffers */

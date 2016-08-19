@@ -53,7 +53,7 @@ namespace planet_engine
 			_allocator.defrag();
 			offset = _allocator.alloc(size, alignment);
 		}
-		return offset;
+		return (GLuint)offset;
 	}
 	void managed_buffer::dealloc(GLuint offset) noexcept
 	{

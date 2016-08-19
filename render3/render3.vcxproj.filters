@@ -16,6 +16,12 @@
     <Filter Include="Shader Files">
       <UniqueIdentifier>{627207f1-6d1a-425f-b3e7-c3e21aec1de3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Shared">
+      <UniqueIdentifier>{c75dc93e-5116-4161-b81e-5895b4bde78b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader Files\include">
+      <UniqueIdentifier>{180df57b-528e-4de0-bc0a-1d3bc924192e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="planet.h">
@@ -26,6 +32,9 @@
     </ClInclude>
     <ClInclude Include="managed_buffer.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="patch_data.h">
+      <Filter>Header Files\Shared</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -40,6 +49,20 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="get_pos.glsl" />
+    <None Include="calc_pos.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="subdivide_update.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="patch_data.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="merge_update.glsl">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="noise.glsl">
+      <Filter>Shader Files\include</Filter>
+    </None>
   </ItemGroup>
 </Project>

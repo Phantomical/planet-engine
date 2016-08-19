@@ -36,6 +36,6 @@ namespace planet_engine
 		unsigned int parent; // Index of the parent of this patch
 		float farthest_vertex;
 
-		unsigned int _vpad6;
+		unsigned int index;
 	};
 }

@@ -5,7 +5,7 @@ layout(local_size_x = 4) in;
 #include "patch_data.glsl"
 
 layout(location = 0) uniform dvec3 cam_pos;
-layout(location = 1) uniform uint num_leaves;
+layout(location = 1) uniform uint num_parents;
 
 /*
 	2 to_generate - generates a new patch and adds it to LeafPatches
@@ -29,9 +29,9 @@ layout(binding = 0) uniform atomic_uint leaf_remove_size;
 layout(binding = 0) uniform atomic_uint parent_add_size;
 layout(binding = 0) uniform atomic_uint parent_remove_size;
 
-layout(binding = 0, std430) readonly restrict buffer Leaves
+layout(binding = 0, std430) readonly restrict buffer Parents
 {
-	uint leaves[];
+	uint parents[];
 };
 layout(binding = 1, std430) readonly restrict buffer Patches
 {
@@ -94,74 +94,35 @@ bool should_merge(uint idx)
 
 void main()
 {
-	if (gl_GlobalInvocationID.x >= num_leaves)
+	if (gl_GlobalInvocationID.x >= num_parents)
 		return;
 
-	uint index = leaves[gl_GlobalInvocationID.x];
-	if (should_subdivide(index))
+	uint index = parents[gl_GlobalInvocationID.x];
+
+	if (should_merge(index)
 	{
-		uint nidx = atomicCounterIncrement(to_remove_size);
-		uint pidx = atomicCounterIncrement(parent_add_size);
-		uint ridx = atomicCounterIncrement(parent_remove_size);
+		uint nwidx = atomicCounterIncrement(to_delete_size);
+		uint neidx = atomicCounterIncrement(to_delete_size);
+		uint swidx = atomicCounterIncrement(to_delete_size);
+		uint seidx = atomicCounterIncrement(to_delete_size);
 
-		uint nwidx = atomicCounterIncrement(to_generate_size);
-		uint neidx = atomicCounterIncrement(to_generate_size);
-		uint swidx = atomicCounterIncrement(to_generate_size);
-		uint seidx = atomicCounterIncrement(to_generate_size);
+		uint idx5 = atomicCounterIncrement(leaf_add_size);
+		uint idx6 = atomicCounterIncrement(parent_remove_size);
+		uint idx7 = atomicCounterIncrement(parent_add_size)
 
-		if (nidx >= to_generate.length()
-			|| seidx >= to_generate.length()
-			|| pidx >= parent_add.length()
-			|| )
+		if (seidx >= to_delete.length()
+			|| idx5 >= leaf_add.length()
+			|| idx6 >= parent_remove.length()
+			|| idx7 >= parent_add.length())
 			return;
 
-		leaf_remove[nidx] = gl_GlobalInvocationID.x;
-		parent_add[pidx] = index;
-		parent_remove[ridx] = patches[patches[index].parent].index;
+		to_delete[nwidx] = patches[index].nw;
+		to_delete[neidx] = patches[index].ne;
+		to_delete[swidx] = patches[index].sw;
+		to_delete[seidx] = patches[index].se;
 
-		patch_data newdat = {
-			dvec3(),
-			dvec3(),
-			dvec3(),
-			dvec3(),
-			INVALID_INDEX,
-			INVALID_INDEX,
-			INVALID_INDEX,
-			INVALID_INDEX,
-			patches[index].level + 1,
-			index,
-			FLT_MAX,
-			INVALID_INDEX
-		};
-
-		dvec3 centre = (nwc + nec + swc + sec) * 0.25;
-		dvec3 nwc = patches[index].nwc;
-		dvec3 nec = patches[index].nec;
-		dvec3 swc = patches[index].swc;
-		dvec3 sec = patches[index].sec;
-
-		newdat.nwc = nec;
-		newdat.nec = (nec + nec) * 0.5;
-		newdat.swc = (nwc + swc) * 0.5;
-		newdat.sec = centre;
-		to_generate[nwidx] = newdat;
-
-		newdat.nwc = (nwc + nec) * 0.5;
-		newdat.nec = nec;
-		newdat.swc = (nwc + swc) * 0.5;
-		newdat.sec = centre;
-		to_generate[neidx] = newdat;
-
-		newdat.nwc = (nwc + swc) * 0.5;
-		newdat.nec = centre;
-		newdat.swc = swc;
-		newdat.sec = (swc + sec) * 0.5;
-		to_generate[swidx] = newdat;
-
-		newdat.nwc = centre;
-		newdat.nec = (nec + sec) * 0.5;
-		newdat.swc = (swc + sec) * 0.5;
-		newdat.sec = sec;
-		to_generate[seidx] = newdat;
+		leaf_add[idx5] = index;
+		parent_remove[idx6] = gl_GlobalInvocationID.x;
+		parent_add[idx7] = patches[index].parent;
 	}
 }

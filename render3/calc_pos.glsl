@@ -1,8 +1,8 @@
 #version 430
 
-layout(local_size_x = 1) in;
+layout(local_size_x = 4) in;
 
-#include "patch_data.h"
+#include "patch_data.glsl"
 #include "noise.glsl"
 
 layout(binding = 0, std430) buffer Patches
@@ -16,20 +16,13 @@ layout(binding = 1, std430) buffer Inputs
 
 layout(location = 0) uint size;
 
-const dvec3 pos = _pos.xyz;
-const dvec3 nwc = _nwc.xyz;
-const dvec3 nec = _nec.xyz;
-const dvec3 swc = _swc.xyz;
-const dvec3 sec = _sec.xyz;
-const double planet_radius = _pos.w;
-const double skirt_depth = _nwc.w;
-const double scale = _nec.w;
+#define index gl_GlobalInvocationID.x
 
 void main()
 {
 	if (gl_GlobalInvocationID.x >= size)
 		return;
 
-	dvec3 nrm = normalize(patches[gl_GlobalInvocationID.x].pos);
-	actual_pos = nrm * (noise(nrm) + planet_radius);
+	dvec3 nrm = normalize(patches[index].pos);
+	patches[index].pos = nrm * (noise(nrm) + patches[index].planet_radius);
 }
