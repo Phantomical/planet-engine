@@ -21,9 +21,18 @@
     <ClInclude Include="memmgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="managed_buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="memmgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="planet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="managed_buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -125,9 +125,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="managed_buffer.cpp" />
     <ClCompile Include="memmgr.cpp" />
+    <ClCompile Include="planet.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="managed_buffer.h" />
     <ClInclude Include="memmgr.h" />
     <ClInclude Include="planet.h" />
   </ItemGroup>

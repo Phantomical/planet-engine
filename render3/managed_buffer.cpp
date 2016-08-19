@@ -28,7 +28,7 @@ namespace planet_engine
 		buf._buffer = 0;
 		buf._size = 0;
 	}
-	managed_buffer::~managed_buffer()
+	managed_buffer::~managed_buffer() noexcept
 	{
 		teardown();
 	}
@@ -45,20 +45,26 @@ namespace planet_engine
 		buf._size = 0;
 	}
 
-	GLuint managed_buffer::alloc(GLuint size, GLuint alignment)
+	GLuint managed_buffer::alloc(GLuint size, GLuint alignment) noexcept
 	{
-		return _allocator.alloc(size, alignment);
+		auto offset = _allocator.alloc(size, alignment);
+		if (offset == std::numeric_limits<size_t>::max())
+		{
+			_allocator.defrag();
+			offset = _allocator.alloc(size, alignment);
+		}
+		return offset;
 	}
-	void managed_buffer::dealloc(GLuint offset)
+	void managed_buffer::dealloc(GLuint offset) noexcept
 	{
 		_allocator.dealloc(offset);
 	}
 
-	GLuint managed_buffer::buffer() const
+	GLuint managed_buffer::buffer() const noexcept
 	{
 		return _buffer;
 	}
-	GLuint managed_buffer::size() const
+	GLuint managed_buffer::size() const noexcept
 	{
 		return _size;
 	}

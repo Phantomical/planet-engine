@@ -43,9 +43,9 @@ namespace planet_engine
 			return info1.offset + info1.size == info2.offset;
 		}
 
-		size_t bufmgr::alloc(size_t size, size_t alignment)
+		size_t bufmgr::alloc(size_t size, size_t alignment) noexcept
 		{
-			AllocInfo result = { ~0, ~0 };
+			AllocInfo result = { ~0u, ~0u };
 
 			auto it = _free_list.begin();
 			for (; it != _free_list.end(); ++it)
@@ -72,7 +72,7 @@ namespace planet_engine
 
 			return result.offset;
 		}
-		void bufmgr::dealloc(size_t mem)
+		void bufmgr::dealloc(size_t mem) noexcept
 		{
 			AllocInfo info = { 0, mem };
 			auto it = _allocations.find(info);
@@ -87,7 +87,7 @@ namespace planet_engine
 			isort(_free_list.begin(), _free_list.end());
 		}
 
-		void bufmgr::defrag()
+		void bufmgr::defrag() noexcept
 		{
 			auto prev = _free_list.rbegin();
 			for (auto it = prev; it != _free_list.rend(); ++it)

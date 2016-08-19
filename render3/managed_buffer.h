@@ -23,7 +23,7 @@ namespace planet_engine
 		static constexpr GLuint INVALID_ALLOCATION = ~0;
 
 		managed_buffer(GLuint size, GLbitfield storage_flags);
-		managed_buffer(managed_buffer&& buf) noexcept(std::is_nothrow_move_constructible<mem::bufmgr>::value);
+		managed_buffer(managed_buffer&& buf);
 		~managed_buffer() noexcept;
 
 		managed_buffer& operator=(managed_buffer&& buf);
