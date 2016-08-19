@@ -20,6 +20,8 @@ struct patch_data
 	uint parent; // Index of the parent of this patch
 	float farthest_vertex;
 
+	// Patch index within the buffer that it is currently
+	// in. (i.e. leaves or parents, not patches)
 	uint index;
 };
 

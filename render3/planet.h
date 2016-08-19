@@ -3,6 +3,7 @@
 #include "buffer_manager.h"
 #include "managed_buffer.h"
 #include "memmgr.h"
+#include "stride.h"
 
 #include <glm\glm.hpp>
 
@@ -16,7 +17,7 @@ namespace planet_engine
 		static constexpr size_t SIDE_LEN = 33;
 		static constexpr size_t NUM_VERTICES = num_vertices(SIDE_LEN);
 		static constexpr size_t NUM_ELEMENTS = num_indices(SIDE_LEN);
-		static constexpr size_t VERTEX_SIZE = sizeof(float) * 10;
+		static constexpr size_t VERTEX_SIZE = sizeof(float) * STRIDE;
 		static constexpr size_t MESH_SIZE = NUM_VERTICES * VERTEX_SIZE;
 
 	private:
