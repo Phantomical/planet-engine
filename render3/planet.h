@@ -47,6 +47,7 @@ namespace planet_engine
 		
 		GLuint _length_calc;
 		GLuint _reduce_max;
+		GLuint _copy_max;
 
 		/* Parameters */
 		double _planet_radius;

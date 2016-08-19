@@ -3,7 +3,7 @@
 #if !IS_GLSL
 // The GLSL include preprocessing step doesn't allow nested includes
 // so include guards aren't needed for glsl (also #pragma once wouldn't
-// be a valid preprocessor instruction
+// be a valid preprocessor instruction)
 #pragma once
 
 #include <glm\glm.hpp>

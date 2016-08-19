@@ -134,6 +134,9 @@
     <ClInclude Include="memmgr.h" />
     <ClInclude Include="planet.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="get_pos.glsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
