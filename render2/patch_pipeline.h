@@ -12,6 +12,7 @@
 
 namespace planet_engine
 {
+	typedef sparse_managed_buffer buffer_manager;
 
 	struct DrawElementsIndirectCommand
 	{

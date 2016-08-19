@@ -12,12 +12,13 @@
 #include <map>
 
 namespace planet_engine
-{
+{	typedef sparse_managed_buffer buffer_manager;
+
 	class renderer
 	{
 	public:
 		static constexpr size_t NUM_VERTICES = constants::NUM_VERTICES;
-		static constexpr size_t NUM_INDICES =  constants::NUM_ELEMENTS;
+		static constexpr size_t NUM_INDICES = constants::NUM_ELEMENTS;
 		static constexpr size_t SIDE_LEN = constants::SIDE_LEN;
 		static constexpr size_t VERTEX_SIZE = constants::VERTEX_SIZE;
 		static constexpr size_t MESH_SIZE = constants::MESH_SIZE;
@@ -40,8 +41,7 @@ namespace planet_engine
 		typedef std::priority_queue<offset_type,
 			std::vector<offset_type>,
 			std::greater<offset_type>> pqueue_type;
-		typedef sparse_managed_buffer buffer_manager;
-		
+
 		patch_pipeline pipeline;
 
 		// The buffer for the draw commands
@@ -58,7 +58,7 @@ namespace planet_engine
 		GLuint command_update;
 		// The shader that is used for actually rendering the planet
 		GLuint planet_shader;
-				
+
 		void update_meshes(size_t n);
 
 	public:
