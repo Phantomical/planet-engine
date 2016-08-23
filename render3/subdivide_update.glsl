@@ -98,6 +98,10 @@ void main()
 		return;
 
 	uint index = leaves[gl_GlobalInvocationID.x];
+
+	if (index == INVALID_INDEX)
+		return;
+
 	if (should_subdivide(index))
 	{
 		uint nidx = atomicCounterIncrement(to_remove_size);
@@ -112,7 +116,7 @@ void main()
 		if (nidx >= to_generate.length()
 			|| seidx >= to_generate.length()
 			|| pidx >= parent_add.length()
-			|| )
+			|| ridx >= parent_remove.length())
 			return;
 
 		leaf_remove[nidx] = gl_GlobalInvocationID.x;

@@ -4,6 +4,7 @@
 #include "managed_buffer.h"
 #include "memmgr.h"
 #include "stride.h"
+#include "free_list.h"
 
 #include <glm\glm.hpp>
 
@@ -38,8 +39,15 @@ namespace planet_engine
 
 		GLuint _element_buffer;
 
-		GLuint _leaf_parents;
-		GLuint _leaf_patches;
+		free_list _patch_list;
+		free_list _leaves_list;
+		free_list _parent_list;
+
+		GLuint _patch_buffer;
+		GLuint _patch_leaves;
+		GLuint _patch_parents;
+		GLuint _ctr_buffer;
+		GLuint _mod_queues[6];
 
 		/* Shaders */
 		GLuint _check_subdivide;

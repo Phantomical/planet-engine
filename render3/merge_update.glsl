@@ -99,6 +99,9 @@ void main()
 
 	uint index = parents[gl_GlobalInvocationID.x];
 
+	if (index == INVALID_INDEX)
+		return;
+
 	if (should_merge(index)
 	{
 		uint nwidx = atomicCounterIncrement(to_delete_size);
