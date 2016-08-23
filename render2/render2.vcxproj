@@ -89,7 +89,7 @@
       <PreprocessorDefinitions>LOG_TO_FILE</PreprocessorDefinitions>
     </ClCompile>
     <CustomBuild>
-      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)%(Identity)" -I$(ProjectDir)</Command>
+      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)$(ProjectName)%(Identity)" -I$(ProjectDir)</Command>
     </CustomBuild>
     <CustomBuild>
       <Outputs>null</Outputs>
@@ -133,7 +133,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <CustomBuild>
-      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)%(Identity)" -I$(ProjectDir)</Command>
+      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)$(ProjectName)%(Identity)" -I$(ProjectDir)</Command>
     </CustomBuild>
     <CustomBuild>
       <Outputs>null</Outputs>
@@ -169,13 +169,13 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="buffer_manager.cpp" />
     <ClCompile Include="patch_pipeline.cpp" />
     <ClCompile Include="renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="buffer_manager.h" />
     <ClInclude Include="constants.h" />
+    <ClInclude Include="is_glsl.h" />
+    <ClInclude Include="patch_data.h" />
     <ClInclude Include="patch_pipeline.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="stride.h" />
@@ -210,6 +210,8 @@
       <FileType>Document</FileType>
     </CustomBuild>
     <None Include="noise.glsl" />
+    <None Include="occlusion-culling-frag.glsl" />
+    <None Include="patch_subdivide.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

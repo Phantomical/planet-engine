@@ -1,3 +1,4 @@
+#include "defs.h"
 #include "renderer.h"
 #include "shader.h"
 #include "input.h"
@@ -75,9 +76,9 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 		break;
 	case GL_DEBUG_TYPE_PERFORMANCE:
 		typestr = "[PERFORMANCE]";
-		break;
+		return;break;
 	case GL_DEBUG_TYPE_PORTABILITY:
-		typestr = "[PERFORMANCE]";
+		typestr = "[PORTABILITY]";
 		break;
 	case GL_DEBUG_TYPE_OTHER:
 		typestr = "[OTHER]";
@@ -99,7 +100,7 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 		break;
 	case GL_DEBUG_SEVERITY_NOTIFICATION:
 		severitystr = "[NOTIFICATION]";
-		break;
+		return;break;
 	default:
 		severitystr = "[UNKNOWN]";
 		break;
@@ -138,7 +139,7 @@ int main()
 
 	//launch_watchdog();
 
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(DebugProc, nullptr);
 
 	glClearColor(0.0, 1.0, 1.0, 1.0);
@@ -161,6 +162,7 @@ int main()
 
 			glProgramUniform3f(program, 1, 0.0, 0.0, 1.0);
 		}
+
 
 		renderer ren{ program, 6700000.0 };
 		renderer ren2{ program, 500000.0, 5.0 };

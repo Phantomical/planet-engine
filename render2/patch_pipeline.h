@@ -12,6 +12,7 @@
 
 namespace planet_engine
 {
+	typedef sparse_managed_buffer buffer_manager;
 
 	struct DrawElementsIndirectCommand
 	{
@@ -130,6 +131,8 @@ namespace planet_engine
 
 		std::map<std::shared_ptr<patch>, GLuint> _offsets;
 
+		size_t cull_counter;
+
 		/* Shaders */
 		GLuint _meshgen;
 		GLuint _vertex_gen;
@@ -146,6 +149,8 @@ namespace planet_engine
 
 		void gen_vertices(GLuint buffers[3], std::shared_ptr<patch> patch, GLuint* offset);
 		void gen_mesh(GLuint buffers[3], std::shared_ptr<patch> patch, const GLuint* offset);
+
+		void mesh_lookahead(size_t n);
 
 	public:
 		patch_pipeline(size_t num_blocks);

@@ -39,6 +39,8 @@ namespace planet_engine
 
 			void vertex(const char* source);
 			void vertex(const std::string& source);
+			void geometry(const char* source);
+			void geometry(const std::string& source);
 			void fragment(const char* source);
 			void fragment(const std::string& source);
 			void tess_control(const char* source);
@@ -55,6 +57,7 @@ namespace planet_engine
 			void link();
 
 			bool has_vertex() const;
+			bool has_geometry() const;
 			bool has_fragment() const;
 			bool has_tess_control() const;
 			bool has_tess_evaluation() const;

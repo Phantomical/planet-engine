@@ -1,5 +1,6 @@
 #include "patch_pipeline.h"
 
+#include "defs.h"
 #include "shader.h"
 #include "load_file.h"
 #include "findutils.h"
@@ -235,8 +236,13 @@ namespace planet_engine
 		_exec_queue.push_back(exec_type(ptr));
 	}
 
-	update_state patch_pipeline::process(size_t n)
+	update_state patch_pipeline::process(size_t _n)
 	{
+		size_t n = std::max(_job_queue.size() / 16, _n);
+
+		if (n != _n)
+			OutputDebug("[PIPELINE] Executed ", n, " jobs.\n");
+
 		for (size_t i = 0; i < n && !_job_queue.empty();)
 		{
 			if (_job_queue.front()())
@@ -304,6 +310,13 @@ namespace planet_engine
 		if (_manager.current_max() * 2 < _manager.max_index())
 			_manager.uncommit_unused();
 
+		if (_exec_queue.size() > n * 64 && cull_counter > 500)
+			// If the queue is too big perform a lookahead and
+			// try to remove unnecessary work
+			mesh_lookahead(n);
+
+		cull_counter++;
+
 		return ustate;
 	}
 
@@ -319,6 +332,81 @@ namespace planet_engine
 
 		for (auto& p : to_cull)
 			remove(p);
+	}
+	void patch_pipeline::mesh_lookahead(size_t n)
+	{
+		for (size_t i = _exec_queue.size() - 1; i > 0; --i)
+		{
+			auto& exec = _exec_queue[i];
+
+			switch (exec.active_index())
+			{
+			case 0:
+				if (exec.get<exec_type::type_at<0>>()->counter == CANCELLED_COUNTER_VALUE)
+					continue;
+				break;
+			case 1:
+				if (exec.get<exec_type::type_at<1>>()->counter == CANCELLED_COUNTER_VALUE)
+					continue;
+				break;
+			case 2:
+				continue;
+			}
+
+			for (size_t j = i - 1; j != 0; --j)
+			{
+				auto& exec2 = _exec_queue[i];
+
+				switch (exec.active_index())
+				{
+				case 0:
+					if (exec2.get<exec_type::type_at<0>>()->counter == CANCELLED_COUNTER_VALUE)
+						continue;
+					break;
+				case 1:
+					if (exec2.get<exec_type::type_at<1>>()->counter == CANCELLED_COUNTER_VALUE)
+						continue;
+					break;
+				case 2:
+					if (exec2.get<exec_type::type_at<2>>()->counter == CANCELLED_COUNTER_VALUE)
+						continue;
+					break;
+				}
+
+				size_t st = exec.active_index() * 16 + exec2.active_index();
+
+				switch (st)
+				{
+				case 0x01:
+					if (exec.get<std::shared_ptr<remove_state>>()->target ==
+						exec2.get<std::shared_ptr<generate_state>>()->target)
+					{
+						exec.get<exec_type::type_at<0>>()->cancel();
+						exec.get<exec_type::type_at<1>>()->cancel();
+					}
+					break;
+				case 0x02:
+					if (exec.get<std::shared_ptr<remove_state>>()->target ==
+						exec2.get<std::shared_ptr<discalc_state>>()->target)
+					{
+						exec.get<exec_type::type_at<0>>()->cancel();
+						exec.get<exec_type::type_at<2>>()->cancel();
+					}
+					break;
+				case 0x10:
+					if (exec.get<std::shared_ptr<generate_state>>()->target ==
+						exec2.get<std::shared_ptr<remove_state>>()->target)
+					{
+						exec.get<exec_type::type_at<1>>()->cancel();
+						exec.get<exec_type::type_at<0>>()->cancel();
+					}
+					break;
+				}
+			}
+		}
+
+		cull_counter = 0;
+		OutputDebug("[PIPELINE] Performed a full-pipe lookahead.\n");
 	}
 
 	buffer_manager& patch_pipeline::manager()

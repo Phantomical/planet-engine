@@ -19,12 +19,21 @@
     <Filter Include="Shaders\pipeline">
       <UniqueIdentifier>{2fac8d3f-0ef0-44eb-aaba-6bb3437a7794}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Shared">
+      <UniqueIdentifier>{6db8cfc7-3e71-4e52-a7da-577ba3478c22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\renderer">
+      <UniqueIdentifier>{c6bddc9b-83c0-4ae8-9a30-39c7b30fad89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\surface">
+      <UniqueIdentifier>{60872dcc-05c3-485f-a5d4-2c3a880dbced}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\occlusion-culling">
+      <UniqueIdentifier>{e6f9f44b-b14b-4304-8b6a-b2a30446541c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="buffer_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="patch_pipeline.cpp">
@@ -35,9 +44,6 @@
     <ClInclude Include="renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="buffer_manager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="patch_pipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -45,13 +51,16 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stride.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="patch_data.h">
+      <Filter>Header Files\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="is_glsl.h">
+      <Filter>Header Files\Shared</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="command_update.glsl">
-      <Filter>Shaders</Filter>
-    </CustomBuild>
     <CustomBuild Include="planet_shader_frag.glsl">
       <Filter>Shaders</Filter>
     </CustomBuild>
@@ -71,10 +80,19 @@
       <Filter>Shaders\pipeline</Filter>
     </CustomBuild>
     <CustomBuild Include="get_pos.glsl" />
+    <CustomBuild Include="command_update.glsl">
+      <Filter>Shaders\renderer</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="noise.glsl">
       <Filter>Shaders\pipeline</Filter>
+    </None>
+    <None Include="patch_subdivide.glsl">
+      <Filter>Shaders\surface</Filter>
+    </None>
+    <None Include="occlusion-culling-frag.glsl">
+      <Filter>Shaders\occlusion-culling</Filter>
     </None>
   </ItemGroup>
 </Project>
