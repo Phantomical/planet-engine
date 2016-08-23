@@ -108,7 +108,7 @@
       <PreprocessorDefinitions>LOG_TO_FILE</PreprocessorDefinitions>
     </ClCompile>
     <CustomBuild>
-      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)$(ProjectName)%(Identity)" -I$(ProjectDir)</Command>
+      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)%(Identity)" -I$(ProjectDir)</Command>
     </CustomBuild>
     <CustomBuild>
       <Outputs>null</Outputs>
@@ -158,7 +158,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <CustomBuild>
-      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)$(ProjectName)%(Identity)" -I$(ProjectDir)</Command>
+      <Command>$(SolutionDir)glslpp "$(ProjectDir)%(Identity)" "$(TargetDir)%(Identity)" -I$(ProjectDir)</Command>
     </CustomBuild>
     <CustomBuild>
       <Outputs>null</Outputs>

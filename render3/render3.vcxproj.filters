@@ -45,6 +45,9 @@
     <ClInclude Include="stride.h">
       <Filter>Header Files\Shared</Filter>
     </ClInclude>
+    <ClInclude Include="free_list.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="memmgr.cpp">
@@ -61,18 +64,6 @@
     <None Include="noise.glsl">
       <Filter>Shader Files\include</Filter>
     </None>
-    <None Include="length.glsl">
-      <Filter>Shader Files\generation</Filter>
-    </None>
-    <None Include="max.glsl">
-      <Filter>Shader Files\generation</Filter>
-    </None>
-    <None Include="mesh_gen.glsl">
-      <Filter>Shader Files\generation</Filter>
-    </None>
-    <None Include="vertex_gen.glsl">
-      <Filter>Shader Files\generation</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="merge_update.glsl">
@@ -86,6 +77,18 @@
     </CustomBuild>
     <CustomBuild Include="patch_data.glsl">
       <Filter>Shader Files\include</Filter>
+    </CustomBuild>
+    <CustomBuild Include="vertex_gen.glsl">
+      <Filter>Shader Files\generation</Filter>
+    </CustomBuild>
+    <CustomBuild Include="length.glsl">
+      <Filter>Shader Files\generation</Filter>
+    </CustomBuild>
+    <CustomBuild Include="max.glsl">
+      <Filter>Shader Files\generation</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mesh_gen.glsl">
+      <Filter>Shader Files\generation</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

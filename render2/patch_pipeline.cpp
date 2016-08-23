@@ -236,8 +236,13 @@ namespace planet_engine
 		_exec_queue.push_back(exec_type(ptr));
 	}
 
-	update_state patch_pipeline::process(size_t n)
+	update_state patch_pipeline::process(size_t _n)
 	{
+		size_t n = std::max(_job_queue.size() / 16, _n);
+
+		if (n != _n)
+			OutputDebug("[PIPELINE] Executed ", n, " jobs.\n");
+
 		for (size_t i = 0; i < n && !_job_queue.empty();)
 		{
 			if (_job_queue.front()())

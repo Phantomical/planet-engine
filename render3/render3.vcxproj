@@ -154,6 +154,7 @@
     <ClCompile Include="planet.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="free_list.h" />
     <ClInclude Include="managed_buffer.h" />
     <ClInclude Include="memmgr.h" />
     <ClInclude Include="patch_data.h" />
