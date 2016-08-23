@@ -49,10 +49,8 @@ namespace planet_engine
 			}
 		};
 
-		void AppBase::HandleInput()
+		void AppBase::HandleInput(double displacement)
 		{
-			static constexpr double displacement = 0.02f;
-
 			KeyboardInterface Keyboard(Window);
 			dmat4 rot = (dmat4)CamRot;
 

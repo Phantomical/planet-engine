@@ -22,6 +22,12 @@
     <Filter Include="Shader Files\include">
       <UniqueIdentifier>{180df57b-528e-4de0-bc0a-1d3bc924192e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader Files\update">
+      <UniqueIdentifier>{02e71496-daa4-4319-8473-155a53fefef7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader Files\generation">
+      <UniqueIdentifier>{e41e4990-5e79-430c-a828-4607b8e3d086}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="planet.h">
@@ -34,6 +40,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="patch_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stride.h">
       <Filter>Header Files\Shared</Filter>
     </ClInclude>
   </ItemGroup>
@@ -49,20 +58,34 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="calc_pos.glsl">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="subdivide_update.glsl">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="patch_data.glsl">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="merge_update.glsl">
-      <Filter>Shader Files</Filter>
-    </None>
     <None Include="noise.glsl">
       <Filter>Shader Files\include</Filter>
     </None>
+    <None Include="length.glsl">
+      <Filter>Shader Files\generation</Filter>
+    </None>
+    <None Include="max.glsl">
+      <Filter>Shader Files\generation</Filter>
+    </None>
+    <None Include="mesh_gen.glsl">
+      <Filter>Shader Files\generation</Filter>
+    </None>
+    <None Include="vertex_gen.glsl">
+      <Filter>Shader Files\generation</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="merge_update.glsl">
+      <Filter>Shader Files\update</Filter>
+    </CustomBuild>
+    <CustomBuild Include="subdivide_update.glsl">
+      <Filter>Shader Files\update</Filter>
+    </CustomBuild>
+    <CustomBuild Include="calc_pos.glsl">
+      <Filter>Shader Files\generation</Filter>
+    </CustomBuild>
+    <CustomBuild Include="patch_data.glsl">
+      <Filter>Shader Files\include</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

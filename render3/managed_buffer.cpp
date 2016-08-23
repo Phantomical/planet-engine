@@ -43,6 +43,8 @@ namespace planet_engine
 
 		buf._buffer = 0;
 		buf._size = 0;
+
+		return *this;
 	}
 
 	GLuint managed_buffer::alloc(GLuint size, GLuint alignment) noexcept

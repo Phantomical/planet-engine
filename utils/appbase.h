@@ -28,7 +28,7 @@ namespace planet_engine
 			double FarZ;
 			double Aspect;
 
-			void HandleInput();
+			void HandleInput(double displacement = 0.02);
 
 		private:
 			bool xDown;
@@ -40,7 +40,7 @@ namespace planet_engine
 
 		public:
 			virtual void OnLoad() { }
-			virtual void OnUpdateFrame() { }
+			virtual void OnUpdateFrame() { HandleInput(); }
 			virtual void OnRenderFrame() { }
 			virtual void OnUnload() { }
 			virtual void OnShaderRecompile() { }

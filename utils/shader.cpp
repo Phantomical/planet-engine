@@ -94,6 +94,10 @@ namespace planet_engine
 		{
 			return vertex(source.c_str());
 		}
+		void glsl_shader::geometry(const std::string& source)
+		{
+			return geometry(source.c_str());
+		}
 		void glsl_shader::fragment(const std::string& source)
 		{
 			return fragment(source.c_str());
@@ -114,6 +118,10 @@ namespace planet_engine
 		void glsl_shader::vertex(const char* source)
 		{
 			return stage(GL_VERTEX_SHADER, source);
+		}
+		void glsl_shader::geometry(const char* source)
+		{
+			return stage(GL_GEOMETRY_SHADER, source);
 		}
 		void glsl_shader::fragment(const char* source)
 		{
@@ -200,6 +208,10 @@ namespace planet_engine
 		bool glsl_shader::has_vertex() const
 		{
 			return _shaders[sti<GL_VERTEX_SHADER>::index] != 0;
+		}
+		bool glsl_shader::has_geometry() const
+		{
+			return _shaders[sti<GL_GEOMETRY_SHADER>::index] != 0;
 		}
 		bool glsl_shader::has_fragment() const
 		{
