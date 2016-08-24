@@ -7,6 +7,7 @@
 #include <functional>
 #include <memory>
 #include <queue>
+#include <set>
 
 namespace planet_engine
 {
@@ -37,13 +38,13 @@ namespace planet_engine
 	struct patch : std::enable_shared_from_this<patch>
 	{
 	public:
-		static constexpr size_t SIDE_LEN = 33;
+		static constexpr size_t SIDE_LEN = 17;
 		static constexpr size_t NUM_VERTICES = num_vertices(SIDE_LEN);
 		static constexpr size_t NUM_INDICES = num_indices(SIDE_LEN);
 		static constexpr double SKIRT_DEPTH = 500.0;
 		// Minimum distance between vertices
 		static constexpr double MAX_RESOLUTION = 0.1;
-		static constexpr size_t MAX_LEVEL = 400;
+		static constexpr size_t MAX_LEVEL = 20;
 
 		struct info
 		{
@@ -111,8 +112,8 @@ namespace planet_engine
 		double skirt_depth;
 		double scale;
 		size_t max_level;
-		contig_vector<std::shared_ptr<patch>> leaf_patches;
-		contig_vector<std::shared_ptr<patch>> leaf_parents;
+		std::set<std::shared_ptr<patch>> leaf_patches;
+		std::set<std::shared_ptr<patch>> leaf_parents;
 		std::vector<std::shared_ptr<patch>> to_add;
 		std::vector<std::shared_ptr<patch>> to_remove;
 		glm::dmat4 model_matrix;

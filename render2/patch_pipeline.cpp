@@ -24,7 +24,7 @@ namespace planet_engine
 	}
 
 	/* Patch Pipeline */
-	
+
 	void patch_pipeline::gen_vertices(GLuint buffers[3], std::shared_ptr<patch> patch, GLuint* offset)
 	{
 		glGenBuffers(3, buffers);
@@ -112,10 +112,10 @@ namespace planet_engine
 
 		GLuint vbo_stride = roundup<GLuint>(VERTEX_BUFFER_SIZE, _ssbo_alignment);
 		GLuint pos_stride = roundup<GLuint>(sizeof(double) * 4, _ssbo_alignment);
-		
+
 		glGenBuffers(3, buffers);
 		glGenBuffers(1, &copybuf);
-		
+
 		glBindBuffer(GL_COPY_WRITE_BUFFER, copybuf);
 		glBufferData(GL_COPY_WRITE_BUFFER, pos_stride * size, nullptr, GL_STREAM_COPY);
 
@@ -158,9 +158,7 @@ namespace planet_engine
 
 			glDispatchCompute(GEN_VERTEX_INVOCATIONS, GEN_VERTEX_INVOCATIONS, 1);
 		}
-
-		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-
+		
 		/* Calculate patch positions */
 		glUseProgram(_get_pos);
 
@@ -172,7 +170,7 @@ namespace planet_engine
 			glDispatchCompute(1, 1, 1);
 		}
 
-		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
+		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT);
 
 		glCopyBufferSubData(GL_SHADER_STORAGE_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, pos_stride * size);
 
@@ -199,7 +197,7 @@ namespace planet_engine
 
 		glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT);
 
-		
+
 		void* mem = glMapBufferRange(GL_COPY_WRITE_BUFFER, 0, pos_stride * size, GL_MAP_READ_BIT);
 		util::spaced_buffer<glm::dvec3> vals(pos_stride, mem);
 
@@ -221,7 +219,7 @@ namespace planet_engine
 
 			GLuint actual_offset = rounddown(_manager.block_size() * offsets[i], _ssbo_alignment);
 			GLuint offset_param = (_manager.block_size() * offsets[i] - actual_offset) / sizeof(float);
-			
+
 			glUniform1ui(0, NUM_RESULT_ELEMS);
 			glUniform3fv(1, 1, &pos[0]);
 
@@ -325,7 +323,7 @@ namespace planet_engine
 			mvcmd.dest = offset;
 
 			ustate.movecommands.push_back(mvcmd);
-			
+
 			_offsets.erase(it);
 			_manager.dealloc_block(offset);
 		}
@@ -342,17 +340,34 @@ namespace planet_engine
 
 	update_state patch_pipeline::process(size_t _n)
 	{
+		static constexpr size_t MAX_UPDATES_PER_FRAME = 1024 * 1024;
+
 		update_state ustate;
 
-		// Generate all the meshes
-		gen_meshes(ustate, _generate.data(), _generate.size());
+		if (_generate.size() > MAX_UPDATES_PER_FRAME)
+		{
+			gen_meshes(ustate, _generate.data(), MAX_UPDATES_PER_FRAME);
+			_generate.erase(_generate.begin(), _generate.begin() + MAX_UPDATES_PER_FRAME);
+		}
+		else
+		{
+			// Generate all the meshes
+			gen_meshes(ustate, _generate.data(), _generate.size());
+			_generate.clear();
+		}
 
-		// Remove all the meshes
-		remove_meshes(ustate, _remove.data(), _remove.size());
-
-		_generate.clear();
-		_remove.clear();
-
+		if (_remove.size() > MAX_UPDATES_PER_FRAME)
+		{
+			remove_meshes(ustate, _remove.data(), MAX_UPDATES_PER_FRAME);
+			_remove.erase(_remove.begin(), _remove.begin() + MAX_UPDATES_PER_FRAME);
+		}
+		else
+		{
+			// Remove all the meshes
+			remove_meshes(ustate, _remove.data(), _remove.size());
+			_remove.clear();
+		}
+		
 		return ustate;
 	}
 

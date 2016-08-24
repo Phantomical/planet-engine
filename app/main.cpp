@@ -204,7 +204,7 @@ int main()
 			if (glfwGetKey(win, GLFW_KEY_F) != GLFW_PRESS)
 			{
 				ren.update(CamPos, CamPos - prevpos);
-				ren2.update(CamPos - glm::dvec3(10000000.0, 0.0, 0.0), CamPos - prevpos - glm::dvec3(10000000.0, 0.0, 0.0));
+				ren2.update(CamPos - glm::dvec3(10000000.0, 0.0, 0.0), CamPos - prevpos);
 			}
 
 			prevpos = CamPos;

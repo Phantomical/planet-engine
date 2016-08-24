@@ -48,7 +48,7 @@ namespace planet_engine
 		for (auto side : sides)
 		{
 			data->to_add.push_back(side);
-			data->leaf_patches.push_back(side);
+			data->leaf_patches.insert(side);
 		}
 	}
 
@@ -75,28 +75,24 @@ namespace planet_engine
 
 		for (auto patch : uinfo.leafs_to_erase)
 		{
-			auto it = util::find(data->leaf_patches, patch);
-			if (it != data->leaf_patches.end())
-				data->leaf_patches.erase(it);
+			data->leaf_patches.erase(patch);
 		}
 
 		for (auto patch : uinfo.leafs_to_add)
 		{
 			if (!patch->subdivided())
-				data->leaf_patches.push_back(patch);
+				data->leaf_patches.insert(patch);
 		}
 
 		for (auto patch : uinfo.parents_to_erase)
 		{
-			auto it = util::find(data->leaf_parents, patch);
-			if (it != data->leaf_parents.end())
-				data->leaf_parents.erase(it);
+			data->leaf_parents.erase(patch);
 		}
 
 		for (auto patch : uinfo.parents_to_add)
 		{
 			if (patch->subdivided())
-				data->leaf_parents.push_back(patch);
+				data->leaf_parents.insert(patch);
 		}
 	}
 	void planet::reset()
