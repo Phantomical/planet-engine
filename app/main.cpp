@@ -139,7 +139,7 @@ int main()
 
 	//launch_watchdog();
 
-	//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(DebugProc, nullptr);
 
 	glClearColor(0.0, 1.0, 1.0, 1.0);
@@ -201,8 +201,11 @@ int main()
 				ren2.render(vp_mat * model_mat);
 			}
 
-			ren.update(CamPos, CamPos - prevpos);
-			ren2.update(CamPos - glm::dvec3(10000000.0, 0.0, 0.0), CamPos - prevpos - glm::dvec3(10000000.0, 0.0, 0.0));
+			if (glfwGetKey(win, GLFW_KEY_F) != GLFW_PRESS)
+			{
+				ren.update(CamPos, CamPos - prevpos);
+				ren2.update(CamPos - glm::dvec3(10000000.0, 0.0, 0.0), CamPos - prevpos - glm::dvec3(10000000.0, 0.0, 0.0));
+			}
 
 			prevpos = CamPos;
 

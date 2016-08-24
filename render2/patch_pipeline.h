@@ -66,68 +66,14 @@ namespace planet_engine
 		static constexpr size_t CANCELLED_COUNTER_VALUE = 0xFF;
 		static constexpr size_t MAX_SCAN_DEPTH = 512;
 		static constexpr size_t LENGTH_CACHE_SIZE = 32;
-
-		struct generate_state
-		{
-			std::shared_ptr<patch> target;
-			size_t counter;
-			patch_pipeline* pipeline;
-
-			GLuint buffers[3];
-			GLuint offset;
-
-			void cancel();
-
-			bool can_finalize() const;
-			void finalize(update_state& ustate);
-
-			generate_state(std::shared_ptr<patch> tgt, patch_pipeline* pipeline);
-		};
-		struct remove_state
-		{
-			std::shared_ptr<patch> target;
-			size_t counter;
-			patch_pipeline* pipeline;
-
-			void cancel();
-
-			bool can_finalize() const;
-			void finalize(update_state& ustate);
-
-			remove_state(std::shared_ptr<patch> tgt, patch_pipeline* pipeline);
-		};
-		struct discalc_state
-		{
-			std::shared_ptr<patch> target;
-			size_t counter;
-			patch_pipeline* pipeline;
-
-			GLuint tmpbuf;
-
-			void calc_lengths();
-			void sum_result(size_t s);
-			void download_result();
-
-			void cancel();
-
-			bool can_finalize() const;
-			void finalize(update_state& ustate);
-
-			discalc_state(std::shared_ptr<patch> tgt, patch_pipeline* pipeline);
-		};
 		
-		typedef util::any_of<
-			std::shared_ptr<remove_state>,
-			std::shared_ptr<generate_state>,
-			std::shared_ptr<discalc_state>> exec_type;
-
 		buffer_manager _manager;
 
 		// Returns a boolean indicating if the job
 		// had been cancelled. False indicates that
 		// the job had been cancelled
-		std::queue<std::function<bool()>> _job_queue;
-		std::deque<exec_type> _exec_queue;
+		std::vector<std::shared_ptr<patch>> _generate;
+		std::vector<std::shared_ptr<patch>> _remove;
 
 		std::map<std::shared_ptr<patch>, GLuint> _offsets;
 
@@ -139,9 +85,11 @@ namespace planet_engine
 		GLuint _length_calc;
 		GLuint _max_calc;
 		GLuint _get_pos;
+		GLuint _compact;
 
 		/* Implementation Defined Constants */
 		GLuint _ssbo_alignment;
+		GLuint _ubo_alignment;
 
 		// Cache for downloading all buffer lengths at once
 		GLuint _lengths;
@@ -150,7 +98,8 @@ namespace planet_engine
 		void gen_vertices(GLuint buffers[3], std::shared_ptr<patch> patch, GLuint* offset);
 		void gen_mesh(GLuint buffers[3], std::shared_ptr<patch> patch, const GLuint* offset);
 
-		void mesh_lookahead(size_t n);
+		void gen_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size);
+		void remove_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size);
 
 	public:
 		patch_pipeline(size_t num_blocks);
@@ -160,7 +109,6 @@ namespace planet_engine
 
 		void generate(std::shared_ptr<patch> patch);
 		void remove(std::shared_ptr<patch> patch);
-		void discalc(std::shared_ptr<patch> patch);
 
 		void cull();
 

@@ -17,10 +17,6 @@ layout(binding = 0, std140) uniform GeneratorInputs
 	dvec4 _swc;
 	dvec4 _sec;
 };
-layout(binding = 1, std140) buffer PositionOutput
-{
-	dvec3 actual_pos;
-};
 
 #include "noise.glsl"
 

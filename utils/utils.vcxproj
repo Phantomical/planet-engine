@@ -140,6 +140,7 @@
     <ClInclude Include="gl_core.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="load_file.h" />
+    <ClInclude Include="spaced_buffer.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="templateutils.h" />
   </ItemGroup>

@@ -209,6 +209,11 @@
     <CustomBuild Include="get_pos.glsl">
       <FileType>Document</FileType>
     </CustomBuild>
+    <CustomBuild Include="compact.glsl">
+      <SubType>
+      </SubType>
+      <FileType>Document</FileType>
+    </CustomBuild>
     <None Include="noise.glsl" />
     <None Include="occlusion-culling-frag.glsl" />
     <None Include="patch_subdivide.glsl" />

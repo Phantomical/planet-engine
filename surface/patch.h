@@ -43,6 +43,7 @@ namespace planet_engine
 		static constexpr double SKIRT_DEPTH = 500.0;
 		// Minimum distance between vertices
 		static constexpr double MAX_RESOLUTION = 0.1;
+		static constexpr size_t MAX_LEVEL = 400;
 
 		struct info
 		{
@@ -107,6 +108,7 @@ namespace planet_engine
 	struct planet_data
 	{
 		double planet_radius;
+		double skirt_depth;
 		double scale;
 		size_t max_level;
 		contig_vector<std::shared_ptr<patch>> leaf_patches;

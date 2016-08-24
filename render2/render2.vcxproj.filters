@@ -79,9 +79,14 @@
     <CustomBuild Include="length.glsl">
       <Filter>Shaders\pipeline</Filter>
     </CustomBuild>
-    <CustomBuild Include="get_pos.glsl" />
     <CustomBuild Include="command_update.glsl">
       <Filter>Shaders\renderer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="get_pos.glsl">
+      <Filter>Shaders\pipeline</Filter>
+    </CustomBuild>
+    <CustomBuild Include="compact.glsl">
+      <Filter>Shaders\pipeline</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

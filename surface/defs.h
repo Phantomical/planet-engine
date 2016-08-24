@@ -43,6 +43,6 @@ void OutputDebug(const Args&... args)
 	static std::ofstream& _OutputFile = std::ofstream("log.txt");
 	_OutputFile << stream.str();
 #else
-	std::cout << (stream.str().c_str()) << std::flush;
+	OutputDebugStringA(stream.str().c_str());
 #endif
 }

@@ -20,7 +20,8 @@ namespace planet_engine
 		data = std::make_shared<planet_data>();
 		data->planet_radius = radius;
 		data->scale = scale;
-		data->max_level = static_cast<size_t>(std::log2(radius / patch::MAX_RESOLUTION));
+		data->skirt_depth = patch::SKIRT_DEPTH;
+		data->max_level = std::min(static_cast<size_t>(std::log2(radius / patch::MAX_RESOLUTION)), patch::MAX_LEVEL);
 
 		patch::info info;
 		info.level = 0;
