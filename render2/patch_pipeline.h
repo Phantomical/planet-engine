@@ -115,7 +115,7 @@ namespace planet_engine
 
 			discalc_state(std::shared_ptr<patch> tgt, patch_pipeline* pipeline);
 		};
-
+		
 		typedef util::any_of<
 			std::shared_ptr<remove_state>,
 			std::shared_ptr<generate_state>,

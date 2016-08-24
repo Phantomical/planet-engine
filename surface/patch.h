@@ -41,7 +41,8 @@ namespace planet_engine
 		static constexpr size_t NUM_VERTICES = num_vertices(SIDE_LEN);
 		static constexpr size_t NUM_INDICES = num_indices(SIDE_LEN);
 		static constexpr double SKIRT_DEPTH = 500.0;
-		static constexpr size_t MAX_LEVEL = 20;
+		// Minimum distance between vertices
+		static constexpr double MAX_RESOLUTION = 10.0;
 
 		struct info
 		{
@@ -107,6 +108,7 @@ namespace planet_engine
 	{
 		double planet_radius;
 		double scale;
+		size_t max_level;
 		contig_vector<std::shared_ptr<patch>> leaf_patches;
 		contig_vector<std::shared_ptr<patch>> leaf_parents;
 		std::vector<std::shared_ptr<patch>> to_add;

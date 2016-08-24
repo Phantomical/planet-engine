@@ -203,6 +203,11 @@ namespace planet_engine
 
 		glBindVertexArray(0);
 	}
+
+	std::future<std::pair<GLuint, GLsync>> renderer::get_mesh(std::shared_ptr<patch> patch)
+	{
+		return std::future<std::pair<GLuint, GLsync>>();
+	}
 	
 	/* Constructors and Destructors */
 	renderer::renderer(GLuint shader, double planet_radius, double scale) :

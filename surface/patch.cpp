@@ -89,7 +89,7 @@ namespace planet_engine
 		double dis = farthest_vertex;
 		if (farthest_vertex == std::numeric_limits<float>::max())
 			dis = side_length();
-		return level < MAX_LEVEL && length2(cam_pos - actual_pos) * MULT < dis * dis;
+		return level < data->max_level && length2(cam_pos - actual_pos) * MULT < dis * dis;
 	}
 	bool patch::should_merge(const glm::dvec3& cam_pos) const
 	{
