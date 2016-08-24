@@ -84,19 +84,19 @@ namespace planet_engine
 		update();
 	}
 
-	bool patch::should_subdivide(const glm::dvec3& cam_pos) const
+	bool patch::should_subdivide(const glm::dvec3& cam_pos, const glm::dvec3& cam_vel) const
 	{
 		double dis = farthest_vertex;
 		if (farthest_vertex == std::numeric_limits<float>::max())
 			dis = side_length();
-		return level < data->max_level && length2(cam_pos - actual_pos) * MULT < dis * dis;
+		return level < data->max_level && length2(cam_pos - actual_pos) * MULT < dis * dis - length2(cam_vel);
 	}
-	bool patch::should_merge(const glm::dvec3& cam_pos) const
+	bool patch::should_merge(const glm::dvec3& cam_pos, const glm::dvec3& cam_vel) const
 	{
 		double dis = farthest_vertex;
 		if (farthest_vertex == std::numeric_limits<float>::max())
 			dis = side_length();
-		return length2(cam_pos - actual_pos) * MULT > dis * dis;
+		return length2(cam_pos - actual_pos) * MULT > dis * dis - length2(cam_vel);
 	}
 
 	bool patch::subdivided() const

@@ -238,7 +238,7 @@ namespace planet_engine
 
 	update_state patch_pipeline::process(size_t _n)
 	{
-		size_t n = std::max(_job_queue.size() / 16, _n);
+		size_t n = std::min(std::max(_job_queue.size() / 32, _n), (size_t)128);
 
 		if (n != _n)
 			OutputDebug("[PIPELINE] Executed ", n, " jobs.\n");

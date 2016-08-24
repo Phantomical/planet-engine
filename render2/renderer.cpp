@@ -164,9 +164,9 @@ namespace planet_engine
 	}
 
 	/* Public Functions */
-	void renderer::update(const glm::dvec3& cam_pos)
+	void renderer::update(const glm::dvec3& cam_pos, const glm::dvec3& cam_vel)
 	{
-		planet.update(cam_pos);
+		planet.update(cam_pos, cam_vel);
 
 		// Add and remove meshes
 		update_meshes(COMMANDS_PER_FRAME);

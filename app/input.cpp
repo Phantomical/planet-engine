@@ -42,6 +42,9 @@ void HandleInput(GLFWwindow* win, double displacement)
 
 	dvec3 NewCamRot;
 
+	if (Keyboard[GLFW_KEY_LEFT_SHIFT])
+		displacement *= 100;
+
 	// Translate camera
 	if (Keyboard[GLFW_KEY_W])
 		CamPos += front * displacement;

@@ -42,7 +42,7 @@ namespace planet_engine
 		static constexpr size_t NUM_INDICES = num_indices(SIDE_LEN);
 		static constexpr double SKIRT_DEPTH = 500.0;
 		// Minimum distance between vertices
-		static constexpr double MAX_RESOLUTION = 10.0;
+		static constexpr double MAX_RESOLUTION = 0.1;
 
 		struct info
 		{
@@ -87,8 +87,8 @@ namespace planet_engine
 		static constexpr double MULT = 1.0 / (10.0);
 
 	public:
-		bool should_subdivide(const glm::dvec3& cam_pos) const;
-		bool should_merge(const glm::dvec3& cam_pos) const;
+		bool should_subdivide(const glm::dvec3& cam_pos, const glm::dvec3& cam_vel) const;
+		bool should_merge(const glm::dvec3& cam_pos, const glm::dvec3& cam_vel) const;
 
 		bool subdivided() const;
 		double side_length() const;

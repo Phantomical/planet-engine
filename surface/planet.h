@@ -11,7 +11,7 @@ namespace planet_engine
 
 		planet(double radius, double scale = 1.0);
 
-		void update(const glm::dvec3& cam_pos);
+		void update(const glm::dvec3& cam_pos, const glm::dvec3& cam_vel);
 
 		size_t get_max_level() const;
 

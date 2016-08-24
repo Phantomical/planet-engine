@@ -3,12 +3,14 @@
 #undef LOG_TO_FILE
 
 #include <sstream>
+#include <iostream>
 #ifdef LOG_TO_FILE
 #include <iostream>
 #include <fstream>
 #else
 #include <windows.h>
 #endif
+
 
 template<typename Arg, typename... Args>
 typename std::enable_if<sizeof...(Args) == 0>::type _OutputDebug(std::stringstream& str, const Arg& arg, const Args&... args)
@@ -41,6 +43,6 @@ void OutputDebug(const Args&... args)
 	static std::ofstream& _OutputFile = std::ofstream("log.txt");
 	_OutputFile << stream.str();
 #else
-	OutputDebugStringA(stream.str().c_str());
+	std::cout << (stream.str().c_str()) << std::flush;
 #endif
 }

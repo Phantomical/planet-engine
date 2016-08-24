@@ -51,14 +51,14 @@ namespace planet_engine
 		}
 	}
 
-	void planet::update(const glm::dvec3& cam_pos)
+	void planet::update(const glm::dvec3& cam_pos, const glm::dvec3& cam_vel)
 	{
 		update_info uinfo;
 
 		for (auto& patch : data->leaf_patches)
 		{
 			assert(!patch->is);
-			if (patch->should_subdivide(cam_pos))
+			if (patch->should_subdivide(cam_pos, cam_vel))
 			{
 				patch->split(uinfo);
 			}
@@ -66,7 +66,7 @@ namespace planet_engine
 
 		for (auto& patch : data->leaf_parents)
 		{
-			if (patch->should_merge(cam_pos) && patch->subdivided())
+			if (patch->should_merge(cam_pos, cam_vel) && patch->subdivided())
 			{
 				patch->merge(uinfo);
 			}

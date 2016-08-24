@@ -27,7 +27,7 @@ namespace planet_engine
 		// The maximum number of mesh blocks that can be allocated in GPU memory
 		static constexpr size_t NUM_BLOCKS = 1 << 16;
 		static constexpr double SCALE = 100.0;
-		static constexpr size_t COMMANDS_PER_FRAME = 32;
+		static constexpr size_t COMMANDS_PER_FRAME = 16;
 
 	private:
 		/*
@@ -66,7 +66,7 @@ namespace planet_engine
 		planet planet;
 		std::shared_ptr<planet_data> data;
 
-		void update(const glm::dvec3& cam_pos);
+		void update(const glm::dvec3& cam_pos, const glm::dvec3& cam_vel = glm::dvec3(0.0));
 		void render(const glm::dmat4& mvp_mat);
 
 		std::future<std::pair<GLuint, GLsync>> get_mesh(std::shared_ptr<patch> patch);

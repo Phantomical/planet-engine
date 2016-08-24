@@ -173,6 +173,8 @@ int main()
 		ren.update(CamPos);
 		ren2.update(CamPos);
 
+		glm::dvec3 prevpos = CamPos;
+
 		size_t i = 0;
 		while (!glfwWindowShouldClose(win))
 		{
@@ -199,10 +201,12 @@ int main()
 				ren2.render(vp_mat * model_mat);
 			}
 
-			ren.update(CamPos);
-			ren2.update(CamPos - glm::dvec3(10000000.0, 0.0, 0.0));
+			ren.update(CamPos, CamPos - prevpos);
+			ren2.update(CamPos - glm::dvec3(10000000.0, 0.0, 0.0), CamPos - prevpos - glm::dvec3(10000000.0, 0.0, 0.0));
 
-			HandleInput(win, 20000);
+			prevpos = CamPos;
+
+			HandleInput(win, 200);
 
 			glfwPollEvents();
 			glfwSwapBuffers(win);
