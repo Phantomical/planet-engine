@@ -44,7 +44,7 @@ namespace planet_engine
 		static constexpr double SKIRT_DEPTH = 500.0;
 		// Minimum distance between vertices
 		static constexpr double MAX_RESOLUTION = 0.1;
-		static constexpr size_t MAX_LEVEL = 20;
+		static constexpr size_t MAX_LEVEL = 420;
 
 		struct info
 		{

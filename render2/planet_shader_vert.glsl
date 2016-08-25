@@ -18,6 +18,7 @@ layout(location = 3) in vec3 in_outdir;
 //layout(location = 0) uniform uint DrawID;
 
 smooth out vec3 normal;
+smooth out float displacement;
 
 void main()
 {
@@ -25,4 +26,5 @@ void main()
 
 	gl_Position = mvp * vec4(in_vertex, 1.0);
 	normal = in_normal;
+	displacement = in_displacement;
 }

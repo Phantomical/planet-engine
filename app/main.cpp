@@ -136,7 +136,7 @@ int main()
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(DebugProc, nullptr);
 
-	glClearColor(0.0, 1.0, 1.0, 1.0);
+	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glEnable(GL_DEPTH_TEST);
 
 	glEnable(GL_CULL_FACE);
@@ -207,7 +207,7 @@ int main()
 
 			prevpos = CamPos;
 
-			HandleInput(win, 200);
+			HandleInput(win, 5);
 
 			glfwPollEvents();
 			glfwSwapBuffers(win);

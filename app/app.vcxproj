@@ -135,7 +135,6 @@
   <ItemGroup>
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="watchdog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="input.h" />

@@ -102,7 +102,7 @@ double _fbm_1(dvec3 v)
 	double _1_maxAmplitude = 0.0;
 	double _1_amplitude = 1.0;
 	double _1_frequency = 150.0;
-	double _1_octaves = 16;
+	double _1_octaves = 32;
 	double _1_persistance = 0.5;
 	double _1_lacunarity = 2.0;
 	for (uint _1_i = 0; _1_i < _1_octaves; ++_1_i)
@@ -307,7 +307,7 @@ double _fbm_4(dvec3 v)
 	double _4_maxAmplitude = 0.0;
 	double _4_amplitude = 1.0;
 	double _4_frequency = 150.0;
-	double _4_octaves = 8;
+	double _4_octaves = 32;
 	double _4_persistance = 0.5;
 	double _4_lacunarity = 2.0;
 	for (uint _4_i = 0; _4_i < _4_octaves; ++_4_i)
