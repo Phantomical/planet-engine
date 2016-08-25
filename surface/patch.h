@@ -38,7 +38,7 @@ namespace planet_engine
 	struct patch : std::enable_shared_from_this<patch>
 	{
 	public:
-		static constexpr size_t SIDE_LEN = 17;
+		static constexpr size_t SIDE_LEN = 33;
 		static constexpr size_t NUM_VERTICES = num_vertices(SIDE_LEN);
 		static constexpr size_t NUM_INDICES = num_indices(SIDE_LEN);
 		static constexpr double SKIRT_DEPTH = 500.0;
@@ -57,7 +57,8 @@ namespace planet_engine
 			std::shared_ptr<planet_data> data;
 		};
 
-		bool is;
+		unsigned int level;  // Level within the quadtree
+		float farthest_vertex;
 
 		std::shared_ptr<patch> nw;
 		std::shared_ptr<patch> ne;
@@ -71,11 +72,7 @@ namespace planet_engine
 
 		glm::dvec3 pos; // Position in planet space
 		glm::dvec3 actual_pos; // pos transformed by the noise function
-
-		unsigned int level;  // Level within the quadtree
-		float farthest_vertex;
-		uint64_t hash; // A hash value that uniquely identifies this patch within the planet
-
+		
 		std::shared_ptr<planet_data> data;
 
 		std::weak_ptr<patch> parent;
@@ -96,11 +93,6 @@ namespace planet_engine
 		double side_length() const;
 
 		size_t get_max_level() const;
-
-		void update()
-		{
-			is = subdivided();
-		}
 
 	private:
 		void remove_internal(update_info& info);

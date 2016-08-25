@@ -60,7 +60,7 @@ namespace planet_engine
 		// The shader that is used for actually rendering the planet
 		GLuint planet_shader;
 
-		void update_meshes(size_t n);
+		void update_meshes();
 
 	public:
 		planet planet;

@@ -12,10 +12,6 @@ using namespace planet_engine::util;
 
 #define TARGET_DIR "D:\\Projects\\Projects\\C++\\planet-engine\\x64\\Debug\\"
 
-void tick();
-void launch_watchdog();
-void terminate_watchdog();
-
 namespace
 {
 	std::string concat(const std::string& appendix)
@@ -136,14 +132,16 @@ int main()
 	glfwSwapBuffers(win);
 
 	aspect = 1.5;
-
-	//launch_watchdog();
-
+	
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(DebugProc, nullptr);
 
 	glClearColor(0.0, 1.0, 1.0, 1.0);
 	glEnable(GL_DEPTH_TEST);
+
+	glEnable(GL_CULL_FACE);
+	glFrontFace(GL_CCW);
+	glCullFace(GL_BACK);
 
 	glPointSize(10);
 
@@ -167,7 +165,7 @@ int main()
 		renderer ren{ program, 6700000.0 };
 		renderer ren2{ program, 500000.0, 5.0 };
 
-		CamPos = glm::dvec3(0.0, 0.0, -ren.planet.data->planet_radius - 100000.0);
+		CamPos = glm::dvec3(0.0, 0.0, -ren.planet.data->planet_radius - 400000.0);
 		CamRot = glm::dquat(1.0, 0.0, 0.0, 0.0);
 
 		ren.update(CamPos);
@@ -213,14 +211,10 @@ int main()
 
 			glfwPollEvents();
 			glfwSwapBuffers(win);
-
-			tick();
 		}
 
 		glDeleteProgram(program);
 	}
-
-	//terminate_watchdog();
 
 	glfwDestroyWindow(win);
 	glfwTerminate();

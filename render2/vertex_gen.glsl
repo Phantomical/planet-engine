@@ -4,12 +4,7 @@ layout(local_size_x = 8, local_size_y = 8) in;
 
 layout(location = 0) uniform uint SIDE_LEN;
 
-layout(binding = 0, std430) writeonly buffer Output
-{
-	vec4 vertices[];
-};
-
-layout(binding = 0, std140) uniform GeneratorInputs
+struct PatchInfo
 {
 	dvec4 _pos;
 	dvec4 _nwc;
@@ -18,16 +13,26 @@ layout(binding = 0, std140) uniform GeneratorInputs
 	dvec4 _sec;
 };
 
+layout(binding = 0, std430) writeonly buffer Output
+{
+	vec4 vertices[];
+};
+
+layout(binding = 0, std140) uniform GeneratorInputs
+{
+	PatchInfo infos[256];
+};
+
 #include "noise.glsl"
 
-const dvec3 pos = _pos.xyz;
-const dvec3 nwc = _nwc.xyz;
-const dvec3 nec = _nec.xyz;
-const dvec3 swc = _swc.xyz;
-const dvec3 sec = _sec.xyz;
-const double planet_radius = _pos.w;
-const double skirt_depth = _nwc.w;
-const double scale = _nec.w;
+const dvec3 pos = infos[gl_GlobalInvocationID.z]._pos.xyz;
+const dvec3 nwc = infos[gl_GlobalInvocationID.z]._nwc.xyz;
+const dvec3 nec = infos[gl_GlobalInvocationID.z]._nec.xyz;
+const dvec3 swc = infos[gl_GlobalInvocationID.z]._swc.xyz;
+const dvec3 sec = infos[gl_GlobalInvocationID.z]._sec.xyz;
+const double planet_radius = infos[gl_GlobalInvocationID.z]._pos.w;
+const double skirt_depth = infos[gl_GlobalInvocationID.z]._nwc.w;
+const double scale = infos[gl_GlobalInvocationID.z]._nec.w;
 const double INTERP = (1.0 / double(SIDE_LEN - 1));
 const uint array_size = SIDE_LEN + 2;
 
@@ -52,7 +57,7 @@ void calc_vertex(in ivec2 p, out vec3 vertex, out float displacement)
 
 void write(in uvec2 idx, in vec4 val)
 {
-	vertices[idx.y * array_size + idx.x] = val;
+	vertices[gl_GlobalInvocationID.z * array_size * array_size + idx.y * array_size + idx.x] = val;
 }
 
 void main()

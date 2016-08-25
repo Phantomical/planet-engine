@@ -6,6 +6,17 @@ layout(local_size_x = 128) in;
 
 layout(location = 0) uniform uint SIDE_LEN;
 layout(location = 1) uniform uint offset;
+layout(location = 2) uniform uint InvocationIndex;
+
+struct PatchInfo
+{
+	dvec4 _pos;
+	dvec4 _nwc;
+	dvec4 _nec;
+	dvec4 _swc;
+	dvec4 _sec;
+};
+
 
 layout(binding = 0, std430) readonly buffer GeneratorOutputs
 {
@@ -18,31 +29,22 @@ layout(binding = 1, std430) writeonly buffer Results
 
 layout(binding = 0, std140) uniform GeneratorInputs
 {
-	dvec4 _pos;
-	dvec4 _nwc;
-	dvec4 _nec;
-	dvec4 _swc;
-	dvec4 _sec;
+	PatchInfo infos[256];
 };
 
-const dvec3 pos = _pos.xyz;
-const dvec3 nwc = _nwc.xyz;
-const dvec3 nec = _nec.xyz;
-const dvec3 swc = _swc.xyz;
-const dvec3 sec = _sec.xyz;
-const double planet_radius = _pos.w;
-const double skirt_depth = _nwc.w;
-const double scale = _nec.w;
+const dvec3 pos = infos[InvocationIndex]._pos.xyz;
+const dvec3 nwc = infos[InvocationIndex]._nwc.xyz;
+const dvec3 nec = infos[InvocationIndex]._nec.xyz;
+const dvec3 swc = infos[InvocationIndex]._swc.xyz;
+const dvec3 sec = infos[InvocationIndex]._sec.xyz;
+const double planet_radius = infos[InvocationIndex]._pos.w;
+const double skirt_depth = infos[InvocationIndex]._nwc.w;
+const double scale = infos[InvocationIndex]._nec.w;
 const double INTERP = (1.0 / double(SIDE_LEN - 1));
 // Array size in the x and y direction
 const uint array_size = SIDE_LEN + 2;
 // Total array size
 const uint size = array_size * array_size;
-
-const uint WorkGroupIndex = gl_WorkGroupID.z * gl_NumWorkGroups.x * gl_NumWorkGroups.y
-+ gl_WorkGroupID.y * gl_NumWorkGroups.x + gl_WorkGroupID.x;
-const uint GlobalInvocationIndex = WorkGroupIndex * gl_WorkGroupSize.x * gl_WorkGroupSize.y
-* gl_WorkGroupSize.z + gl_LocalInvocationIndex;
 
 dvec3 to_sphere(in dvec3 v)
 {
@@ -51,7 +53,7 @@ dvec3 to_sphere(in dvec3 v)
 
 vec4 read(in uvec2 idx)
 {
-	return vertices[idx.y * array_size + idx.x];
+	return vertices[InvocationIndex * array_size * array_size + idx.y * array_size + idx.x];
 }
 
 vec3 calc_normal(in uvec2 idx, in vec3 v)
@@ -78,7 +80,7 @@ vec3 calc_normal(in uvec2 idx, in vec3 v)
 
 void main()
 {
-	const uint index = GlobalInvocationIndex;
+	const uint index = gl_GlobalInvocationID.x;
 
 	if (index >= size)
 		return;

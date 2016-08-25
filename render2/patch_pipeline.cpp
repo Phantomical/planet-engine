@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <iterator>
 
 namespace planet_engine
 {
@@ -104,14 +105,14 @@ namespace planet_engine
 
 		if (size == 0)
 			return;
+		assert(size <= 256);
 
 		GLuint copybuf;
 		GLuint buffers[3];
-		util::spaced_buffer<mesh_info> ubo_buf(_ubo_alignment, size);
 		GLuint* offsets = new GLuint[size];
 
-		GLuint vbo_stride = roundup<GLuint>(VERTEX_BUFFER_SIZE, _ssbo_alignment);
-		GLuint pos_stride = roundup<GLuint>(sizeof(double) * 4, _ssbo_alignment);
+		GLuint vbo_stride = VERTEX_BUFFER_SIZE;
+		GLuint pos_stride = sizeof(double) * 4;
 
 		glGenBuffers(3, buffers);
 		glGenBuffers(1, &copybuf);
@@ -122,26 +123,29 @@ namespace planet_engine
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffers[0]);
 		glBufferStorage(GL_SHADER_STORAGE_BUFFER, vbo_stride * size, nullptr, 0);
 
-		for (size_t i = 0; i < size; ++i)
-		{
-			mesh_info info = {
-				patches[i]->pos,
-				patches[i]->data->planet_radius,
-				patches[i]->nwc,
-				patches[i]->data->skirt_depth,
-				patches[i]->nec,
-				patches[i]->data->scale,
-				patches[i]->swc,
-				0.0, // Padding
-				patches[i]->sec
-			};
-
-			ubo_buf[i] = info;
-		}
-
-
 		glBindBuffer(GL_UNIFORM_BUFFER, buffers[1]);
-		glBufferData(GL_UNIFORM_BUFFER, ubo_buf.alignment() * ubo_buf.size(), ubo_buf.data(), GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(mesh_info) * 256, nullptr, GL_STATIC_DRAW);
+
+		{
+			mesh_info* infos = (mesh_info*)glMapBufferRange(GL_UNIFORM_BUFFER, 0, sizeof(mesh_info) * 256, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+			for (size_t i = 0; i < size; ++i)
+			{
+				mesh_info info = {
+					patches[i]->pos,
+					patches[i]->data->planet_radius,
+					patches[i]->nwc,
+					patches[i]->data->skirt_depth,
+					patches[i]->nec,
+					patches[i]->data->scale,
+					patches[i]->swc,
+					0.0, // Padding
+					patches[i]->sec
+				};
+
+				infos[i] = info;
+			}
+			glUnmapBuffer(GL_UNIFORM_BUFFER);
+		}
 
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffers[2]);
 		glBufferData(GL_SHADER_STORAGE_BUFFER, pos_stride * size, nullptr, GL_STREAM_READ);
@@ -152,42 +156,39 @@ namespace planet_engine
 		for (size_t i = 0; i < size; ++i)
 		{
 			offsets[i] = _manager.alloc_block();
-
-			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, buffers[0], vbo_stride * i, vbo_stride);
-			glBindBufferRange(GL_UNIFORM_BUFFER, 0, buffers[1], ubo_buf.alignment() * i, ubo_buf.alignment());
-
-			glDispatchCompute(GEN_VERTEX_INVOCATIONS, GEN_VERTEX_INVOCATIONS, 1);
 		}
-		
+
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[0]);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, buffers[1]);
+
+		glDispatchCompute(GEN_VERTEX_INVOCATIONS, GEN_VERTEX_INVOCATIONS, (GLuint)size);
+
 		/* Calculate patch positions */
 		glUseProgram(_get_pos);
 
-		for (size_t i = 0; i < size; ++i)
-		{
-			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, buffers[2], pos_stride * i, pos_stride);
-			glBindBufferRange(GL_UNIFORM_BUFFER, 0, buffers[1], ubo_buf.alignment() * i, ubo_buf.alignment());
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[2]);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, buffers[1]);
 
-			glDispatchCompute(1, 1, 1);
-		}
+		glDispatchCompute(1, (GLuint)size, 1);
 
 		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT);
-
-		glCopyBufferSubData(GL_SHADER_STORAGE_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, pos_stride * size);
-
-		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
 
 		/* Generate Meshes */
 		glUseProgram(_meshgen);
 
-		for (size_t i = 0; i < size; ++i)
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, buffers[1]);
+
+		for (GLuint i = 0; i < size; ++i)
 		{
 			GLuint actual_offset = rounddown(offsets[i] * _manager.block_size(), _ssbo_alignment);
 			GLuint offset_param = (offsets[i] * _manager.block_size() - actual_offset) / sizeof(float);
 
 			glUniform1ui(1, offset_param);
+			// InvocationIndex
+			glUniform1ui(2, i);
 
 			// Bind input buffer range
-			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, buffers[0], vbo_stride * i, vbo_stride);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[0]);
 			// Bind output buffer range
 			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, _manager.buffer(),
 				actual_offset, _manager.block_size() + offset_param * sizeof(float));
@@ -213,7 +214,7 @@ namespace planet_engine
 
 		for (size_t i = 0; i < size; ++i)
 		{
-			patches[i]->actual_pos = vals[i];
+			//patches[i]->actual_pos = vals[i];
 
 			glm::vec3 pos = patches[i]->actual_pos - patches[i]->pos;
 
@@ -293,19 +294,19 @@ namespace planet_engine
 			_offsets.insert(std::make_pair(patches[i], offsets[i]));
 		}
 
-		float* distances = (float*)glMapBuffer(GL_COPY_WRITE_BUFFER, GL_READ_ONLY);
+		//float* distances = (float*)glMapBuffer(GL_COPY_WRITE_BUFFER, GL_READ_ONLY);
+		//
+		//for (size_t i = 0; i < size; ++i)
+		//{
+		//	patches[i]->farthest_vertex = distances[i];
+		//}
+		//
+		//glUnmapBuffer(GL_COPY_WRITE_BUFFER);
 
-		for (size_t i = 0; i < size; ++i)
-		{
-			patches[i]->farthest_vertex = distances[i];
-		}
-
-		glUnmapBuffer(GL_COPY_WRITE_BUFFER);
-
-		//glDeleteBuffers(1, &copybuf);
-		//glDeleteBuffers(1, &tmpbuf);
-		//glDeleteBuffers(1, &download_buf);
-		//glDeleteBuffers(3, buffers);
+		glDeleteBuffers(1, &copybuf);
+		glDeleteBuffers(1, &tmpbuf);
+		glDeleteBuffers(1, &download_buf);
+		glDeleteBuffers(3, buffers);
 	}
 	void patch_pipeline::remove_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size)
 	{
@@ -331,43 +332,40 @@ namespace planet_engine
 
 	void patch_pipeline::generate(std::shared_ptr<patch> patch)
 	{
-		_generate.push_back(patch);
+		auto it = std::find(std::begin(_remove), std::end(_remove), patch);
+		if (it != std::end(_remove))
+			_remove.erase(it);
+		else
+			_generate.push_back(patch);
 	}
 	void patch_pipeline::remove(std::shared_ptr<patch> patch)
 	{
-		_remove.push_back(patch);
+		auto it = std::find(std::begin(_generate), std::end(_generate), patch);
+		if (it != std::end(_generate))
+			_generate.erase(it);
+		else
+			_remove.push_back(patch);
 	}
 
-	update_state patch_pipeline::process(size_t _n)
+	update_state patch_pipeline::process()
 	{
-		static constexpr size_t MAX_UPDATES_PER_FRAME = 1024 * 1024;
+		static constexpr size_t MAX_UPDATES_PER_FRAME = 256;
 
 		update_state ustate;
 
-		if (_generate.size() > MAX_UPDATES_PER_FRAME)
-		{
-			gen_meshes(ustate, _generate.data(), MAX_UPDATES_PER_FRAME);
-			_generate.erase(_generate.begin(), _generate.begin() + MAX_UPDATES_PER_FRAME);
-		}
-		else
-		{
-			// Generate all the meshes
-			gen_meshes(ustate, _generate.data(), _generate.size());
-			_generate.clear();
-		}
+		size_t gensz = std::min(_generate.size(), MAX_UPDATES_PER_FRAME);
+		size_t remsz = std::min(_remove.size(), MAX_UPDATES_PER_FRAME);
 
-		if (_remove.size() > MAX_UPDATES_PER_FRAME)
-		{
-			remove_meshes(ustate, _remove.data(), MAX_UPDATES_PER_FRAME);
-			_remove.erase(_remove.begin(), _remove.begin() + MAX_UPDATES_PER_FRAME);
-		}
-		else
-		{
-			// Remove all the meshes
-			remove_meshes(ustate, _remove.data(), _remove.size());
-			_remove.clear();
-		}
+		std::vector<std::shared_ptr<patch>> to_generate, to_remove;
+		std::copy_n(std::begin(_generate), gensz, std::back_inserter(to_generate));
+		std::copy_n(std::begin(_remove), remsz, std::back_inserter(to_remove));
+
+		_generate.erase(_generate.begin(), _generate.begin() + gensz);
+		_remove.erase(_remove.begin(), _remove.begin() + remsz);
 		
+		gen_meshes(ustate, to_generate.data(), to_generate.size());
+		remove_meshes(ustate, to_remove.data(), to_remove.size());
+
 		return ustate;
 	}
 

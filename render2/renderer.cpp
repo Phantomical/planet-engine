@@ -107,7 +107,7 @@ namespace planet_engine
 		movecommands.insert(movecommands.end(), ust.movecommands.begin(), ust.movecommands.end());
 	}
 
-	void renderer::update_meshes(size_t n)
+	void renderer::update_meshes()
 	{
 		static size_t add_max = 0;
 		static size_t remove_max = 0;
@@ -128,7 +128,7 @@ namespace planet_engine
 				pipeline.remove(p);
 			}
 
-			ustate = pipeline.process(n);
+			ustate = pipeline.process();
 
 			data->to_add.clear();
 			data->to_remove.clear();
@@ -169,7 +169,7 @@ namespace planet_engine
 		planet.update(cam_pos, cam_vel);
 
 		// Add and remove meshes
-		update_meshes(COMMANDS_PER_FRAME);
+		update_meshes();
 	}
 	void renderer::render(const glm::dmat4& mvp_mat)
 	{

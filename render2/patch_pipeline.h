@@ -69,11 +69,8 @@ namespace planet_engine
 		
 		buffer_manager _manager;
 
-		// Returns a boolean indicating if the job
-		// had been cancelled. False indicates that
-		// the job had been cancelled
-		std::vector<std::shared_ptr<patch>> _generate;
-		std::vector<std::shared_ptr<patch>> _remove;
+		std::deque<std::shared_ptr<patch>> _generate;
+		std::deque<std::shared_ptr<patch>> _remove;
 
 		std::map<std::shared_ptr<patch>, GLuint> _offsets;
 
@@ -115,6 +112,6 @@ namespace planet_engine
 		buffer_manager& manager();
 		const decltype(_offsets)& patches() const;
 
-		update_state process(size_t n = 4);
+		update_state process();
 	};
 }

@@ -58,7 +58,6 @@ namespace planet_engine
 
 		for (auto& patch : data->leaf_patches)
 		{
-			assert(!patch->is);
 			if (patch->should_subdivide(cam_pos, cam_vel))
 			{
 				patch->split(uinfo);
