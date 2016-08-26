@@ -8,6 +8,7 @@ layout (local_size_x = SIZE) in;
 
 // The total size of the computation
 layout(location = 0) uniform uint size;
+layout(location = 1) uniform uint stride;
 
 layout(binding = 0, std430) buffer Values
 {
@@ -21,7 +22,7 @@ void main()
 	uint index = gl_GlobalInvocationID.x;
 
 	if (index < size)
-		temp[gl_LocalInvocationIndex] = values[index];
+		temp[gl_LocalInvocationIndex] = values[gl_GlobalInvocationID.y * stride + index];
 	else
 		temp[gl_LocalInvocationIndex] = 0.0;
 

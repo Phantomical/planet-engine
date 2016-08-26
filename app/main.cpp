@@ -16,7 +16,7 @@ namespace
 {
 	std::string concat(const std::string& appendix)
 	{
-		return TARGET_DIR + appendix;
+		return appendix;
 	}
 }
 
@@ -72,7 +72,7 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 		break;
 	case GL_DEBUG_TYPE_PERFORMANCE:
 		typestr = "[PERFORMANCE]";
-		return;break;
+		break;
 	case GL_DEBUG_TYPE_PORTABILITY:
 		typestr = "[PORTABILITY]";
 		break;
@@ -96,7 +96,7 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 		break;
 	case GL_DEBUG_SEVERITY_NOTIFICATION:
 		severitystr = "[NOTIFICATION]";
-		return;break;
+		break;
 	default:
 		severitystr = "[UNKNOWN]";
 		break;
@@ -133,7 +133,7 @@ int main()
 
 	aspect = 1.5;
 	
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(DebugProc, nullptr);
 
 	glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -189,15 +189,15 @@ int main()
 				ren2.render(vp_mat * model_mat);
 			}
 
-			glClear(GL_DEPTH_BUFFER_BIT);
-
-			{
-				glm::dmat4 proj_mat = projection(deg2rad(60.0), aspect, 0.05, 10000.0);
-				auto vp_mat = proj_mat * view_mat;
-
-				ren.render(vp_mat);
-				ren2.render(vp_mat * model_mat);
-			}
+			//glClear(GL_DEPTH_BUFFER_BIT);
+			//
+			//{
+			//	glm::dmat4 proj_mat = projection(deg2rad(60.0), aspect, 0.05, 10000.0);
+			//	auto vp_mat = proj_mat * view_mat;
+			//
+			//	ren.render(vp_mat);
+			//	ren2.render(vp_mat * model_mat);
+			//}
 
 			if (glfwGetKey(win, GLFW_KEY_F) != GLFW_PRESS)
 			{
@@ -207,7 +207,7 @@ int main()
 
 			prevpos = CamPos;
 
-			HandleInput(win, 5);
+			HandleInput(win, 20);
 
 			glfwPollEvents();
 			glfwSwapBuffers(win);

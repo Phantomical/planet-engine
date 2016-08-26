@@ -1,6 +1,6 @@
 #pragma once
 
-#undef LOG_TO_FILE
+#define LOG_TO_FILE
 
 #include <sstream>
 #include <iostream>
@@ -25,9 +25,9 @@ typename std::enable_if<sizeof...(Args) != 0>::type _OutputDebug(std::stringstre
 }
 
 #ifdef LOG_TO_FILE
-inline std::ofstream& _GetDebugStream()
+inline std::ostream& _GetDebugStream()
 {
-	static std::ofstream _OutputFile = std::ofstream("log.txt");
+	static std::ostream& _OutputFile = std::cout;
 	_OutputFile.sync_with_stdio();
 	return _OutputFile;
 }
@@ -40,7 +40,7 @@ void OutputDebug(const Args&... args)
 	_OutputDebug(stream, args...);
 
 #ifdef LOG_TO_FILE
-	static std::ofstream& _OutputFile = std::ofstream("log.txt");
+	static std::ostream& _OutputFile = _GetDebugStream();
 	_OutputFile << stream.str();
 #else
 	OutputDebugStringA(stream.str().c_str());

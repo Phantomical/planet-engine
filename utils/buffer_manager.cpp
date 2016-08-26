@@ -1,6 +1,8 @@
 #include "buffer_manager.h"
 #include <cassert>
 
+#define USE_SPARSE 1
+
 namespace planet_engine
 {
 	template<typename T, typename Container>
@@ -25,7 +27,13 @@ namespace planet_engine
 
 		glGenBuffers(1, &_buffer);
 		glBindBuffer(GL_ARRAY_BUFFER, _buffer);
-		glBufferStorage(GL_ARRAY_BUFFER, _max_pages * _page_size, nullptr, 0 & GL_SPARSE_STORAGE_BIT_ARB);
+		glBufferStorage(GL_ARRAY_BUFFER, _max_pages * _page_size, nullptr, 
+#if USE_SPARSE
+			GL_SPARSE_STORAGE_BIT_ARB
+#else
+			0
+#endif
+		);
 
 		pqueue_type queue;
 		_free_list.swap(queue);
@@ -60,10 +68,11 @@ namespace planet_engine
 		while (_max_index * _block_size > _num_pages * _page_size)
 		{
 			assert((_num_pages + 1) <= _max_pages);
+#if USE_SPARSE
 			//Commits the next page allowing it to be used for mesh data
-			//glBufferPageCommitmentARB(GL_ARRAY_BUFFER,
-			//	_num_pages * _page_size, _page_size, GL_TRUE);
-
+			glBufferPageCommitmentARB(GL_ARRAY_BUFFER,
+				_num_pages * _page_size, _page_size, GL_TRUE);
+#endif
 			++_num_pages;
 		}
 

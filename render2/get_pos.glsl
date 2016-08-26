@@ -17,7 +17,6 @@ layout(binding = 0, std140) uniform GeneratorInputs
 };
 layout(binding = 0, std430) buffer PositionOutput
 {
-	dvec3 actual_pos[];
 };
 
 #include "noise.glsl"
@@ -34,5 +33,4 @@ const double scale = infos[gl_GlobalInvocationID.y]._nec.w;
 void main()
 {
 	dvec3 nrm = normalize(pos);
-	actual_pos[gl_GlobalInvocationID.y] = nrm * (noise(nrm) + planet_radius);
 }
