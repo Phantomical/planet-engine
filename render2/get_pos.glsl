@@ -17,6 +17,7 @@ layout(binding = 0, std140) uniform GeneratorInputs
 };
 layout(binding = 0, std430) buffer PositionOutput
 {
+	vec4 pos_offset[];
 };
 
 #include "noise.glsl"
@@ -33,4 +34,5 @@ const double scale = infos[gl_GlobalInvocationID.y]._nec.w;
 void main()
 {
 	dvec3 nrm = normalize(pos);
+	pos_offset[gl_GlobalInvocationID.y].xyz = vec3(nrm * noise(nrm));
 }
