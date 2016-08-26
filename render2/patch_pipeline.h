@@ -92,9 +92,6 @@ namespace planet_engine
 		GLuint _lengths;
 		std::vector<std::weak_ptr<patch>> _patches;
 
-		void gen_vertices(GLuint buffers[3], std::shared_ptr<patch> patch, GLuint* offset);
-		void gen_mesh(GLuint buffers[3], std::shared_ptr<patch> patch, const GLuint* offset);
-
 		void gen_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size);
 		void remove_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size);
 

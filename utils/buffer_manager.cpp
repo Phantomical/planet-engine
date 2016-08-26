@@ -1,7 +1,7 @@
 #include "buffer_manager.h"
 #include <cassert>
 
-#define USE_SPARSE 1
+#define USE_SPARSE 0
 
 namespace planet_engine
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#define LOG_TO_FILE
+#undef LOG_TO_FILE
 
 #include <sstream>
 #include <iostream>

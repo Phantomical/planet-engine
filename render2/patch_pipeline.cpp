@@ -293,9 +293,12 @@ namespace planet_engine
 		//
 		//glUnmapBuffer(GL_COPY_WRITE_BUFFER);
 
-		glDeleteBuffers(1, &tmpbuf);
-		glDeleteBuffers(1, &download_buf);
-		glDeleteBuffers(3, buffers);
+		//glDeleteBuffers(1, &tmpbuf);
+		//glDeleteBuffers(1, &download_buf);
+
+		std::cout << tmpbuf << ' ' << download_buf << ' ' << buffers[2] << std::endl;
+
+		glDeleteBuffers(2, buffers);
 	}
 	void patch_pipeline::remove_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size)
 	{
