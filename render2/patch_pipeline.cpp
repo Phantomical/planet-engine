@@ -26,76 +26,47 @@ namespace planet_engine
 
 	/* Patch Pipeline */
 
-	void patch_pipeline::gen_vertices(GLuint buffers[3], std::shared_ptr<patch> patch, GLuint* offset)
+	void patch_pipeline::dispatch_vertex_gen(GLuint size, GLuint vertices, GLuint infos)
 	{
-		glGenBuffers(3, buffers);
-
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffers[0]);
-		glBufferStorage(GL_SHADER_STORAGE_BUFFER, VERTEX_BUFFER_SIZE, nullptr, 0);
-
-		mesh_info info = {
-			patch->pos,
-			patch->data->planet_radius,
-			patch->nwc,
-			SKIRT_DEPTH,
-			patch->nec,
-			patch->data->scale,
-			patch->swc,
-			0.0, // Padding
-			patch->sec
-		};
-
-		glBindBuffer(GL_UNIFORM_BUFFER, buffers[1]);
-		glBufferData(GL_UNIFORM_BUFFER, sizeof(mesh_info), &info, GL_STATIC_DRAW);
-
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffers[2]);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(double) * 4, nullptr, GL_STREAM_READ);
-
-		*offset = _manager.alloc_block();
-
 		glUseProgram(_vertex_gen);
-		// Bind output buffer
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[0]);
-		// Bind uniforms
-		glBindBufferBase(GL_UNIFORM_BUFFER, 0, buffers[1]);
-		// Dispatch compute shader to fill the output buffer
-		glDispatchCompute(GEN_VERTEX_INVOCATIONS, GEN_VERTEX_INVOCATIONS, 1);
 
-		glUseProgram(_get_pos);
-		// Bind position readback buffer
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[2]);
-		// Dispatch position calculation shader
-		glDispatchCompute(1, 1, 1);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertices);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, infos);
 
-		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+		glDispatchCompute(GEN_VERTEX_INVOCATIONS, GEN_VERTEX_INVOCATIONS, size);
 	}
-	void patch_pipeline::gen_mesh(GLuint buffers[3], std::shared_ptr<patch> patch, const GLuint* offset)
+	void patch_pipeline::dispatch_get_pos(GLuint size, GLuint infos, GLuint positions)
 	{
-		GLuint actual_offset = rounddown(*offset * _manager.block_size(), _ssbo_alignment);
-		GLuint offset_param = (*offset * _manager.block_size() - actual_offset) / sizeof(float);
+		glUseProgram(_get_pos);
 
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, infos);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, positions);
+
+		glDispatchCompute(1, size, 1);
+	}
+	void patch_pipeline::dispatch_gen_meshes(GLuint size, GLuint infos, GLuint vertices, GLuint offsets)
+	{
 		glUseProgram(_meshgen);
-		// Bind input buffer
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[0]);
-		// Bind output buffer range
-		glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, _manager.buffer(),
-			actual_offset, _manager.block_size() + offset_param * sizeof(float));
 
-		glUniform1ui(1, offset_param);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, infos);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertices);
 
-		// Dispatch compute shader to fill the output buffer range
-		glDispatchCompute(NUM_INVOCATIONS, 1, 1);
-		glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT);
+		for (GLuint i = 0; i < size; ++i)
+		{
+			GLuint actual_offset = rounddown(offsets[i] * _manager.block_size(), _ssbo_alignment);
+			GLuint offset_param = (offsets[i] * _manager.block_size() - actual_offset) / sizeof(float);
 
-		glBindBuffer(GL_COPY_READ_BUFFER, buffers[2]);
-		glGetBufferSubData(GL_COPY_READ_BUFFER, 0, sizeof(glm::dvec3), &patch->actual_pos);
+			glUniform1ui(1, offset_param);
+			// InvocationIndex
+			glUniform1ui(2, i);
 
-		// Delete buffers
-		glDeleteBuffers(3, buffers);
+			// Bind input buffer range
+			// Bind output buffer range
+			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, _manager.buffer(),
+				actual_offset, _manager.block_size() + offset_param * sizeof(float));
 
-		buffers[0] = 0;
-		buffers[1] = 0;
-		buffers[2] = 0;
+			glDispatchCompute(NUM_INVOCATIONS, 1, 1);
+		}
 	}
 
 	void patch_pipeline::gen_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size)
@@ -109,7 +80,7 @@ namespace planet_engine
 
 		GLuint buffers[3];
 		GLuint offsetbuf;
-		GLuint* offsets = new GLuint[size];
+		GLuint* offsets = new GLuint[256];
 
 		GLuint vbo_stride = VERTEX_BUFFER_SIZE;
 		GLuint pos_stride = sizeof(double) * 4;
