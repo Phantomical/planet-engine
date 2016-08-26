@@ -31,6 +31,10 @@ layout(binding = 0, std140) uniform GeneratorInputs
 {
 	PatchInfo infos[256];
 };
+layout(binding = 1, std140) uniform Offsets
+{
+	uint offsets[256];
+};
 
 const dvec3 pos = infos[InvocationIndex]._pos.xyz;
 const dvec3 nwc = infos[InvocationIndex]._nwc.xyz;
@@ -137,14 +141,16 @@ void main()
 		displacement = float(-skirt_depth * scale);
 	}
 
-	values[offset + index * STRIDE + 0] = vertex.x;
-	values[offset + index * STRIDE + 1] = vertex.y;
-	values[offset + index * STRIDE + 2] = vertex.z;
-	values[offset + index * STRIDE + 3] = normal.x;
-	values[offset + index * STRIDE + 4] = normal.y;
-	values[offset + index * STRIDE + 5] = normal.z;
-	values[offset + index * STRIDE + 6] = displacement;
-	values[offset + index * STRIDE + 7] = outdir.x;
-	values[offset + index * STRIDE + 8] = outdir.y;
-	values[offset + index * STRIDE + 9] = outdir.z;
+	uint outindex = offset + index * STRIDE;
+
+	values[outindex + 0] = vertex.x;
+	values[outindex + 1] = vertex.y;
+	values[outindex + 2] = vertex.z;
+	values[outindex + 3] = normal.x;
+	values[outindex + 4] = normal.y;
+	values[outindex + 5] = normal.z;
+	values[outindex + 6] = displacement;
+	values[outindex + 7] = outdir.x;
+	values[outindex + 8] = outdir.y;
+	values[outindex + 9] = outdir.z;
 }
