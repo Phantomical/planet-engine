@@ -32,6 +32,7 @@ bool isLine = false;
 
 void HandleInput(GLFWwindow* win, double displacement)
 {
+	displacement = displacement;
 
 	KeyboardInterface Keyboard(win);
 	dmat4 rot = (dmat4)CamRot;
@@ -47,9 +48,9 @@ void HandleInput(GLFWwindow* win, double displacement)
 
 	// Translate camera
 	if (Keyboard[GLFW_KEY_W])
-		CamPos += front * displacement;
-	if (Keyboard[GLFW_KEY_S])
 		CamPos -= front * displacement;
+	if (Keyboard[GLFW_KEY_S])
+		CamPos += front * displacement;
 	if (Keyboard[GLFW_KEY_D])
 		CamPos += left * displacement;
 	if (Keyboard[GLFW_KEY_A])
@@ -61,17 +62,17 @@ void HandleInput(GLFWwindow* win, double displacement)
 
 	// Rotate camera
 	if (Keyboard[GLFW_KEY_I])
-		NewCamRot.y -= 0.1f;
-	if (Keyboard[GLFW_KEY_K])
 		NewCamRot.y += 0.1f;
+	if (Keyboard[GLFW_KEY_K])
+		NewCamRot.y -= 0.1f;
 	if (Keyboard[GLFW_KEY_J])
-		NewCamRot.x -= 0.1f;
-	if (Keyboard[GLFW_KEY_L])
 		NewCamRot.x += 0.1f;
-	if (Keyboard[GLFW_KEY_U])
-		NewCamRot.z -= 0.1f;
+	if (Keyboard[GLFW_KEY_L])
+		NewCamRot.x -= 0.1f;
 	if (Keyboard[GLFW_KEY_O])
 		NewCamRot.z += 0.1f;
+	if (Keyboard[GLFW_KEY_U])
+		NewCamRot.z -= 0.1f;
 
 	// Reset camera position and rotation
 	if (Keyboard[GLFW_KEY_SPACE])
