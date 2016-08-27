@@ -7,8 +7,10 @@ using namespace planet_engine::util;
 class FanGenTest : public AppBase
 {
 public:
-	static constexpr size_t size = 128 * 128 * 128 * 4;
-	static constexpr size_t bounds = 128;
+	typedef double scalar;
+
+	static constexpr size_t bounds = 96;
+	static constexpr size_t size = bounds * bounds * bounds;
 	GLuint pt;
 	GLuint program;
 
@@ -29,23 +31,23 @@ public:
 	{
 		GenShaders();
 
-		double* pts = new double[size];
+		scalar* pts = new scalar[size * 4];
 
-		for (size_t i = 0; i < size; i += 4)
+		for (size_t i = 0; i < size * 4; i += 4)
 		{
 			size_t ctr = i / 4;
 
 			glm::dvec4 tmp;
 
 			pts[i + 0] = tmp.x = (ctr / (bounds * bounds));
-			pts[i + 1] = tmp.y = (ctr & (bounds * bounds - 1)) / bounds;
-			pts[i + 2] = tmp.z = (ctr & (bounds - 1));
+			pts[i + 1] = tmp.y = (ctr % (bounds * bounds)) / bounds;
+			pts[i + 2] = tmp.z = (ctr % (bounds));
 			pts[i + 3] = tmp.w = 0.5;
 		}
 
 		glGenBuffers(1, &pt);
 		glBindBuffer(GL_ARRAY_BUFFER, pt);
-		glBufferData(GL_ARRAY_BUFFER, size * sizeof(double), pts, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, size * sizeof(scalar) * 4, pts, GL_STATIC_DRAW);
 
 		delete[] pts;
 
@@ -79,10 +81,10 @@ public:
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 
-		glVertexAttribLPointer(0, 3, GL_DOUBLE, sizeof(double) * 4, (void*)0);
-		glVertexAttribLPointer(1, 1, GL_DOUBLE, sizeof(double) * 4, (void*)(sizeof(double) * 3));
+		glVertexAttribLPointer(0, 3, GL_DOUBLE, sizeof(scalar) * 4, (void*)0);
+		glVertexAttribLPointer(1, 1, GL_DOUBLE, sizeof(scalar) * 4, (void*)(sizeof(scalar) * 3));
 
-		glDrawArrays(GL_POINTS, 0, size / 4);
+		glDrawArrays(GL_POINTS, 0, size);
 	}
 	void OnUpdateFrame() override
 	{
