@@ -53,8 +53,8 @@ namespace planet_engine
 
 		for (GLuint i = 0; i < size; ++i)
 		{
-			GLuint actual_offset = rounddown(offsets[i] * _manager.block_size(), _ssbo_alignment);
-			GLuint offset_param = (offsets[i] * _manager.block_size() - actual_offset) / sizeof(float);
+			GLuint actual_offset = 0;//rounddown(offsets[i] * _manager.block_size(), _ssbo_alignment);
+			GLuint offset_param = 0;//(offsets[i] * _manager.block_size() - actual_offset) / sizeof(float);
 
 			glUniform1ui(1, offset_param);
 			// InvocationIndex
@@ -264,11 +264,8 @@ namespace planet_engine
 		//
 		//glUnmapBuffer(GL_COPY_WRITE_BUFFER);
 
-		//glDeleteBuffers(1, &tmpbuf);
-		//glDeleteBuffers(1, &download_buf);
-
-		std::cout << tmpbuf << ' ' << download_buf << ' ' << buffers[2] << std::endl;
-
+		glDeleteBuffers(1, &tmpbuf);
+		glDeleteBuffers(1, &download_buf);
 		glDeleteBuffers(2, buffers);
 	}
 	void patch_pipeline::remove_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size)

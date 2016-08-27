@@ -13,7 +13,8 @@
 #include <map>
 
 namespace planet_engine
-{	typedef sparse_managed_buffer buffer_manager;
+{	
+	typedef sparse_managed_buffer buffer_manager;
 
 	class renderer
 	{
@@ -25,7 +26,7 @@ namespace planet_engine
 		static constexpr size_t MESH_SIZE = constants::MESH_SIZE;
 		static constexpr size_t COMPUTE_GROUP_SIZE = constants::COMPUTE_GROUP_SIZE;
 		// The maximum number of mesh blocks that can be allocated in GPU memory
-		static constexpr size_t NUM_BLOCKS = 1 << 8;
+		static constexpr size_t NUM_BLOCKS = 1 << 16;
 		static constexpr double SCALE = 100.0;
 		static constexpr size_t COMMANDS_PER_FRAME = 16;
 
