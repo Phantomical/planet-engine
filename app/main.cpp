@@ -136,11 +136,11 @@ int main()
 	//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(DebugProc, nullptr);
 
-	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClearColor(0.05, 0.0, 0.0, 1.0);
 	glEnable(GL_DEPTH_TEST);
 
 	glEnable(GL_CULL_FACE);
-	glFrontFace(GL_CCW);
+	glFrontFace(GL_CW);
 	glCullFace(GL_BACK);
 
 	glPointSize(10);
@@ -158,14 +158,14 @@ int main()
 
 			program = shader.program();
 
-			glProgramUniform3f(program, 1, 0.0, 0.0, 1.0);
+			glProgramUniform3f(program, 1, 0.0, 0.0, -1.0);
 		}
 
 
 		renderer ren{ program, 6700000.0 };
-		//renderer ren2{ program, 500000.0, 5.0 };
+		renderer ren2{ program, 1000000.0, 5.0 };
 
-		CamPos = glm::dvec3(0.0, 0.0, -ren.planet.data->planet_radius - 400000.0);
+		CamPos = glm::dvec3(0.0, 0.0, ren.planet.data->planet_radius + 1000);
 		CamRot = glm::dquat(1.0, 0.0, 0.0, 0.0);
 
 		ren.update(CamPos);
@@ -182,22 +182,22 @@ int main()
 			glm::dmat4 model_mat = glm::translate(glm::dmat4(1.0), glm::dvec3(10000000.0, 0.0, 0.0));
 
 			{
-				glm::dmat4 proj_mat = projection(deg2rad(60.0), aspect, 10000.0, 1000000000.0);
+				glm::dmat4 proj_mat = glm::perspective(deg2rad(60.0), aspect, 10000.0, 1000000000.0);
 				auto vp_mat = proj_mat * view_mat;
 
 				ren.render(vp_mat);
 				//ren2.render(vp_mat * model_mat);
 			}
 
-			//glClear(GL_DEPTH_BUFFER_BIT);
-			//
-			//{
-			//	glm::dmat4 proj_mat = projection(deg2rad(60.0), aspect, 0.05, 10000.0);
-			//	auto vp_mat = proj_mat * view_mat;
-			//
-			//	ren.render(vp_mat);
-			//	ren2.render(vp_mat * model_mat);
-			//}
+			glClear(GL_DEPTH_BUFFER_BIT);
+			
+			{
+				glm::dmat4 proj_mat = glm::perspective(deg2rad(60.0), aspect, 0.05, 10000.0);
+				auto vp_mat = proj_mat * view_mat;
+			
+				ren.render(vp_mat);
+				ren2.render(vp_mat * model_mat);
+			}
 
 			if (glfwGetKey(win, GLFW_KEY_F) != GLFW_PRESS)
 			{
