@@ -169,7 +169,7 @@ int main()
 		CamRot = glm::dquat(1.0, 0.0, 0.0, 0.0);
 
 		ren.update(CamPos);
-		//ren2.update(CamPos);
+		ren2.update(CamPos);
 
 		glm::dvec3 prevpos = CamPos;
 
@@ -186,7 +186,7 @@ int main()
 				auto vp_mat = proj_mat * view_mat;
 
 				ren.render(vp_mat);
-				//ren2.render(vp_mat * model_mat);
+				ren2.render(vp_mat * model_mat);
 			}
 
 			glClear(GL_DEPTH_BUFFER_BIT);
@@ -202,7 +202,7 @@ int main()
 			if (glfwGetKey(win, GLFW_KEY_F) != GLFW_PRESS)
 			{
 				ren.update(CamPos, CamPos - prevpos);
-				//ren2.update(CamPos - glm::dvec3(10000000.0, 0.0, 0.0), CamPos - prevpos);
+				ren2.update(CamPos - glm::dvec3(10000000.0, 0.0, 0.0), CamPos - prevpos);
 			}
 
 			prevpos = CamPos;

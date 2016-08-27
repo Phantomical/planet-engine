@@ -97,6 +97,7 @@ namespace planet_engine
 		void dispatch_gen_meshes(GLuint size, GLuint infos, GLuint verts, GLuint offsets);
 		void dispatch_length_calc(GLuint size, GLuint offsets, GLuint lengths, GLuint positions);
 		void dispatch_max_calc(GLuint size, GLuint lengths);
+		void dispatch_compact(GLuint size, GLuint lengths, GLuint target);
 
 		void gen_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size);
 		void remove_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size);

@@ -106,6 +106,22 @@ namespace planet_engine
 			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		}
 	}
+	void patch_pipeline::dispatch_compact(GLuint size, GLuint lengths, GLuint target)
+	{
+		static constexpr size_t NUM_RESULT_ELEMS = SIDE_LEN * SIDE_LEN;
+		static constexpr size_t COMPACT_SHADER_GROUP_SIZE = 16;
+
+		glUseProgram(_compact);
+
+		glUniform1ui(0, (GLuint)size);
+		glUniform1ui(1, NUM_RESULT_ELEMS);
+
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lengths);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, target);
+
+		glDispatchCompute(((size + COMPACT_SHADER_GROUP_SIZE - 1) / COMPACT_SHADER_GROUP_SIZE), 1, 1);
+
+	}
 
 	void patch_pipeline::gen_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size)
 	{
@@ -116,24 +132,35 @@ namespace planet_engine
 			return;
 		assert(size <= 256);
 
-		GLuint buffers[3];
-		GLuint offsetbuf;
-		GLuint* offsets = new GLuint[256];
+		GLuint offsets[256];
+		GLuint buffers[6];
+
+		glCreateBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
+
+		// Buffers
+		GLuint vertices = buffers[0];
+		GLuint infos = buffers[1];
+		GLuint positions = buffers[2];
+		GLuint lengths = buffers[3];
+		GLuint offsetbuf = buffers[4];
+		GLuint downloads = buffers[5];
 
 		GLuint vbo_stride = VERTEX_BUFFER_SIZE;
 		GLuint pos_stride = sizeof(double) * 4;
+		GLuint tmp_stride = roundup<GLuint>(sizeof(float) * NUM_RESULT_ELEMS, _ssbo_alignment);
 
-		glGenBuffers(3, buffers);
-		glGenBuffers(1, &offsetbuf);
+		glNamedBufferData(vertices, VERTEX_BUFFER_SIZE * size, nullptr, GL_STATIC_DRAW);
+		glNamedBufferData(downloads, sizeof(float) * size, nullptr, GL_STREAM_COPY);
+		glNamedBufferData(positions, sizeof(glm::dvec4) * size, nullptr, GL_STATIC_READ);
+		glNamedBufferData(lengths, NUM_RESULT_ELEMS * sizeof(float), nullptr, GL_STATIC_DRAW);
 
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffers[0]);
-		glBufferStorage(GL_SHADER_STORAGE_BUFFER, vbo_stride * size, nullptr, 0);
-
-		glBindBuffer(GL_UNIFORM_BUFFER, buffers[1]);
+		glBindBuffer(GL_UNIFORM_BUFFER, infos);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(mesh_info) * 256, nullptr, GL_STATIC_DRAW);
+
 
 		{
 			mesh_info* infos = (mesh_info*)glMapBufferRange(GL_UNIFORM_BUFFER, 0, sizeof(mesh_info) * 256, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+			
 			for (size_t i = 0; i < size; ++i)
 			{
 				mesh_info info = {
@@ -148,28 +175,46 @@ namespace planet_engine
 					patches[i]->sec
 				};
 
+				GLuint offset = _manager.alloc_block();
+
 				infos[i] = info;
-				offsets[i] = _manager.alloc_block();
+				offsets[i] = offset;
+
+				MoveCommand mvcmd;
+				mvcmd.is_new = GL_TRUE;
+				mvcmd.source = (GLuint)ustate.commands.size();
+				mvcmd.dest = offset;
+
+				DrawElementsIndirectCommand cmd;
+				cmd.count = NUM_ELEMENTS;
+				cmd.instanceCount = 1;
+				cmd.firstIndex = 0;
+				cmd.baseVertex = _manager.block_size() / VERTEX_SIZE * offsets[i];
+				cmd.baseInstance = 0;
+
+				ustate.movecommands.push_back(mvcmd);
+				ustate.commands.push_back(cmd);
+
+				_offsets.insert(std::make_pair(patches[i], offsets[i]));
 			}
 			glUnmapBuffer(GL_UNIFORM_BUFFER);
 		}
 
-		glBindBuffer(GL_UNIFORM_BUFFER, offsetbuf);
-		glBufferData(GL_UNIFORM_BUFFER, sizeof(GLuint) * 256, offsets, GL_STATIC_DRAW);
-
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffers[2]);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, pos_stride * size, nullptr, GL_STREAM_READ);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, offsetbuf);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * 256, offsets, GL_STATIC_DRAW);
 
 		/* Generate Vertices */
-		dispatch_vertex_gen(size, buffers[0], buffers[1]);
+		dispatch_vertex_gen(size, vertices, infos);
 
 		/* Calculate patch positions */
-		dispatch_get_pos(size, buffers[1], buffers[2]);
+		dispatch_get_pos(size, infos, positions);
 
 		/* Generate Meshes */
 		glUseProgram(_meshgen);
 
-		glBindBufferBase(GL_UNIFORM_BUFFER, 0, buffers[1]);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, infos);
+		// Bind input buffer range
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertices);
 
 		for (GLuint i = 0; i < size; ++i)
 		{
@@ -180,8 +225,6 @@ namespace planet_engine
 			// InvocationIndex
 			glUniform1ui(2, i);
 
-			// Bind input buffer range
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[0]);
 			// Bind output buffer range
 			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, _manager.buffer(),
 				actual_offset, _manager.block_size() + offset_param * sizeof(float));
@@ -190,24 +233,19 @@ namespace planet_engine
 		}
 
 		glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT);
-
-		GLuint tmpbuf;
-		GLuint tmp_stride = roundup<GLuint>(sizeof(float) * NUM_RESULT_ELEMS, _ssbo_alignment);
-
-		glGenBuffers(1, &tmpbuf);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, tmpbuf);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, tmp_stride * size, nullptr, GL_STATIC_DRAW);
-
-		glBindBuffer(GL_COPY_WRITE_BUFFER, buffers[2]);
-
+		
 		/* Calculate lengths from the position */
-		dispatch_length_calc(size, offsetbuf, tmpbuf, buffers[2]);
+		dispatch_length_calc(size, offsetbuf, lengths, positions);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 		/* Calculate the maximum */
-		dispatch_max_calc(size, tmpbuf);
+		dispatch_max_calc(size, lengths);
 
-		void* mem = glMapBufferRange(GL_COPY_WRITE_BUFFER, 0, pos_stride * size, GL_MAP_READ_BIT);
+		/* Compact and send the results to a CPU buffer */
+		dispatch_compact(size, lengths, downloads);
+		
+		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
+		void* mem = glMapNamedBufferRange(positions, 0, pos_stride * size, GL_MAP_READ_BIT);
 		util::spaced_buffer<glm::vec3> vals(pos_stride, mem);
 
 		for (size_t i = 0; i < size; ++i)
@@ -216,43 +254,7 @@ namespace planet_engine
 			patches[i]->actual_pos = patches[i]->pos + offset;
 		}
 
-		glUnmapBuffer(GL_COPY_WRITE_BUFFER);
-
-		GLuint download_buf;
-		glGenBuffers(1, &download_buf);
-		glBindBuffer(GL_COPY_WRITE_BUFFER, download_buf);
-		glBufferData(GL_COPY_WRITE_BUFFER, sizeof(float) * size, nullptr, GL_STREAM_READ);
-
-		/* Compact and send the results to a CPU buffer */
-		glUseProgram(_compact);
-
-		glUniform1ui(0, (GLuint)size);
-		glUniform1ui(1, tmp_stride / sizeof(float));
-
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, tmpbuf);
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, download_buf);
-
-		glDispatchCompute((GLuint)((size + 15) / 16), 1, 1);
-
-		for (size_t i = 0; i < size; ++i)
-		{
-			MoveCommand mvcmd;
-			mvcmd.is_new = GL_TRUE;
-			mvcmd.source = (GLuint)ustate.commands.size();
-			mvcmd.dest = offsets[i];
-
-			DrawElementsIndirectCommand cmd;
-			cmd.count = NUM_ELEMENTS;
-			cmd.instanceCount = 1;
-			cmd.firstIndex = 0;
-			cmd.baseVertex = _manager.block_size() / VERTEX_SIZE * offsets[i];
-			cmd.baseInstance = 0;
-
-			ustate.movecommands.push_back(mvcmd);
-			ustate.commands.push_back(cmd);
-
-			_offsets.insert(std::make_pair(patches[i], offsets[i]));
-		}
+		glUnmapNamedBuffer(buffers[2]);
 
 		//glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
 		//float* distances = (float*)glMapBuffer(GL_COPY_WRITE_BUFFER, GL_READ_ONLY);
@@ -264,9 +266,8 @@ namespace planet_engine
 		//
 		//glUnmapBuffer(GL_COPY_WRITE_BUFFER);
 
-		glDeleteBuffers(1, &tmpbuf);
-		glDeleteBuffers(1, &download_buf);
-		glDeleteBuffers(2, buffers);
+
+		glGenBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
 	}
 	void patch_pipeline::remove_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size)
 	{
