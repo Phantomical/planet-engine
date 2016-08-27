@@ -68,6 +68,44 @@ namespace planet_engine
 			glDispatchCompute(NUM_INVOCATIONS, 1, 1);
 		}
 	}
+	void patch_pipeline::dispatch_length_calc(GLuint size, GLuint offsets, GLuint lengths, GLuint positions)
+	{
+		static constexpr size_t NUM_RESULT_ELEMS = SIDE_LEN * SIDE_LEN;
+		static constexpr size_t NUM_COMPUTE_GROUPS = (NUM_RESULT_ELEMS + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
+
+		glUseProgram(_length_calc);
+
+		glUniform1ui(0, NUM_RESULT_ELEMS);
+		glUniform1ui(1, _manager.block_size());
+
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, positions);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 1, offsets);
+
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, _manager.buffer());
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lengths);
+
+		glDispatchCompute(NUM_COMPUTE_GROUPS, (GLuint)size, 1);
+	}
+	void patch_pipeline::dispatch_max_calc(GLuint size, GLuint lengths)
+	{
+		static constexpr size_t NUM_RESULT_ELEMS = SIDE_LEN * SIDE_LEN;
+
+		glUseProgram(_max_calc);
+		glUniform1ui(1, sizeof(float) * NUM_RESULT_ELEMS);
+
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lengths);
+
+		for (GLuint s = SIDE_LEN * SIDE_LEN; s > 1; s = (s + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE)
+		{
+			glUniform1ui(0, s);
+
+			GLuint compute_size = (GLuint)((s + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE);
+
+			glDispatchCompute(compute_size, size, 1);
+
+			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+		}
+	}
 
 	void patch_pipeline::gen_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size)
 	{
@@ -123,22 +161,10 @@ namespace planet_engine
 		glBufferData(GL_SHADER_STORAGE_BUFFER, pos_stride * size, nullptr, GL_STREAM_READ);
 
 		/* Generate Vertices */
-		glUseProgram(_vertex_gen);
-
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[0]);
-		glBindBufferBase(GL_UNIFORM_BUFFER, 0, buffers[1]);
-
-		glDispatchCompute(GEN_VERTEX_INVOCATIONS, GEN_VERTEX_INVOCATIONS, (GLuint)size);
+		dispatch_vertex_gen(size, buffers[0], buffers[1]);
 
 		/* Calculate patch positions */
-		glUseProgram(_get_pos);
-
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[2]);
-		glBindBufferBase(GL_UNIFORM_BUFFER, 0, buffers[1]);
-
-		glDispatchCompute(1, (GLuint)size, 1);
-
-		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT);
+		dispatch_get_pos(size, buffers[1], buffers[2]);
 
 		/* Generate Meshes */
 		glUseProgram(_meshgen);
@@ -175,37 +201,11 @@ namespace planet_engine
 		glBindBuffer(GL_COPY_WRITE_BUFFER, buffers[2]);
 
 		/* Calculate lengths from the position */
-		glUseProgram(_length_calc);
-
-		glUniform1ui(0, NUM_RESULT_ELEMS);
-		glUniform1ui(1, _manager.block_size());
-
-		glBindBufferBase(GL_UNIFORM_BUFFER, 0, buffers[2]);
-		glBindBufferBase(GL_UNIFORM_BUFFER, 1, offsetbuf);
-
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, _manager.buffer());
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, tmpbuf);
-
-		glDispatchCompute(NUM_COMPUTE_GROUPS, (GLuint)size, 1);
-
+		dispatch_length_calc(size, offsetbuf, tmpbuf, buffers[2]);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 		/* Calculate the maximum */
-		glUseProgram(_max_calc);
-		glUniform1ui(1, tmp_stride);
-
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, tmpbuf);
-
-		for (size_t s = SIDE_LEN * SIDE_LEN; s > 1; s = (s + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE)
-		{
-			glUniform1ui(0, (GLuint)s);
-
-			GLuint compute_size = (GLuint)((s + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE);
-
-			glDispatchCompute(compute_size, (GLuint)size, 1);
-
-			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-		}
+		dispatch_max_calc(size, tmpbuf);
 
 		void* mem = glMapBufferRange(GL_COPY_WRITE_BUFFER, 0, pos_stride * size, GL_MAP_READ_BIT);
 		util::spaced_buffer<glm::vec3> vals(pos_stride, mem);
