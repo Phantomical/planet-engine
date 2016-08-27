@@ -273,7 +273,7 @@ namespace planet_engine
 				if (!compile_status(stage) && has_stage(stage))
 				{
 					error = true;
-					printf("%s", shader_log(stage).c_str());
+					//printf("%s", shader_log(stage).c_str());
 				}
 			}
 

@@ -136,7 +136,7 @@ int main()
 	//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(DebugProc, nullptr);
 
-	glClearColor(0.05, 0.0, 0.0, 1.0);
+	glClearColor(0.05f, 0.0f, 0.0f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
 
 	glEnable(GL_CULL_FACE);

@@ -68,8 +68,7 @@ vec3 calc_normal(in uvec2 idx, in vec3 v)
 	vec3 vs[3] = {
 		v - read(actual - uvec2(0, 1)).xyz,
 		v - read(actual + uvec2(1, 0)).xyz,
-		v - read(actual + uvec2(0, 1)).xyz//,
-		//v - read(actual - uvec2(1, 0)).xyz
+		v - read(actual + uvec2(0, 1)).xyz
 	};
 
 	vec3 nrm = vec3(0.0);
@@ -77,7 +76,6 @@ vec3 calc_normal(in uvec2 idx, in vec3 v)
 	nrm += cross(vs[0], vs[1]);
 	nrm += cross(vs[1], vs[2]);
 	nrm += cross(vs[2], vs[0]);
-	//nrm += cross(vs[3], vs[0]);
 
 	return normalize(nrm);
 }
