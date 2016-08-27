@@ -564,7 +564,7 @@ double _add_12(dvec3 v){
 	return (_mix_8(v))+(_mul_11(v));
 }
 double _max_13(dvec3 v){
-	return max(_add_12(v), 0.0);
+	return max(_add_12(v), -5.0);
 }
 double noise(dvec3 v)
 {
