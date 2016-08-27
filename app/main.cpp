@@ -165,7 +165,7 @@ int main()
 		renderer ren{ program, 6700000.0 };
 		renderer ren2{ program, 1000000.0, 5.0 };
 
-		CamPos = glm::dvec3(0.0, 0.0, ren.planet.data->planet_radius + 1000);
+		CamPos = glm::dvec3(0.0, ren.planet.data->planet_radius + 1000, 0.0);
 		CamRot = glm::dquat(1.0, 0.0, 0.0, 0.0);
 
 		ren.update(CamPos);
