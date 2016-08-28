@@ -189,15 +189,15 @@ int main()
 				//ren2.render(vp_mat * model_mat);
 			}
 
-			glClear(GL_DEPTH_BUFFER_BIT);
-			
-			{
-				glm::dmat4 proj_mat = glm::perspective(deg2rad(60.0), aspect, 0.05, 10000.0);
-				auto vp_mat = proj_mat * view_mat;
-			
-				ren.render(vp_mat);
-				//ren2.render(vp_mat * model_mat);
-			}
+			//glClear(GL_DEPTH_BUFFER_BIT);
+			//
+			//{
+			//	glm::dmat4 proj_mat = glm::perspective(deg2rad(60.0), aspect, 0.05, 10000.0);
+			//	auto vp_mat = proj_mat * view_mat;
+			//
+			//	ren.render(vp_mat);
+			//	//ren2.render(vp_mat * model_mat);
+			//}
 
 			if (glfwGetKey(win, GLFW_KEY_F) != GLFW_PRESS)
 			{
