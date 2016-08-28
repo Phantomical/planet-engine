@@ -202,6 +202,7 @@ namespace planet_engine
 		glUseProgram(_meshgen);
 
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0, infos);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 1, offsetbuf);
 		// Bind input buffer range
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertices);
 

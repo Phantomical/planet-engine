@@ -36,15 +36,15 @@ layout(binding = 1, std140) uniform Offsets
 	uint offsets[256];
 };
 
-const dvec3 pos = infos[InvocationIndex]._pos.xyz;
-const dvec3 nwc = infos[InvocationIndex]._nwc.xyz;
-const dvec3 nec = infos[InvocationIndex]._nec.xyz;
-const dvec3 swc = infos[InvocationIndex]._swc.xyz;
-const dvec3 sec = infos[InvocationIndex]._sec.xyz;
+const dvec3 pos            = infos[InvocationIndex]._pos.xyz;
+const dvec3 nwc            = infos[InvocationIndex]._nwc.xyz;
+const dvec3 nec            = infos[InvocationIndex]._nec.xyz;
+const dvec3 swc            = infos[InvocationIndex]._swc.xyz;
+const dvec3 sec            = infos[InvocationIndex]._sec.xyz;
 const double planet_radius = infos[InvocationIndex]._pos.w;
-const double skirt_depth = infos[InvocationIndex]._nwc.w;
-const double scale = infos[InvocationIndex]._nec.w;
-const double INTERP = (1.0 / double(SIDE_LEN - 1));
+const double skirt_depth   = infos[InvocationIndex]._nwc.w;
+const double scale         = infos[InvocationIndex]._nec.w;
+const double INTERP        = (1.0 / double(SIDE_LEN - 1));
 // Array size in the x and y direction
 const uint array_size = SIDE_LEN + 2;
 // Total array size
