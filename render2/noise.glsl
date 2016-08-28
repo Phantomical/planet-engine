@@ -512,11 +512,8 @@ double _scale_7(dvec3 v){
 double _mul_8(dvec3 v){
 	return (_scale_7(v))*(500.0);
 }
-double _max_9(dvec3 v){
-	return max(_mul_8(v), -5.0);
-}
 double noise(dvec3 v)
 {
-	return _max_9(v);
+	return _mul_8(v);
 }
 

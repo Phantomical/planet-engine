@@ -83,7 +83,7 @@ namespace planet_engine
 		void merge(update_info& info);
 
 	private:
-		static constexpr double MULT = 1.0 / (25.0);
+		static constexpr double MULT = 1.0 / (10.0);
 
 	public:
 		bool should_subdivide(const glm::dvec3& cam_pos, const glm::dvec3& cam_vel) const;

@@ -39,8 +39,8 @@ namespace planet_engine
 	{
 		glUseProgram(_get_pos);
 
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, infos);
-		glBindBufferBase(GL_UNIFORM_BUFFER, 0, positions);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, infos);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, positions);
 
 		glDispatchCompute(1, size, 1);
 	}
@@ -154,11 +154,9 @@ namespace planet_engine
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, downloads);
 		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * size, nullptr, GL_STREAM_COPY);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, positions);
-		// Warning: Setting this to GL_STATIC_DRAW or GL_STATIC_READ causes glMapBufferRange
-		//          later on to return nonsense. 
-		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(double) * 4 * size, nullptr, GL_DYNAMIC_COPY);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * size, nullptr, GL_STATIC_DRAW);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, lengths);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, NUM_RESULT_ELEMS * sizeof(float), nullptr, GL_STATIC_DRAW);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, NUM_RESULT_ELEMS * sizeof(float) * size, nullptr, GL_STATIC_DRAW);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, infos);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(mesh_info) * 256, nullptr, GL_STATIC_DRAW);
@@ -258,18 +256,22 @@ namespace planet_engine
 		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
 
 		glBindBuffer(GL_COPY_WRITE_BUFFER, positions);
-		void* mem = glMapBufferRange(GL_COPY_WRITE_BUFFER, 0, pos_stride * size, GL_MAP_READ_BIT);
-		util::spaced_buffer<glm::vec3> vals(pos_stride, mem);
+		void* mem = glMapBufferRange(GL_COPY_WRITE_BUFFER, 0, sizeof(glm::vec4) * size, GL_MAP_READ_BIT);
+		util::spaced_buffer<glm::vec3> vals(sizeof(glm::vec4), mem);
 
 		for (size_t i = 0; i < size; ++i)
 		{
 			glm::dvec3 offset = (glm::dvec3)vals[i];
+
+			if (glm::length(offset) > patches[i]->side_length())
+				continue;
+
 			patches[i]->actual_pos = patches[i]->pos + offset;
 		}
 
 		glUnmapBuffer(GL_COPY_WRITE_BUFFER);
 
-		//glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
+		//glBindBuffer(GL_COPY_WRITE_BUFFER, downloads);
 		//float* distances = (float*)glMapBuffer(GL_COPY_WRITE_BUFFER, GL_READ_ONLY);
 		//
 		//for (size_t i = 0; i < size; ++i)
@@ -278,6 +280,8 @@ namespace planet_engine
 		//}
 		//
 		//glUnmapBuffer(GL_COPY_WRITE_BUFFER);
+
+		std::cout << buffers[0] << std::endl;
 
 		glDeleteBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
 	}

@@ -27,5 +27,5 @@ const dvec3 pos = infos[gl_GlobalInvocationID.y]._pos.xyz;
 void main()
 {
 	dvec3 nrm = normalize(pos);
-	pos_offset[gl_GlobalInvocationID.y].xyz = vec3(nrm * noise(nrm));
+	pos_offset[gl_GlobalInvocationID.y] = vec4(nrm * noise(nrm), 0.0);
 }
