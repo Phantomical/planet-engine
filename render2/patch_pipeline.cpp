@@ -135,7 +135,7 @@ namespace planet_engine
 		GLuint offsets[256];
 		GLuint buffers[6];
 
-		glCreateBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
+		glGenBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
 
 		// Buffers
 		GLuint vertices = buffers[0];
@@ -149,12 +149,16 @@ namespace planet_engine
 		GLuint pos_stride = sizeof(double) * 4;
 		GLuint tmp_stride = roundup<GLuint>(sizeof(float) * NUM_RESULT_ELEMS, _ssbo_alignment);
 
-		glNamedBufferData(vertices, VERTEX_BUFFER_SIZE * size, nullptr, GL_STATIC_DRAW);
-		glNamedBufferData(downloads, sizeof(float) * size, nullptr, GL_STREAM_COPY);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, vertices);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, VERTEX_BUFFER_SIZE * size, nullptr, GL_STATIC_DRAW);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, downloads);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * size, nullptr, GL_STREAM_COPY);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, positions);
 		// Warning: Setting this to GL_STATIC_DRAW or GL_STATIC_READ causes glMapBufferRange
 		//          later on to return nonsense. 
-		glNamedBufferData(positions, sizeof(double) * 4 * size, nullptr, GL_STREAM_READ);
-		glNamedBufferData(lengths, NUM_RESULT_ELEMS * sizeof(float), nullptr, GL_STATIC_DRAW);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(double) * 4 * size, nullptr, GL_DYNAMIC_COPY);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, lengths);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, NUM_RESULT_ELEMS * sizeof(float), nullptr, GL_STATIC_DRAW);
 
 		glBindBuffer(GL_UNIFORM_BUFFER, infos);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(mesh_info) * 256, nullptr, GL_STATIC_DRAW);
@@ -187,7 +191,8 @@ namespace planet_engine
 			glUnmapBuffer(GL_UNIFORM_BUFFER);
 		}
 
-		glNamedBufferData(offsetbuf, sizeof(GLuint) * 256, offsets, GL_STATIC_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, offsetbuf);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(GLuint) * 256, offsets, GL_STATIC_DRAW);
 
 		/* Generate Vertices */
 		dispatch_vertex_gen(size, vertices, infos);

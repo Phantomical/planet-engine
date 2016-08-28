@@ -133,7 +133,7 @@ int main()
 
 	aspect = 1.5;
 	
-	//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(DebugProc, nullptr);
 
 	glClearColor(0.05f, 0.0f, 0.0f, 1.0f);
