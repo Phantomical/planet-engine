@@ -280,9 +280,7 @@ namespace planet_engine
 		//}
 		//
 		//glUnmapBuffer(GL_COPY_WRITE_BUFFER);
-
-		std::cout << buffers[0] << std::endl;
-
+		
 		glDeleteBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
 	}
 	void patch_pipeline::remove_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size)
