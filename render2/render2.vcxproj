@@ -152,6 +152,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)surface;D:\projects\src;$(SolutionDir)utils</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>LOG_TO_FILE</PreprocessorDefinitions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
