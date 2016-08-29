@@ -49,7 +49,7 @@ const double INTERP        = (1.0 / double(SIDE_LEN - 1));
 // Array size in the x and y direction
 const uint array_size = SIDE_LEN + 2;
 // Total array size
-const uint size = array_size * array_size;
+const uint num_vertices    = SIDE_LEN * SIDE_LEN + 4 * SIDE_LEN;
 
 dvec3 to_sphere(in dvec3 v)
 {
@@ -85,7 +85,7 @@ void main()
 {
 	const uint index = gl_GlobalInvocationID.x;
 
-	if (!(index < size))
+	if (!(index < num_vertices))
 		return;
 
 	vec3 vertex;
