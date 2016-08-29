@@ -335,19 +335,26 @@ double _pow_9(dvec3 v){
 	return double(pow(float(_mul_8(v)), float(_mul_4(v))));
 }
 double _mul_10(dvec3 v){
-	return (_pow_9(v))*(2.0);
+	return (_pow_9(v))*(3.14159265359);
 }
-double _sub_11(dvec3 v){
-	return (_mul_10(v))-(1.0);
+double _add_11(dvec3 v){
+	return (_mul_10(v))+(3.76991118431);
 }
-double _scale_12(dvec3 v){
-	return _sub_11(v * (vec3(75.0)));
+double _sin_12(dvec3 v)
+{
+	return double(sin(float(_add_11(v))));
 }
-double _mul_13(dvec3 v){
-	return (_scale_12(v))*(500.0);
+double _add_13(dvec3 v){
+	return (_sin_12(v))+(0.75);
+}
+double _scale_14(dvec3 v){
+	return _add_13(v * (vec3(75.0)));
+}
+double _mul_15(dvec3 v){
+	return (_scale_14(v))*(500.0);
 }
 double noise(dvec3 v)
 {
-	return _mul_13(v);
+	return _mul_15(v);
 }
 

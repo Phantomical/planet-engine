@@ -7,6 +7,7 @@ layout(local_size_x = 128) in;
 layout(location = 0) uniform uint SIDE_LEN;
 layout(location = 1) uniform uint offset;
 layout(location = 2) uniform uint InvocationIndex;
+layout(location = 3) uniform uint base_offset;
 
 struct PatchInfo
 {
@@ -139,7 +140,7 @@ void main()
 		displacement = float(-skirt_depth * scale);
 	}
 
-	uint outindex = offset + index * STRIDE;
+	uint outindex = base_offset + offset + index * STRIDE;
 
 	values[outindex + 0] = vertex.x;
 	values[outindex + 1] = vertex.y;

@@ -199,12 +199,15 @@ namespace planet_engine
 		dispatch_get_pos(size, infos, positions);
 
 		/* Generate Meshes */
+		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		glUseProgram(_meshgen);
 
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0, infos);
 		glBindBufferBase(GL_UNIFORM_BUFFER, 1, offsetbuf);
 		// Bind input buffer range
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertices);
+
+		//glUniform1ui(3, _manager.block_size() / sizeof(float));
 
 		for (GLuint i = 0; i < size; ++i)
 		{
@@ -214,6 +217,7 @@ namespace planet_engine
 			glUniform1ui(1, offset_param);
 			// InvocationIndex
 			glUniform1ui(2, i);
+			glUniform1ui(3, 0);
 
 			// Bind output buffer range
 			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, _manager.buffer(),
