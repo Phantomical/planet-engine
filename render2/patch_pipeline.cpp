@@ -220,8 +220,7 @@ namespace planet_engine
 			glUniform1ui(3, actual_offset / sizeof(float));
 
 			// Bind output buffer range
-			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, _manager.buffer(), 0,
-				offsets[i] * _manager.block_size() + _manager.block_size() * 2);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, _manager.buffer());
 
 			glDispatchCompute(NUM_INVOCATIONS, 1, 1);
 		}
