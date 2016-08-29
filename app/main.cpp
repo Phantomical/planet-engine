@@ -199,7 +199,7 @@ int main()
 				ren2.render(vp_mat * model_mat);
 			}
 
-			if (glfwGetKey(win, GLFW_KEY_F) != GLFW_PRESS)
+			if (glfwGetKey(win, GLFW_KEY_F) == GLFW_PRESS)
 			{
 				ren.update(CamPos, (CamPos - prevpos) * 60.0);
 				ren2.update(CamPos - glm::dvec3(10000000.0, 0.0, 0.0), CamPos - prevpos);

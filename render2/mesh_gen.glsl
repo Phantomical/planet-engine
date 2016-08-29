@@ -85,7 +85,7 @@ void main()
 {
 	const uint index = gl_GlobalInvocationID.x;
 
-	if (index >= size)
+	if (!(index < size))
 		return;
 
 	vec3 vertex;
