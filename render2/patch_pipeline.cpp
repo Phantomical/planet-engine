@@ -206,21 +206,19 @@ namespace planet_engine
 		glBindBufferBase(GL_UNIFORM_BUFFER, 1, offsetbuf);
 		// Bind input buffer range
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertices);
+		// Bind output buffer range
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, _manager.buffer());
 
-		//glUniform1ui(3, _manager.block_size() / sizeof(float));
+		glUniform1ui(3, _manager.block_size() / sizeof(float));
 
 		for (GLuint i = 0; i < size; ++i)
 		{
 			GLuint actual_offset = rounddown(offsets[i] * _manager.block_size(), _ssbo_alignment);
 			GLuint offset_param = (offsets[i] * _manager.block_size() - actual_offset) / sizeof(float);
 
-			glUniform1ui(1, offset_param);
+			glUniform1ui(1, offsets[i]);
 			// InvocationIndex
 			glUniform1ui(2, i);
-			glUniform1ui(3, actual_offset / sizeof(float));
-
-			// Bind output buffer range
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, _manager.buffer());
 
 			glDispatchCompute(NUM_INVOCATIONS, 1, 1);
 		}
@@ -284,7 +282,7 @@ namespace planet_engine
 		//}
 		//
 		//glUnmapBuffer(GL_COPY_WRITE_BUFFER);
-		
+
 		glDeleteBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
 	}
 	void patch_pipeline::remove_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size)

@@ -113,6 +113,8 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 void WindowCallback(GLFWwindow* win, int xsz, int ysz)
 {
 	glViewport(0, 0, xsz, ysz);
+	if (ysz == 0)
+		ysz = 1;
 	aspect = double(xsz) / double(ysz);
 }
 
@@ -199,7 +201,7 @@ int main()
 				ren2.render(vp_mat * model_mat);
 			}
 
-			if (glfwGetKey(win, GLFW_KEY_F) == GLFW_PRESS)
+			if (glfwGetKey(win, GLFW_KEY_F) != GLFW_PRESS)
 			{
 				ren.update(CamPos, (CamPos - prevpos) * 60.0);
 				ren2.update(CamPos - glm::dvec3(10000000.0, 0.0, 0.0), CamPos - prevpos);
