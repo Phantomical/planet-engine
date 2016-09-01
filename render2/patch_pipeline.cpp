@@ -49,24 +49,15 @@ namespace planet_engine
 		glUseProgram(_meshgen);
 
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0, infos);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 1, offsets);
+		// Bind input buffer range
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertices);
+		// Bind output buffer range
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, _manager.buffer());
 
-		for (GLuint i = 0; i < size; ++i)
-		{
-			GLuint actual_offset = 0;//rounddown(offsets[i] * _manager.block_size(), _ssbo_alignment);
-			GLuint offset_param = 0;//(offsets[i] * _manager.block_size() - actual_offset) / sizeof(float);
+		glUniform1ui(1, _manager.block_size() / sizeof(float));
 
-			glUniform1ui(1, offset_param);
-			// InvocationIndex
-			glUniform1ui(2, i);
-
-			// Bind input buffer range
-			// Bind output buffer range
-			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, _manager.buffer(),
-				actual_offset, _manager.block_size() + offset_param * sizeof(float));
-
-			glDispatchCompute(NUM_INVOCATIONS, 1, 1);
-		}
+		glDispatchCompute(NUM_INVOCATIONS, size, 1);
 	}
 	void patch_pipeline::dispatch_length_calc(GLuint size, GLuint offsets, GLuint lengths, GLuint positions)
 	{
@@ -200,26 +191,14 @@ namespace planet_engine
 
 		/* Generate Meshes */
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-		glUseProgram(_meshgen);
-
-		glBindBufferBase(GL_UNIFORM_BUFFER, 0, infos);
-		glBindBufferBase(GL_UNIFORM_BUFFER, 1, offsetbuf);
-		// Bind input buffer range
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertices);
-		// Bind output buffer range
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, _manager.buffer());
-
-		glUniform1ui(1, _manager.block_size() / sizeof(float));
-
-		glDispatchCompute(NUM_INVOCATIONS, size, 1);
-
-		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-
+		dispatch_gen_meshes(size, infos, vertices, offsetbuf);
+		
 		/* Calculate lengths from the position */
-		dispatch_length_calc(size, offsetbuf, lengths, positions);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+		dispatch_length_calc(size, offsetbuf, lengths, positions);
 
 		/* Calculate the maximum */
+		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		dispatch_max_calc(size, lengths);
 
 		/* Compact and send the results to a CPU buffer */
