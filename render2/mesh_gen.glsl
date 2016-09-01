@@ -5,16 +5,18 @@
 layout(local_size_x = 128) in;
 
 layout(location = 0) uniform uint SIDE_LEN;
-layout(location = 1) uniform uint offset;
-layout(location = 2) uniform uint InvocationIndex;
+layout(location = 1) uniform uint block_size;
 
 struct PatchInfo
 {
-	dvec4 _pos;
-	dvec4 _nwc;
-	dvec4 _nec;
-	dvec4 _swc;
-	dvec4 _sec;
+	dvec3 pos;
+	double planet_radius;
+	dvec3 nwc;
+	double skirt_depth;
+	dvec3 nec;
+	double scale;
+	dvec3 swc;
+	dvec3 sec;
 };
 
 
@@ -33,22 +35,24 @@ layout(binding = 0, std140) uniform GeneratorInputs
 };
 layout(binding = 1, std140) uniform Offsets
 {
-	uint offsets[256];
+	uvec4 offsets[64];
 };
 
-const dvec3 pos = infos[InvocationIndex]._pos.xyz;
-const dvec3 nwc = infos[InvocationIndex]._nwc.xyz;
-const dvec3 nec = infos[InvocationIndex]._nec.xyz;
-const dvec3 swc = infos[InvocationIndex]._swc.xyz;
-const dvec3 sec = infos[InvocationIndex]._sec.xyz;
-const double planet_radius = infos[InvocationIndex]._pos.w;
-const double skirt_depth = infos[InvocationIndex]._nwc.w;
-const double scale = infos[InvocationIndex]._nec.w;
-const double INTERP = (1.0 / double(SIDE_LEN - 1));
+#define InvocationIndex gl_GlobalInvocationID.y
+
+const dvec3 pos            = infos[InvocationIndex].pos;
+const dvec3 nwc            = infos[InvocationIndex].nwc;
+const dvec3 nec            = infos[InvocationIndex].nec;
+const dvec3 swc            = infos[InvocationIndex].swc;
+const dvec3 sec            = infos[InvocationIndex].sec;
+const double planet_radius = infos[InvocationIndex].planet_radius;
+const double skirt_depth   = infos[InvocationIndex].skirt_depth;
+const double scale         = infos[InvocationIndex].scale;
+const double INTERP        = (1.0 / double(SIDE_LEN - 1));
 // Array size in the x and y direction
-const uint array_size = SIDE_LEN + 2;
+const uint array_size      = SIDE_LEN + 2;
 // Total array size
-const uint size = array_size * array_size;
+const uint num_vertices    = SIDE_LEN * SIDE_LEN + 4 * SIDE_LEN;
 
 dvec3 to_sphere(in dvec3 v)
 {
@@ -65,10 +69,11 @@ vec3 calc_normal(in uvec2 idx, in vec3 v)
 	uvec2 actual = idx + uvec2(1);
 
 	// Order N, E, S, W
-	vec3 vs[3] = {
+	vec3 vs[] = {
 		v - read(actual - uvec2(0, 1)).xyz,
 		v - read(actual + uvec2(1, 0)).xyz,
-		v - read(actual + uvec2(0, 1)).xyz
+		v - read(actual + uvec2(0, 1)).xyz,
+		v - read(actual - uvec2(1, 0)).xyz
 	};
 
 	vec3 nrm = vec3(0.0);
@@ -84,7 +89,7 @@ void main()
 {
 	const uint index = gl_GlobalInvocationID.x;
 
-	if (index >= size)
+	if (!(index < num_vertices))
 		return;
 
 	vec3 vertex;
@@ -139,7 +144,7 @@ void main()
 		displacement = float(-skirt_depth * scale);
 	}
 
-	uint outindex = offset + index * STRIDE;
+	uint outindex = offsets[InvocationIndex / 4][InvocationIndex % 4] * block_size + index * STRIDE;
 
 	values[outindex + 0] = vertex.x;
 	values[outindex + 1] = vertex.y;

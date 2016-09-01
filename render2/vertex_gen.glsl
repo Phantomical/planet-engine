@@ -25,16 +25,16 @@ layout(binding = 0, std140) uniform GeneratorInputs
 
 #include "noise.glsl"
 
-const dvec3 pos = infos[gl_GlobalInvocationID.z]._pos.xyz;
-const dvec3 nwc = infos[gl_GlobalInvocationID.z]._nwc.xyz;
-const dvec3 nec = infos[gl_GlobalInvocationID.z]._nec.xyz;
-const dvec3 swc = infos[gl_GlobalInvocationID.z]._swc.xyz;
-const dvec3 sec = infos[gl_GlobalInvocationID.z]._sec.xyz;
+const dvec3 pos            = infos[gl_GlobalInvocationID.z]._pos.xyz;
+const dvec3 nwc            = infos[gl_GlobalInvocationID.z]._nwc.xyz;
+const dvec3 nec            = infos[gl_GlobalInvocationID.z]._nec.xyz;
+const dvec3 swc            = infos[gl_GlobalInvocationID.z]._swc.xyz;
+const dvec3 sec            = infos[gl_GlobalInvocationID.z]._sec.xyz;
 const double planet_radius = infos[gl_GlobalInvocationID.z]._pos.w;
-const double skirt_depth = infos[gl_GlobalInvocationID.z]._nwc.w;
-const double scale = infos[gl_GlobalInvocationID.z]._nec.w;
-const double INTERP = (1.0 / double(SIDE_LEN - 1));
-const uint array_size = SIDE_LEN + 2;
+const double skirt_depth   = infos[gl_GlobalInvocationID.z]._nwc.w;
+const double scale         = infos[gl_GlobalInvocationID.z]._nec.w;
+const double INTERP        = (1.0 / double(SIDE_LEN - 1));
+const uint array_size      = SIDE_LEN + 2;
 
 dvec3 to_sphere(in dvec3 v)
 {

@@ -39,10 +39,10 @@ public:
 
 			glm::dvec4 tmp;
 
-			pts[i + 0] = tmp.x = (ctr / (bounds * bounds));
-			pts[i + 1] = tmp.y = (ctr % (bounds * bounds)) / bounds;
-			pts[i + 2] = tmp.z = (ctr % (bounds));
-			pts[i + 3] = tmp.w = 0.5;
+			pts[i + 0] = tmp.x = double((ctr / (bounds * bounds)));
+			pts[i + 1] = tmp.y = double((ctr % (bounds * bounds)) / bounds);
+			pts[i + 2] = tmp.z = double((ctr % (bounds)));
+			pts[i + 3] = tmp.w = double(0.5);
 		}
 
 		glGenBuffers(1, &pt);

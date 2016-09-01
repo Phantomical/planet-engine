@@ -113,6 +113,8 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 void WindowCallback(GLFWwindow* win, int xsz, int ysz)
 {
 	glViewport(0, 0, xsz, ysz);
+	if (ysz == 0)
+		ysz = 1;
 	aspect = double(xsz) / double(ysz);
 }
 
@@ -163,13 +165,13 @@ int main()
 
 
 		renderer ren{ program, 6700000.0 };
-		//renderer ren2{ program, 1000000.0, 5.0 };
+		renderer ren2{ program, 1000000.0, 5.0 };
 
 		CamPos = glm::dvec3(0.0, 0.0, ren.planet.data->planet_radius + 100000);
 		CamRot = glm::dquat(1.0, 0.0, 0.0, 0.0);
 
 		ren.update(CamPos);
-		//ren2.update(CamPos);
+		ren2.update(CamPos);
 
 		glm::dvec3 prevpos = CamPos;
 
@@ -186,23 +188,23 @@ int main()
 				auto vp_mat = proj_mat * view_mat;
 
 				ren.render(vp_mat);
-				//ren2.render(vp_mat * model_mat);
+				ren2.render(vp_mat * model_mat);
 			}
 
 			glClear(GL_DEPTH_BUFFER_BIT);
 			
 			{
-				glm::dmat4 proj_mat = glm::perspective(deg2rad(60.0), aspect, 0.05, 10000.0);
+				glm::dmat4 proj_mat = glm::perspective(deg2rad(60.0), aspect, 0.05, 10100.0);
 				auto vp_mat = proj_mat * view_mat;
 			
 				ren.render(vp_mat);
-				//ren2.render(vp_mat * model_mat);
+				ren2.render(vp_mat * model_mat);
 			}
 
 			if (glfwGetKey(win, GLFW_KEY_F) != GLFW_PRESS)
 			{
 				ren.update(CamPos, (CamPos - prevpos) * 60.0);
-				//ren2.update(CamPos - glm::dvec3(10000000.0, 0.0, 0.0), CamPos - prevpos);
+				ren2.update(CamPos - glm::dvec3(10000000.0, 0.0, 0.0), CamPos - prevpos);
 			}
 
 			prevpos = CamPos;

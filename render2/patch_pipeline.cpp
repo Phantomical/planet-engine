@@ -123,7 +123,7 @@ namespace planet_engine
 
 	}
 
-	void patch_pipeline::gen_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size)
+	void patch_pipeline::gen_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, GLuint size)
 	{
 		static constexpr size_t NUM_RESULT_ELEMS = SIDE_LEN * SIDE_LEN;
 		static constexpr size_t NUM_COMPUTE_GROUPS = (NUM_RESULT_ELEMS + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
@@ -199,29 +199,21 @@ namespace planet_engine
 		dispatch_get_pos(size, infos, positions);
 
 		/* Generate Meshes */
+		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		glUseProgram(_meshgen);
 
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0, infos);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 1, offsetbuf);
 		// Bind input buffer range
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertices);
+		// Bind output buffer range
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, _manager.buffer());
 
-		for (GLuint i = 0; i < size; ++i)
-		{
-			GLuint actual_offset = rounddown(offsets[i] * _manager.block_size(), _ssbo_alignment);
-			GLuint offset_param = (offsets[i] * _manager.block_size() - actual_offset) / sizeof(float);
+		glUniform1ui(1, _manager.block_size() / sizeof(float));
 
-			glUniform1ui(1, offset_param);
-			// InvocationIndex
-			glUniform1ui(2, i);
+		glDispatchCompute(NUM_INVOCATIONS, size, 1);
 
-			// Bind output buffer range
-			glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 1, _manager.buffer(),
-				actual_offset, _manager.block_size() + offset_param * sizeof(float));
-
-			glDispatchCompute(NUM_INVOCATIONS, 1, 1);
-		}
-
-		glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT);
+		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 		/* Calculate lengths from the position */
 		dispatch_length_calc(size, offsetbuf, lengths, positions);
@@ -280,10 +272,12 @@ namespace planet_engine
 		//}
 		//
 		//glUnmapBuffer(GL_COPY_WRITE_BUFFER);
-		
+
 		glDeleteBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
+
+		glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
 	}
-	void patch_pipeline::remove_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size)
+	void patch_pipeline::remove_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, GLuint size)
 	{
 		for (size_t i = 0; i < size; ++i)
 		{
