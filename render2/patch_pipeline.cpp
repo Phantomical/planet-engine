@@ -123,7 +123,6 @@ namespace planet_engine
 			return;
 		assert(size <= 256);
 
-		GLuint offsets[256];
 		GLuint buffers[6];
 
 		glGenBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
@@ -152,8 +151,11 @@ namespace planet_engine
 		glBindBuffer(GL_UNIFORM_BUFFER, infos);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(mesh_info) * 256, nullptr, GL_STATIC_DRAW);
 
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, offsetbuf);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * 256, nullptr, GL_STATIC_DRAW);
 		{
 			mesh_info* infos = (mesh_info*)glMapBufferRange(GL_UNIFORM_BUFFER, 0, sizeof(mesh_info) * 256, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+			GLuint* offsets = (GLuint*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(GLuint) * 256, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 
 			for (size_t i = 0; i < size; ++i)
 			{
@@ -173,15 +175,31 @@ namespace planet_engine
 
 				GLuint offset = _manager.alloc_block();
 
+				MoveCommand mvcmd;
+				mvcmd.is_new = GL_TRUE;
+				mvcmd.source = (GLuint)ustate.commands.size();
+				mvcmd.dest = offset;
+
+				DrawElementsIndirectCommand cmd;
+				cmd.count = NUM_ELEMENTS;
+				cmd.instanceCount = 1;
+				cmd.firstIndex = 0;
+				cmd.baseVertex = _manager.block_size() / VERTEX_SIZE * offset;
+				cmd.baseInstance = 0;
+
+				ustate.movecommands.push_back(mvcmd);
+				ustate.commands.push_back(cmd);
+
+				_offsets.insert(std::make_pair(patches[i], offset));
+
 				infos[i] = info;
 				offsets[i] = offset;
 
 			}
 			glUnmapBuffer(GL_UNIFORM_BUFFER);
+			glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 		}
 
-		glBindBuffer(GL_UNIFORM_BUFFER, offsetbuf);
-		glBufferData(GL_UNIFORM_BUFFER, sizeof(GLuint) * 256, offsets, GL_STATIC_DRAW);
 
 		/* Generate Vertices */
 		dispatch_vertex_gen(size, vertices, infos);
@@ -192,7 +210,7 @@ namespace planet_engine
 		/* Generate Meshes */
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		dispatch_gen_meshes(size, infos, vertices, offsetbuf);
-		
+
 		/* Calculate lengths from the position */
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		dispatch_length_calc(size, offsetbuf, lengths, positions);
@@ -203,27 +221,7 @@ namespace planet_engine
 
 		/* Compact and send the results to a CPU buffer */
 		dispatch_compact(size, lengths, downloads);
-
-		for (size_t i = 0; i < size; ++i)
-		{
-			MoveCommand mvcmd;
-			mvcmd.is_new = GL_TRUE;
-			mvcmd.source = (GLuint)ustate.commands.size();
-			mvcmd.dest = offsets[i];
-
-			DrawElementsIndirectCommand cmd;
-			cmd.count = NUM_ELEMENTS;
-			cmd.instanceCount = 1;
-			cmd.firstIndex = 0;
-			cmd.baseVertex = _manager.block_size() / VERTEX_SIZE * offsets[i];
-			cmd.baseInstance = 0;
-
-			ustate.movecommands.push_back(mvcmd);
-			ustate.commands.push_back(cmd);
-
-			_offsets.insert(std::make_pair(patches[i], offsets[i]));
-		}
-
+		
 		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
 
 		glBindBuffer(GL_COPY_WRITE_BUFFER, positions);
@@ -232,7 +230,7 @@ namespace planet_engine
 		for (size_t i = 0; i < size; ++i)
 		{
 			glm::dvec4 offset = glm::dvec4(vals[i]);
-			
+
 			patches[i]->actual_pos = glm::dvec3(offset);
 		}
 
