@@ -248,17 +248,13 @@ namespace planet_engine
 		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
 
 		glBindBuffer(GL_COPY_WRITE_BUFFER, positions);
-		void* mem = glMapBufferRange(GL_COPY_WRITE_BUFFER, 0, sizeof(glm::vec4) * size, GL_MAP_READ_BIT);
-		util::spaced_buffer<glm::vec3> vals(sizeof(glm::vec4), mem);
+		const glm::vec4* vals = (glm::vec4*)glMapBufferRange(GL_COPY_WRITE_BUFFER, 0, sizeof(glm::vec4) * size, GL_MAP_READ_BIT);
 
 		for (size_t i = 0; i < size; ++i)
 		{
-			glm::dvec3 offset = (glm::dvec3)vals[i];
-
-			if (glm::length(offset) > patches[i]->side_length())
-				continue;
-
-			patches[i]->actual_pos = patches[i]->pos + offset;
+			glm::dvec4 offset = glm::dvec4(vals[i]);
+			
+			patches[i]->actual_pos = glm::dvec3(offset);
 		}
 
 		glUnmapBuffer(GL_COPY_WRITE_BUFFER);
@@ -272,6 +268,8 @@ namespace planet_engine
 		//}
 		//
 		//glUnmapBuffer(GL_COPY_WRITE_BUFFER);
+
+
 
 		glDeleteBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
 
