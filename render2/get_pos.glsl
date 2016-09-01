@@ -22,10 +22,12 @@ layout(binding = 0, std430) buffer PositionOutput
 
 #include "noise.glsl"
 
-const dvec3 pos = infos[gl_GlobalInvocationID.y]._pos.xyz;
+const dvec3 pos    = infos[gl_GlobalInvocationID.y]._pos.xyz;
+const double scale = infos[gl_GlobalInvocationID.z]._nec.w;
 
 void main()
 {
 	dvec3 nrm = normalize(pos);
-	pos_offset[gl_GlobalInvocationID.y] = vec4(nrm * noise(nrm), 0.0);
+	double displacement = noise(nrm) * scale;
+	pos_offset[gl_GlobalInvocationID.y] = vec4(pos + nrm * displacement, displacement);
 }
