@@ -5,9 +5,7 @@
 layout(local_size_x = 128) in;
 
 layout(location = 0) uniform uint SIDE_LEN;
-layout(location = 1) uniform uint offset;
-layout(location = 2) uniform uint InvocationIndex;
-layout(location = 3) uniform uint block_size;
+layout(location = 1) uniform uint block_size;
 
 struct PatchInfo
 {
@@ -39,6 +37,8 @@ layout(binding = 1, std140) uniform Offsets
 {
 	uvec4 offsets[64];
 };
+
+#define InvocationIndex gl_GlobalInvocationID.y
 
 const dvec3 pos            = infos[InvocationIndex].pos;
 const dvec3 nwc            = infos[InvocationIndex].nwc;

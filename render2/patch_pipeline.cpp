@@ -137,8 +137,6 @@ namespace planet_engine
 
 		glGenBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
 
-		memset(offsets, 0, sizeof(offsets));
-
 		// Buffers
 		GLuint vertices = buffers[0];
 		GLuint infos = buffers[1];
@@ -211,21 +209,11 @@ namespace planet_engine
 		// Bind output buffer range
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, _manager.buffer());
 
-		glUniform1ui(3, _manager.block_size() / sizeof(float));
+		glUniform1ui(1, _manager.block_size() / sizeof(float));
 
-		for (GLuint i = 0; i < size; ++i)
-		{
-			GLuint actual_offset = rounddown(offsets[i] * _manager.block_size(), _ssbo_alignment);
-			GLuint offset_param = (offsets[i] * _manager.block_size() - actual_offset) / sizeof(float);
+		glDispatchCompute(NUM_INVOCATIONS, size, 1);
 
-			glUniform1ui(1, offsets[i]);
-			// InvocationIndex
-			glUniform1ui(2, i);
-
-			glDispatchCompute(NUM_INVOCATIONS, 1, 1);
-		}
-
-		glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT);
+		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 		/* Calculate lengths from the position */
 		dispatch_length_calc(size, offsetbuf, lengths, positions);
@@ -286,6 +274,8 @@ namespace planet_engine
 		//glUnmapBuffer(GL_COPY_WRITE_BUFFER);
 
 		glDeleteBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
+
+		glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
 	}
 	void patch_pipeline::remove_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, GLuint size)
 	{
