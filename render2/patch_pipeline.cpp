@@ -231,7 +231,7 @@ namespace planet_engine
 		{
 			glm::dvec4 offset = glm::dvec4(vals[i]);
 
-			patches[i]->actual_pos = glm::dvec3(offset);
+			patches[i]->actual_pos = patches[i]->pos + glm::dvec3(offset);
 		}
 
 		glUnmapBuffer(GL_COPY_WRITE_BUFFER);

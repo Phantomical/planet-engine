@@ -29,5 +29,5 @@ void main()
 {
 	dvec3 nrm = normalize(pos);
 	double displacement = noise(nrm) * scale;
-	pos_offset[gl_GlobalInvocationID.y] = vec4(pos + nrm * displacement, displacement);
+	pos_offset[gl_GlobalInvocationID.y] = vec4(nrm * displacement, displacement);
 }
