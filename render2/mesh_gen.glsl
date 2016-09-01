@@ -37,7 +37,7 @@ layout(binding = 0, std140) uniform GeneratorInputs
 };
 layout(binding = 1, std140) uniform Offsets
 {
-	uint offsets[256];
+	uvec4 offsets[64];
 };
 
 const dvec3 pos            = infos[InvocationIndex].pos;
@@ -144,7 +144,7 @@ void main()
 		displacement = float(-skirt_depth * scale);
 	}
 
-	uint outindex = offset * block_size + index * STRIDE;
+	uint outindex = offsets[InvocationIndex / 4][InvocationIndex % 4] * block_size + index * STRIDE;
 
 	values[outindex + 0] = vertex.x;
 	values[outindex + 1] = vertex.y;

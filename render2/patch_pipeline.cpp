@@ -123,7 +123,7 @@ namespace planet_engine
 
 	}
 
-	void patch_pipeline::gen_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size)
+	void patch_pipeline::gen_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, GLuint size)
 	{
 		static constexpr size_t NUM_RESULT_ELEMS = SIDE_LEN * SIDE_LEN;
 		static constexpr size_t NUM_COMPUTE_GROUPS = (NUM_RESULT_ELEMS + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
@@ -136,6 +136,8 @@ namespace planet_engine
 		GLuint buffers[6];
 
 		glGenBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
+
+		memset(offsets, 0, sizeof(offsets));
 
 		// Buffers
 		GLuint vertices = buffers[0];
@@ -285,7 +287,7 @@ namespace planet_engine
 
 		glDeleteBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
 	}
-	void patch_pipeline::remove_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, size_t size)
+	void patch_pipeline::remove_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, GLuint size)
 	{
 		for (size_t i = 0; i < size; ++i)
 		{
