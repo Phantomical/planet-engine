@@ -220,6 +220,7 @@ namespace planet_engine
 		//dispatch_max_calc(size, lengths);
 		//
 		///* Compact and send the results to a CPU buffer */
+		//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		//dispatch_compact(size, lengths, downloads);
 		
 		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
