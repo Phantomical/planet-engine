@@ -146,10 +146,12 @@ namespace planet_engine
 			glUniform1ui(0, ustate.movecommands.size());
 			
 			GLuint buffers[2];
-			glCreateBuffers(2, buffers);
+			glGenBuffers(2, buffers);
 			
-			glNamedBufferData(buffers[0], ustate.movecommands.size() * sizeof(MoveCommand), ustate.movecommands.data(), GL_STATIC_DRAW);
-			glNamedBufferData(buffers[1], ustate.commands.size() * sizeof(DrawElementsIndirectCommand), ustate.commands.data(), GL_STATIC_DRAW);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffers[0]);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, ustate.movecommands.size() * sizeof(MoveCommand), ustate.movecommands.data(), GL_STATIC_DRAW);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, buffers[1]);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, ustate.commands.size() * sizeof(DrawElementsIndirectCommand), ustate.commands.data(), GL_STATIC_DRAW);
 			
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, buffers[0]);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, buffers[1]);
