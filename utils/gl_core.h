@@ -153,9 +153,20 @@ typedef unsigned int GLhandleARB;
 extern "C" {
 #endif /*__cplusplus*/
 
+extern int ogl_ext_ARB_buffer_storage;
 extern int ogl_ext_ARB_sparse_buffer;
 extern int ogl_ext_ARB_shader_draw_parameters;
 extern int ogl_ext_ARB_clip_control;
+
+#define GL_BUFFER_IMMUTABLE_STORAGE 0x821F
+#define GL_BUFFER_STORAGE_FLAGS 0x8220
+#define GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT 0x00004000
+#define GL_CLIENT_STORAGE_BIT 0x0200
+#define GL_DYNAMIC_STORAGE_BIT 0x0100
+#define GL_MAP_COHERENT_BIT 0x0080
+#define GL_MAP_PERSISTENT_BIT 0x0040
+#define GL_MAP_READ_BIT 0x0001
+#define GL_MAP_WRITE_BIT 0x0002
 
 #define GL_SPARSE_BUFFER_PAGE_SIZE_ARB 0x82F8
 #define GL_SPARSE_STORAGE_BIT_ARB 0x0400
@@ -728,9 +739,9 @@ extern int ogl_ext_ARB_clip_control;
 #define GL_MAP_FLUSH_EXPLICIT_BIT 0x0010
 #define GL_MAP_INVALIDATE_BUFFER_BIT 0x0008
 #define GL_MAP_INVALIDATE_RANGE_BIT 0x0004
-#define GL_MAP_READ_BIT 0x0001
+/*Copied GL_MAP_READ_BIT From: ARB_buffer_storage*/
 #define GL_MAP_UNSYNCHRONIZED_BIT 0x0020
-#define GL_MAP_WRITE_BIT 0x0002
+/*Copied GL_MAP_WRITE_BIT From: ARB_buffer_storage*/
 #define GL_MAX_ARRAY_TEXTURE_LAYERS 0x88FF
 #define GL_MAX_CLIP_DISTANCES 0x0D32
 #define GL_MAX_COLOR_ATTACHMENTS 0x8CDF
@@ -1484,6 +1495,12 @@ extern int ogl_ext_ARB_clip_control;
 #define GL_VIEW_CLASS_S3TC_DXT3_RGBA 0x82CE
 #define GL_VIEW_CLASS_S3TC_DXT5_RGBA 0x82CF
 #define GL_VIEW_COMPATIBILITY_CLASS 0x82B6
+
+#ifndef GL_ARB_buffer_storage
+#define GL_ARB_buffer_storage 1
+extern void (CODEGEN_FUNCPTR *_ptrc_glBufferStorage)(GLenum target, GLsizeiptr size, const void * data, GLbitfield flags);
+#define glBufferStorage _ptrc_glBufferStorage
+#endif /*GL_ARB_buffer_storage*/ 
 
 #ifndef GL_ARB_sparse_buffer
 #define GL_ARB_sparse_buffer 1

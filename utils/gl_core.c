@@ -85,9 +85,20 @@ static PROC WinGetProcAddress(const char *name)
 	#endif
 #endif
 
+int ogl_ext_ARB_buffer_storage = ogl_LOAD_FAILED;
 int ogl_ext_ARB_sparse_buffer = ogl_LOAD_FAILED;
 int ogl_ext_ARB_shader_draw_parameters = ogl_LOAD_FAILED;
 int ogl_ext_ARB_clip_control = ogl_LOAD_FAILED;
+
+void (CODEGEN_FUNCPTR *_ptrc_glBufferStorage)(GLenum target, GLsizeiptr size, const void * data, GLbitfield flags) = NULL;
+
+static int Load_ARB_buffer_storage(void)
+{
+	int numFailed = 0;
+	_ptrc_glBufferStorage = (void (CODEGEN_FUNCPTR *)(GLenum, GLsizeiptr, const void *, GLbitfield))IntGetProcAddress("glBufferStorage");
+	if(!_ptrc_glBufferStorage) numFailed++;
+	return numFailed;
+}
 
 void (CODEGEN_FUNCPTR *_ptrc_glBufferPageCommitmentARB)(GLenum target, GLintptr offset, GLsizeiptr size, GLboolean commit) = NULL;
 void (CODEGEN_FUNCPTR *_ptrc_glNamedBufferPageCommitmentARB)(GLuint buffer, GLintptr offset, GLsizeiptr size, GLboolean commit) = NULL;
@@ -1747,13 +1758,14 @@ typedef struct ogl_StrToExtMap_s
 	PFN_LOADFUNCPOINTERS LoadExtension;
 } ogl_StrToExtMap;
 
-static ogl_StrToExtMap ExtensionMap[3] = {
+static ogl_StrToExtMap ExtensionMap[4] = {
+	{"GL_ARB_buffer_storage", &ogl_ext_ARB_buffer_storage, Load_ARB_buffer_storage},
 	{"GL_ARB_sparse_buffer", &ogl_ext_ARB_sparse_buffer, Load_ARB_sparse_buffer},
 	{"GL_ARB_shader_draw_parameters", &ogl_ext_ARB_shader_draw_parameters, NULL},
 	{"GL_ARB_clip_control", &ogl_ext_ARB_clip_control, Load_ARB_clip_control},
 };
 
-static int g_extensionMapSize = 3;
+static int g_extensionMapSize = 4;
 
 static ogl_StrToExtMap *FindExtEntry(const char *extensionName)
 {
@@ -1770,6 +1782,7 @@ static ogl_StrToExtMap *FindExtEntry(const char *extensionName)
 
 static void ClearExtensionVars(void)
 {
+	ogl_ext_ARB_buffer_storage = ogl_LOAD_FAILED;
 	ogl_ext_ARB_sparse_buffer = ogl_LOAD_FAILED;
 	ogl_ext_ARB_shader_draw_parameters = ogl_LOAD_FAILED;
 	ogl_ext_ARB_clip_control = ogl_LOAD_FAILED;
