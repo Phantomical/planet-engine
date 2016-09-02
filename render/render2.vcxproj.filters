@@ -102,5 +102,11 @@
     <None Include="occludee-vert.glsl">
       <Filter>Shaders\occlusion-culling</Filter>
     </None>
+    <None Include="occluder-vert.glsl">
+      <Filter>Shaders\occlusion-culling</Filter>
+    </None>
+    <None Include="occluder-geom.glsl">
+      <Filter>Shaders\occlusion-culling</Filter>
+    </None>
   </ItemGroup>
 </Project>
