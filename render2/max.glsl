@@ -44,7 +44,5 @@ void main()
 	{
 		values[gl_WorkGroupID.x] = temp[0];
 	}
-
-	memoryBarrier();
 }
 

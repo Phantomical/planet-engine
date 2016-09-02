@@ -211,16 +211,16 @@ namespace planet_engine
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		dispatch_gen_meshes(size, infos, vertices, offsetbuf);
 
-		/* Calculate lengths from the position */
-		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-		dispatch_length_calc(size, offsetbuf, lengths, positions);
-
-		/* Calculate the maximum */
-		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-		dispatch_max_calc(size, lengths);
-
-		/* Compact and send the results to a CPU buffer */
-		dispatch_compact(size, lengths, downloads);
+		///* Calculate lengths from the position */
+		//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+		//dispatch_length_calc(size, offsetbuf, lengths, positions);
+		//
+		///* Calculate the maximum */
+		//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+		//dispatch_max_calc(size, lengths);
+		//
+		///* Compact and send the results to a CPU buffer */
+		//dispatch_compact(size, lengths, downloads);
 		
 		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
 
@@ -245,8 +245,6 @@ namespace planet_engine
 		//}
 		//
 		//glUnmapBuffer(GL_COPY_WRITE_BUFFER);
-
-
 
 		glDeleteBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
 
