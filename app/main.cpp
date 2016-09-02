@@ -33,17 +33,6 @@ constexpr double rad2deg(double v)
 {
 	return v * 57.295779513082320877;
 }
-glm::dmat4 projection(double fovy, double aspect, double near_z, double far_z)
-{
-	double tmp1 = 1.0 / std::tan(fovy);
-	double tmp2 = 1.0 / (far_z - near_z);
-
-	return glm::dmat4(
-		tmp1, 0.0, 0.0, 0.0,
-		0.0, aspect * tmp1, 0.0, 0.0,
-		0.0, 0.0, (far_z + near_z)  * tmp2, 1.0,
-		0.0, 0.0, -2.0*far_z*near_z * tmp2, 0.0);
-}
 glm::dmat4 translation(const glm::dvec3& v)
 {
 	return glm::dmat4(
@@ -145,6 +134,11 @@ int main()
 	glFrontFace(GL_CW);
 	glCullFace(GL_BACK);
 
+	glDepthFunc(GL_GREATER);
+	glClipControl(GL_LOWER_LEFT, GL_ZERO_TO_ONE);
+	glDepthRange(1.0, 0.0);
+	glClearDepth(0.0);
+
 	glPointSize(10);
 
 	bool cDown = false;
@@ -184,19 +178,19 @@ int main()
 			glm::dmat4 model_mat = glm::translate(glm::dmat4(1.0), glm::dvec3(10000000.0, 0.0, 0.0));
 
 			{
-				glm::dmat4 proj_mat = glm::perspective(deg2rad(60.0), aspect, 10000.0, 1000000000.0);
+				glm::dmat4 proj_mat = glm::infinitePerspective(deg2rad(60.0), aspect, 10000.0);
 				auto vp_mat = proj_mat * view_mat;
 
 				ren.render(vp_mat);
 				ren2.render(vp_mat * model_mat);
 			}
-
+			
 			glClear(GL_DEPTH_BUFFER_BIT);
-			
+
 			{
-				glm::dmat4 proj_mat = glm::perspective(deg2rad(60.0), aspect, 0.05, 10100.0);
+				glm::dmat4 proj_mat = glm::perspective(deg2rad(60.0), aspect, 0.1, 21000.0);
 				auto vp_mat = proj_mat * view_mat;
-			
+
 				ren.render(vp_mat);
 				ren2.render(vp_mat * model_mat);
 			}

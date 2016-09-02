@@ -42,7 +42,7 @@ void main()
 
 	if (gl_LocalInvocationIndex == 0)
 	{
-		values[gl_WorkGroupID.x] = temp[0];
+		values[gl_GlobalInvocationID.y * stride + gl_WorkGroupID.x] = temp[0];
 	}
 }
 

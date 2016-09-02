@@ -82,17 +82,12 @@ namespace planet_engine
 
 	bool patch::should_subdivide(const glm::dvec3& cam_pos, const glm::dvec3& cam_vel) const
 	{
-		double dis = farthest_vertex;
-		if (farthest_vertex == std::numeric_limits<float>::max())
-			dis = side_length();
-		return level < data->max_level && length2(cam_pos - actual_pos) * MULT < dis * dis - glm::length(cam_vel);
+		return level < data->max_level && length2(cam_pos - actual_pos) * MULT 
+			< farthest_vertex * farthest_vertex - glm::length(cam_vel);
 	}
 	bool patch::should_merge(const glm::dvec3& cam_pos, const glm::dvec3& cam_vel) const
 	{
-		double dis = farthest_vertex;
-		if (farthest_vertex == std::numeric_limits<float>::max())
-			dis = side_length();
-		return length2(cam_pos - actual_pos) * MULT > dis * dis - glm::length(cam_vel);
+		return length2(cam_pos - actual_pos) * MULT > farthest_vertex * farthest_vertex - glm::length(cam_vel);
 	}
 
 	bool patch::subdivided() const
@@ -148,10 +143,13 @@ namespace planet_engine
 		sec(info.sec),
 		level(info.level),
 		data(info.data),
-		parent(info.parent),
-		farthest_vertex(std::numeric_limits<float>::max())
+		parent(info.parent)
 	{
 		pos = to_sphere(nwc + nec + swc + sec, data->planet_radius);
-		actual_pos = glm::dvec3(0.0, 0.0, 0.0);
+		// Temporary assignments
+		// These should be replaced with more accurate values
+		// when the mesh is generated
+		actual_pos = pos;
+		farthest_vertex = side_length();
 	}
 }
