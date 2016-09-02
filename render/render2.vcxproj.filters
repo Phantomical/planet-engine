@@ -96,7 +96,10 @@
     <None Include="patch_subdivide.glsl">
       <Filter>Shaders\surface</Filter>
     </None>
-    <None Include="occlusion-culling-frag.glsl">
+    <None Include="occludee-frag.glsl">
+      <Filter>Shaders\occlusion-culling</Filter>
+    </None>
+    <None Include="occludee-vert.glsl">
       <Filter>Shaders\occlusion-culling</Filter>
     </None>
   </ItemGroup>

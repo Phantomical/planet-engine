@@ -9,5 +9,5 @@ flat in uint bufferOffset;
 
 void main()
 {
-	atomicExchange(visible[bufferOffset]);
+	atomicExchange(visible[bufferOffset], 1);
 }
