@@ -6,7 +6,7 @@ layout(location = 1) in double radius;
 out VertexData
 {
 	dvec3 position;
-double radius;
+	double radius;
 } result;
 
 void main()

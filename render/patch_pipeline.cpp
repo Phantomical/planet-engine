@@ -24,6 +24,175 @@ namespace planet_engine
 		return ((a + b - 1) / b) * b;
 	}
 
+
+	GLenum patch_pipeline::gen_meshes_state::execute_next(update_state& ustate)
+	{
+		static constexpr size_t NUM_RESULT_ELEMS = SIDE_LEN * SIDE_LEN;
+		static constexpr size_t NUM_COMPUTE_GROUPS = (NUM_RESULT_ELEMS + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
+
+#define vertices  buffers[0]
+#define infos     buffers[1]
+#define positions buffers[2]
+#define lengths   buffers[3]
+#define offsetbuf buffers[4]
+#define downloads buffers[5]
+
+		switch (state)
+		{
+		case INITIAL:
+			glGenBuffers(6, buffers);
+
+			static_assert(sizeof(buffers) / sizeof(GLuint) == 6, "execute_next has additional buffers and needs to be updated.");
+
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, vertices);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, VERTEX_BUFFER_SIZE * size, nullptr, GL_STATIC_DRAW);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, downloads);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * size, nullptr, GL_STREAM_COPY);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, positions);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * size, nullptr, GL_STATIC_DRAW);
+			glBindBuffer(GL_SHADER_STORAGE_BUFFER, lengths);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, NUM_RESULT_ELEMS * sizeof(float) * size, nullptr, GL_STATIC_DRAW);
+
+			glBindBuffer(GL_UNIFORM_BUFFER, infos);
+			glBufferData(GL_UNIFORM_BUFFER, sizeof(mesh_info) * 256, nullptr, GL_STATIC_DRAW);
+
+			offsets = new GLuint[256];
+
+			{
+				mesh_info* infoptr = (mesh_info*)glMapBufferRange(GL_UNIFORM_BUFFER, 0, sizeof(mesh_info) * 256, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+
+				for (size_t i = 0; i < size; ++i)
+				{
+					auto patch = patches[i];
+
+					mesh_info info = {
+						patch->pos,
+						patch->data->planet_radius,
+						patch->nwc,
+						patch->data->skirt_depth,
+						patch->nec,
+						patch->data->scale,
+						patch->swc,
+						0.0, // Padding
+						patch->sec
+					};
+
+					infoptr[i] = info;
+					offsets[i] = pipeline->manager().alloc_block();
+					pipeline->_offsets.insert(std::make_pair(patches[i], offsets[i]));
+					pipeline->_manager.lock(offsets[i]);
+				}
+
+				glUnmapBuffer(GL_UNIFORM_BUFFER);
+
+				glBindBuffer(GL_SHADER_STORAGE_BUFFER, offsetbuf);
+				glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * 256, offsets, GL_STATIC_DRAW);
+			}
+
+			state = DISPATCH_VERTEX_GEN;
+			return 0;
+		case DISPATCH_VERTEX_GEN:
+			// Generate the vertices
+			pipeline->dispatch_vertex_gen(size, vertices, infos);
+			// Get all the positions for the patches (This is the only other
+			// shader that doesn't depend on vertex_gen)
+			pipeline->dispatch_get_pos(size, infos, positions);
+
+			state = DISPATCH_GEN_MESHES;
+			return GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT;
+		case DISPATCH_GEN_MESHES:
+			pipeline->dispatch_gen_meshes(size, infos, vertices, offsetbuf);
+
+			glBindBuffer(GL_COPY_WRITE_BUFFER, positions);
+			{
+				const glm::vec4* vals = (glm::vec4*)glMapBufferRange(GL_COPY_WRITE_BUFFER, 0, sizeof(glm::vec4) * size, GL_MAP_READ_BIT);
+
+				for (size_t i = 0; i < size; ++i)
+				{
+					patches[i]->actual_pos = patches[i]->pos + glm::dvec3(vals[i]);
+				}
+
+				glUnmapBuffer(GL_COPY_WRITE_BUFFER);
+			}
+
+			state = DISPATCH_LENGTH_CALC;
+			return GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT;
+		case DISPATCH_LENGTH_CALC:
+			// Indicate that there are new meshes
+			for (size_t i = 0; i < size; ++i)
+			{
+				MoveCommand mvcmd;
+				mvcmd.is_new = GL_TRUE;
+				mvcmd.source = (GLuint)ustate.commands.size();
+				mvcmd.dest = offsets[i];
+
+				DrawElementsIndirectCommand cmd;
+				cmd.count = NUM_ELEMENTS;
+				cmd.instanceCount = 1;
+				cmd.firstIndex = 0;
+				cmd.baseVertex = pipeline->manager().block_size() / VERTEX_SIZE * offsets[i];
+				cmd.baseInstance = 0;
+
+				ustate.movecommands.push_back(mvcmd);
+				ustate.commands.push_back(cmd);
+
+				pipeline->_manager.unlock(offsets[i]);
+			}
+			delete[] offsets;
+			offsets = nullptr;
+		case DISPATCH_MAX_CALC: // Currently these steps are skipped
+		case DISPATCH_COMPACT:
+		case RETRIEVE_RESULTS:
+			glDeleteBuffers(6, buffers);
+
+			state = DONE;
+			return 0;
+		case DONE:
+			return 0;
+		}
+
+#undef vertices
+#undef positions
+#undef infos
+#undef lengths
+#undef offsetbuf
+#undef downloads
+	}
+
+	bool patch_pipeline::gen_meshes_state::is_done() const
+	{
+		return state == DONE;
+	}
+
+	patch_pipeline::gen_meshes_state::gen_meshes_state(const std::shared_ptr<patch>* patches, GLuint size, patch_pipeline* pipeline) :
+		patches(patches, patches + size),
+		pipeline(pipeline),
+		offsets(nullptr),
+		state(INITIAL),
+		size(size)
+	{
+		std::memset(buffers, 0, sizeof(buffers));
+	}
+	patch_pipeline::gen_meshes_state::~gen_meshes_state()
+	{
+		if (buffers[0] != 0)
+			glDeleteBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
+		if (offsets != nullptr)
+			delete[] offsets;
+	}
+
+	void patch_pipeline::remove_state::execute_next(update_state& ustate)
+	{
+		if (state++ != 6)
+			return;
+
+		pipeline->remove_meshes(ustate, patches.data(), patches.size());
+	}
+	bool patch_pipeline::remove_state::is_done() const
+	{
+		return state > 6;
+	}
+
 	/* Patch Pipeline */
 
 	void patch_pipeline::dispatch_vertex_gen(GLuint size, GLuint vertices, GLuint infos)
@@ -135,10 +304,6 @@ namespace planet_engine
 		GLuint offsetbuf = buffers[4];
 		GLuint downloads = buffers[5];
 
-		GLuint vbo_stride = VERTEX_BUFFER_SIZE;
-		GLuint pos_stride = sizeof(double) * 4;
-		GLuint tmp_stride = roundup<GLuint>(sizeof(float) * NUM_RESULT_ELEMS, _ssbo_alignment);
-
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, vertices);
 		glBufferData(GL_SHADER_STORAGE_BUFFER, VERTEX_BUFFER_SIZE * size, nullptr, GL_STATIC_DRAW);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, downloads);
@@ -154,7 +319,7 @@ namespace planet_engine
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, offsetbuf);
 		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * 256, nullptr, GL_STATIC_DRAW);
 		{
-			mesh_info* infos = (mesh_info*)glMapBufferRange(GL_UNIFORM_BUFFER, 0, sizeof(mesh_info) * 256, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+			mesh_info* infoptr = (mesh_info*)glMapBufferRange(GL_UNIFORM_BUFFER, 0, sizeof(mesh_info) * 256, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 			GLuint* offsets = (GLuint*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(GLuint) * 256, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 
 			for (size_t i = 0; i < size; ++i)
@@ -192,7 +357,7 @@ namespace planet_engine
 
 				_offsets.insert(std::make_pair(patches[i], offset));
 
-				infos[i] = info;
+				infoptr[i] = info;
 				offsets[i] = offset;
 
 			}
@@ -222,7 +387,7 @@ namespace planet_engine
 		///* Compact and send the results to a CPU buffer */
 		//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		//dispatch_compact(size, lengths, downloads);
-		
+
 		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
 
 		glBindBuffer(GL_COPY_WRITE_BUFFER, positions);

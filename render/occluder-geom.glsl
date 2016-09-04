@@ -8,7 +8,7 @@ layout(triangle_strip, max_vertices = NVERTS) out;
 
 layout(location = 0) uniform vec3 forward;
 layout(location = 1) uniform vec3 up;
-layout(location = 2) uniform mat4 vp;
+layout(location = 2) uniform dmat4 vp;
 
 in VertexData
 {
@@ -40,12 +40,12 @@ void main()
 
 	for (uint i = 0; i < NTRIS; ++i)
 	{
-		gl_Position = vp * vec4(result[0].position, 1.0);
+		gl_Position = vec4(vp * dvec4(result[0].position, 1.0));
 		EmitVertex();
-		gl_Position = vp * vec4(rotate(start, forward, theta) + result[0].position, 1.0);
+		gl_Position = vec4(vp * dvec4(rotate(start, forward, theta) + result[0].position, 1.0));
 		EmitVertex();
 		theta += dtheta;
-		gl_Position = vp * vec4(rotate(start, forward, theta) + result[0].position, 1.0);
+		gl_Position = vec4(vp * dvec4(rotate(start, forward, theta) + result[0].position, 1.0));
 		EmitVertex();
 		EndPrimitive();
 	}

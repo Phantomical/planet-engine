@@ -67,10 +67,61 @@ namespace planet_engine
 		static constexpr size_t MAX_SCAN_DEPTH = 512;
 		static constexpr size_t LENGTH_CACHE_SIZE = 32;
 		
+		struct gen_meshes_state
+		{
+		private:
+			enum states
+			{
+				INITIAL,
+				DISPATCH_VERTEX_GEN,
+				DISPATCH_GEN_MESHES,
+				DISPATCH_LENGTH_CALC,
+				DISPATCH_MAX_CALC,
+				DISPATCH_COMPACT,
+				RETRIEVE_RESULTS,
+				DONE
+			};
+			
+			std::vector<std::shared_ptr<patch>> patches;
+			patch_pipeline* pipeline;
+			GLuint* offsets;
+			size_t state;
+			GLuint buffers[6];
+			GLuint size;
+
+		public:
+			// Returns the barriers that need to be executed
+			GLenum execute_next(update_state& ustate);
+
+			bool is_done() const;
+
+			gen_meshes_state(const std::shared_ptr<patch>* patches, GLuint size, patch_pipeline* pipeline);
+			~gen_meshes_state();
+
+			gen_meshes_state(const gen_meshes_state&) = delete;
+			gen_meshes_state(gen_meshes_state&&) = delete;
+		};
+		struct remove_state
+		{
+		private:
+			size_t state;
+			patch_pipeline* pipeline;
+
+			std::vector<std::shared_ptr<patch>> patches;
+
+		public:
+			void execute_next(update_state& ustate);
+
+			bool is_done() const;
+		};
+
 		buffer_manager _manager;
 
 		std::deque<std::shared_ptr<patch>> _generate;
 		std::deque<std::shared_ptr<patch>> _remove;
+
+		std::deque<gen_meshes_state> _gen_states;
+		std::deque<remove_state> _remove_state;
 
 		std::map<std::shared_ptr<patch>, GLuint> _offsets;
 

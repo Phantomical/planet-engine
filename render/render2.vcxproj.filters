@@ -88,6 +88,18 @@
     <CustomBuild Include="compact.glsl">
       <Filter>Shaders\pipeline</Filter>
     </CustomBuild>
+    <CustomBuild Include="occludee-frag.glsl">
+      <Filter>Shaders\occlusion-culling</Filter>
+    </CustomBuild>
+    <CustomBuild Include="occludee-vert.glsl">
+      <Filter>Shaders\occlusion-culling</Filter>
+    </CustomBuild>
+    <CustomBuild Include="occluder-geom.glsl">
+      <Filter>Shaders\occlusion-culling</Filter>
+    </CustomBuild>
+    <CustomBuild Include="occluder-vert.glsl">
+      <Filter>Shaders\occlusion-culling</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="noise.glsl">
@@ -95,18 +107,6 @@
     </None>
     <None Include="patch_subdivide.glsl">
       <Filter>Shaders\surface</Filter>
-    </None>
-    <None Include="occludee-frag.glsl">
-      <Filter>Shaders\occlusion-culling</Filter>
-    </None>
-    <None Include="occludee-vert.glsl">
-      <Filter>Shaders\occlusion-culling</Filter>
-    </None>
-    <None Include="occluder-vert.glsl">
-      <Filter>Shaders\occlusion-culling</Filter>
-    </None>
-    <None Include="occluder-geom.glsl">
-      <Filter>Shaders\occlusion-culling</Filter>
     </None>
   </ItemGroup>
 </Project>
