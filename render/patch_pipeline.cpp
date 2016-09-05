@@ -49,7 +49,7 @@ namespace planet_engine
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, downloads);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * size, nullptr, GL_STREAM_COPY);
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, positions);
-			glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * 256, nullptr, GL_MAP_READ_BIT);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * size, nullptr, GL_STATIC_DRAW);
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, lengths);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, NUM_RESULT_ELEMS * sizeof(float) * size, nullptr, GL_STATIC_DRAW);
 
@@ -103,18 +103,16 @@ namespace planet_engine
 		case DISPATCH_GEN_MESHES:
 			pipeline->dispatch_gen_meshes(size, infos, vertices, offsetbuf);
 
+			glBindBuffer(GL_COPY_WRITE_BUFFER, positions);
 			{
-				glBindBuffer(GL_SHADER_STORAGE_BUFFER, positions);
-				const glm::vec4* vals = (glm::vec4*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
+				const glm::vec4* vals = (glm::vec4*)glMapBufferRange(GL_COPY_WRITE_BUFFER, 0, sizeof(glm::vec4) * size, GL_MAP_READ_BIT);
 
-				if (vals)
+				for (size_t i = 0; i < size; ++i)
 				{
-					for (size_t i = 0; i < size; ++i)
-					{
-						patches[i]->actual_pos = patches[i]->pos + glm::dvec3(vals[i]);
-					}
-					glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+					patches[i]->actual_pos = patches[i]->pos + glm::dvec3(vals[i]);
 				}
+
+				glUnmapBuffer(GL_COPY_WRITE_BUFFER);
 			}
 
 			state = DISPATCH_LENGTH_CALC;
@@ -142,41 +140,10 @@ namespace planet_engine
 			}
 			delete[] offsets;
 			offsets = nullptr;
-			// Currently these steps are skipped
-
-			///* Calculate lengths from the position */
-			//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-			//dispatch_length_calc(size, offsetbuf, lengths, positions);
-			//state = DISPATCH_MAX_CALC;
-			//return GL_SHADER_STORAGE_BARRIER_BIT;
-		case DISPATCH_MAX_CALC:
-			///* Compact and send the results to a CPU buffer */
-			//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-			//dispatch_compact(size, lengths, downloads);
-
-			//state = DISPATCH_COMPACT;
-			//return GL_SHADER_STORAGE_BARRIER_BIT;
+		case DISPATCH_MAX_CALC: // Currently these steps are skipped
 		case DISPATCH_COMPACT:
-			///* Calculate the maximum */
-			//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-			//dispatch_max_calc(size, lengths);
-			//
-			//state = RETRIEVE_RESULTS;
-			//return GL_SHADER_STORAGE_BARRIER_BIT;
 		case RETRIEVE_RESULTS:
 			glDeleteBuffers(6, buffers);
-
-			{
-				//glBindBuffer(GL_COPY_WRITE_BUFFER, downloads);
-				//float* distances = (float*)glMapBuffer(GL_COPY_WRITE_BUFFER, GL_READ_ONLY);
-				//
-				//for (size_t i = 0; i < size; ++i)
-				//{
-				//	patches[i]->farthest_vertex = distances[i];
-				//}
-				//
-				//glUnmapBuffer(GL_COPY_WRITE_BUFFER);
-			}
 
 			state = DONE;
 			return 0;
@@ -184,8 +151,6 @@ namespace planet_engine
 			return 0;
 		}
 
-		state = DONE;
-		return 0;
 #undef vertices
 #undef positions
 #undef infos
@@ -193,6 +158,7 @@ namespace planet_engine
 #undef offsetbuf
 #undef downloads
 	}
+
 	bool patch_pipeline::gen_meshes_state::is_done() const
 	{
 		return state == DONE;
@@ -220,36 +186,11 @@ namespace planet_engine
 		if (state++ != 6)
 			return;
 
-		for (size_t i = 0; i < patches.size(); ++i)
-		{
-			auto it = pipeline->_offsets.find(patches[i]);
-			if (it == pipeline->_offsets.end())
-				continue;
-
-			GLuint offset = it->second;
-
-			MoveCommand mvcmd;
-			mvcmd.is_new = GL_FALSE;
-			mvcmd.source = 0;
-			mvcmd.dest = offset;
-
-			ustate.movecommands.push_back(mvcmd);
-
-			pipeline->_offsets.erase(it);
-			pipeline->_manager.dealloc_block(offset);
-		}
+		pipeline->remove_meshes(ustate, patches.data(), patches.size());
 	}
 	bool patch_pipeline::remove_state::is_done() const
 	{
 		return state > 6;
-	}
-
-	patch_pipeline::remove_state::remove_state(const std::shared_ptr<patch>* patches, size_t size, patch_pipeline* pipeline) :
-		pipeline(pipeline),
-		patches(patches, patches + size),
-		state(0)
-	{
-
 	}
 
 	/* Patch Pipeline */
@@ -344,43 +285,157 @@ namespace planet_engine
 
 	void patch_pipeline::gen_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, GLuint size)
 	{
-		if (size != 0)
-		{
-			assert(size <= 256);
+		static constexpr size_t NUM_RESULT_ELEMS = SIDE_LEN * SIDE_LEN;
+		static constexpr size_t NUM_COMPUTE_GROUPS = (NUM_RESULT_ELEMS + SHADER_GROUP_SIZE - 1) / SHADER_GROUP_SIZE;
 
-			_gen_states.emplace_back(patches, size, this);
+		if (size == 0)
+			return;
+		assert(size <= 256);
+
+		GLuint buffers[6];
+
+		glGenBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
+
+		// Buffers
+		GLuint vertices = buffers[0];
+		GLuint infos = buffers[1];
+		GLuint positions = buffers[2];
+		GLuint lengths = buffers[3];
+		GLuint offsetbuf = buffers[4];
+		GLuint downloads = buffers[5];
+
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, vertices);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, VERTEX_BUFFER_SIZE * size, nullptr, GL_STATIC_DRAW);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, downloads);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * size, nullptr, GL_STREAM_COPY);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, positions);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * size, nullptr, GL_STATIC_DRAW);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, lengths);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, NUM_RESULT_ELEMS * sizeof(float) * size, nullptr, GL_STATIC_DRAW);
+
+		glBindBuffer(GL_UNIFORM_BUFFER, infos);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(mesh_info) * 256, nullptr, GL_STATIC_DRAW);
+
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, offsetbuf);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(GLuint) * 256, nullptr, GL_STATIC_DRAW);
+		{
+			mesh_info* infoptr = (mesh_info*)glMapBufferRange(GL_UNIFORM_BUFFER, 0, sizeof(mesh_info) * 256, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+			GLuint* offsets = (GLuint*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(GLuint) * 256, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+
+			for (size_t i = 0; i < size; ++i)
+			{
+				auto patch = patches[i];
+
+				mesh_info info = {
+					patches[i]->pos,
+					patches[i]->data->planet_radius,
+					patches[i]->nwc,
+					patches[i]->data->skirt_depth,
+					patches[i]->nec,
+					patches[i]->data->scale,
+					patches[i]->swc,
+					0.0, // Padding
+					patches[i]->sec
+				};
+
+				GLuint offset = _manager.alloc_block();
+
+				MoveCommand mvcmd;
+				mvcmd.is_new = GL_TRUE;
+				mvcmd.source = (GLuint)ustate.commands.size();
+				mvcmd.dest = offset;
+
+				DrawElementsIndirectCommand cmd;
+				cmd.count = NUM_ELEMENTS;
+				cmd.instanceCount = 1;
+				cmd.firstIndex = 0;
+				cmd.baseVertex = _manager.block_size() / VERTEX_SIZE * offset;
+				cmd.baseInstance = 0;
+
+				ustate.movecommands.push_back(mvcmd);
+				ustate.commands.push_back(cmd);
+
+				_offsets.insert(std::make_pair(patches[i], offset));
+
+				infoptr[i] = info;
+				offsets[i] = offset;
+
+			}
+			glUnmapBuffer(GL_UNIFORM_BUFFER);
+			glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 		}
 
-		GLuint barrier = 0;
 
-		for (auto& state : _gen_states)
+		/* Generate Vertices */
+		dispatch_vertex_gen(size, vertices, infos);
+
+		/* Calculate patch positions */
+		dispatch_get_pos(size, infos, positions);
+
+		/* Generate Meshes */
+		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+		dispatch_gen_meshes(size, infos, vertices, offsetbuf);
+
+		///* Calculate lengths from the position */
+		//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+		//dispatch_length_calc(size, offsetbuf, lengths, positions);
+		//
+		///* Calculate the maximum */
+		//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+		//dispatch_max_calc(size, lengths);
+		//
+		///* Compact and send the results to a CPU buffer */
+		//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+		//dispatch_compact(size, lengths, downloads);
+
+		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
+
+		glBindBuffer(GL_COPY_WRITE_BUFFER, positions);
+		const glm::vec4* vals = (glm::vec4*)glMapBufferRange(GL_COPY_WRITE_BUFFER, 0, sizeof(glm::vec4) * size, GL_MAP_READ_BIT);
+
+		for (size_t i = 0; i < size; ++i)
 		{
-			barrier |= state.execute_next(ustate);
+			glm::dvec4 offset = glm::dvec4(vals[i]);
+
+			patches[i]->actual_pos = patches[i]->pos + glm::dvec3(offset);
 		}
 
-		if (!_gen_states.empty())
-			if (_gen_states.front().is_done())
-				_gen_states.pop_front();
+		glUnmapBuffer(GL_COPY_WRITE_BUFFER);
 
-		glMemoryBarrier(barrier);
+		//glBindBuffer(GL_COPY_WRITE_BUFFER, downloads);
+		//float* distances = (float*)glMapBuffer(GL_COPY_WRITE_BUFFER, GL_READ_ONLY);
+		//
+		//for (size_t i = 0; i < size; ++i)
+		//{
+		//	patches[i]->farthest_vertex = distances[i];
+		//}
+		//
+		//glUnmapBuffer(GL_COPY_WRITE_BUFFER);
+
+		glDeleteBuffers(sizeof(buffers) / sizeof(GLuint), buffers);
+
+		glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
 	}
 	void patch_pipeline::remove_meshes(update_state& ustate, const std::shared_ptr<patch>* patches, GLuint size)
 	{
-		if (size != 0)
+		for (size_t i = 0; i < size; ++i)
 		{
-			assert(size <= 256);
+			auto it = _offsets.find(patches[i]);
+			if (it == _offsets.end())
+				continue;
 
-			_remove_states.emplace_back(patches, size, this);
+			GLuint offset = it->second;
+
+			MoveCommand mvcmd;
+			mvcmd.is_new = GL_FALSE;
+			mvcmd.source = 0;
+			mvcmd.dest = offset;
+
+			ustate.movecommands.push_back(mvcmd);
+
+			_offsets.erase(it);
+			_manager.dealloc_block(offset);
 		}
-
-		for (auto& state : _remove_states)
-		{
-			state.execute_next(ustate);
-		}
-
-		if (!_remove_states.empty())
-			if (_remove_states.front().is_done())
-				_remove_states.pop_front();
 	}
 
 	void patch_pipeline::generate(std::shared_ptr<patch> patch)
@@ -416,8 +471,8 @@ namespace planet_engine
 		_generate.erase(_generate.begin(), _generate.begin() + gensz);
 		_remove.erase(_remove.begin(), _remove.begin() + remsz);
 
-		gen_meshes(ustate, to_generate.data(), (GLuint)to_generate.size());
-		remove_meshes(ustate, to_remove.data(), (GLuint)to_remove.size());
+		gen_meshes(ustate, to_generate.data(), to_generate.size());
+		remove_meshes(ustate, to_remove.data(), to_remove.size());
 
 		return ustate;
 	}

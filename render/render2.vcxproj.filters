@@ -39,9 +39,6 @@
     <ClCompile Include="patch_pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="occlusion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="renderer.h">
@@ -61,9 +58,6 @@
     </ClInclude>
     <ClInclude Include="is_glsl.h">
       <Filter>Header Files\Shared</Filter>
-    </ClInclude>
-    <ClInclude Include="occlusion.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
