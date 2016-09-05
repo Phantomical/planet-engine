@@ -11,10 +11,10 @@ namespace planet_engine
 		void make_icosphere(std::vector<glm::vec3>& verts, std::vector<unsigned short>& indices)
 		{
 			// (1 + sqrt(5)) / 2
-			static constexpr float t = 1.6180339887498948482;
+			static constexpr float t = 1.6180339887498948482f;
 			// Multiplier so that the insphere of the tetrahedron
 			// has a radius of 1.0
-			static constexpr float RADIUS = 1.2584085723648189697;
+			static constexpr float RADIUS = 1.2584085723648189697f;
 
 			// Create 12 vertices of icosahedron
 			verts.emplace_back(-1, t, 0);
@@ -86,7 +86,7 @@ namespace planet_engine
 		glUniform3fv(1, 1, &ocinfo.cam_up[0]);
 		glUniformMatrix4dv(2, 1, GL_FALSE, &VP[0][0]);
 
-		glDrawArrays(GL_POINT, 0, ocinfo.occludees.size());
+		glDrawArrays(GL_POINT, 0, (GLsizei)ocinfo.occludees.size());
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -124,7 +124,7 @@ namespace planet_engine
 
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, results);
 
-		glDrawElementsInstanced(GL_TRIANGLES, num_indices, GL_UNSIGNED_SHORT, nullptr, ocinfo.occludees.size());
+		glDrawElementsInstanced(GL_TRIANGLES, num_indices, GL_UNSIGNED_SHORT, nullptr, (GLsizei)ocinfo.occludees.size());
 
 		glDepthMask(GL_TRUE);
 	}

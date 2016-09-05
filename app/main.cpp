@@ -111,7 +111,7 @@ int main()
 {
 	glfwInit();
 
-	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, 0);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, 1);
 
 	GLFWwindow* win = glfwCreateWindow(1080, 720, "Planet Engine Demo", nullptr, nullptr);
 	glfwMakeContextCurrent(win);
@@ -124,8 +124,8 @@ int main()
 
 	aspect = 1.5;
 	
-	//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-	//glDebugMessageCallback(DebugProc, nullptr);
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glDebugMessageCallback(DebugProc, nullptr);
 
 	glClearColor(0.05f, 0.0f, 0.0f, 1.0f);
 	glEnable(GL_DEPTH_TEST);

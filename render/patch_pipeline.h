@@ -66,7 +66,7 @@ namespace planet_engine
 		static constexpr size_t CANCELLED_COUNTER_VALUE = 0xFF;
 		static constexpr size_t MAX_SCAN_DEPTH = 512;
 		static constexpr size_t LENGTH_CACHE_SIZE = 32;
-		
+
 		struct gen_meshes_state
 		{
 		private:
@@ -81,7 +81,7 @@ namespace planet_engine
 				RETRIEVE_RESULTS,
 				DONE
 			};
-			
+
 			std::vector<std::shared_ptr<patch>> patches;
 			patch_pipeline* pipeline;
 			GLuint* offsets;
@@ -113,6 +113,8 @@ namespace planet_engine
 			void execute_next(update_state& ustate);
 
 			bool is_done() const;
+
+			remove_state(const std::shared_ptr<patch>* patches, size_t size, patch_pipeline* pipeline);
 		};
 
 		buffer_manager _manager;
@@ -121,11 +123,9 @@ namespace planet_engine
 		std::deque<std::shared_ptr<patch>> _remove;
 
 		std::deque<gen_meshes_state> _gen_states;
-		std::deque<remove_state> _remove_state;
+		std::deque<remove_state> _remove_states;
 
 		std::map<std::shared_ptr<patch>, GLuint> _offsets;
-
-		size_t cull_counter;
 
 		/* Shaders */
 		GLuint _meshgen;

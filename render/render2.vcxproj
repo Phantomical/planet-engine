@@ -171,12 +171,14 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="occlusion.cpp" />
     <ClCompile Include="patch_pipeline.cpp" />
     <ClCompile Include="renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constants.h" />
     <ClInclude Include="is_glsl.h" />
+    <ClInclude Include="occlusion.h" />
     <ClInclude Include="patch_data.h" />
     <ClInclude Include="patch_pipeline.h" />
     <ClInclude Include="renderer.h" />
