@@ -306,8 +306,8 @@ namespace planet_engine
 		_generate.erase(_generate.begin(), _generate.begin() + gensz);
 		_remove.erase(_remove.begin(), _remove.begin() + remsz);
 
-		gen_meshes(ustate, to_generate.data(), to_generate.size());
-		remove_meshes(ustate, to_remove.data(), to_remove.size());
+		gen_meshes(ustate, to_generate.data(), (GLuint)to_generate.size());
+		remove_meshes(ustate, to_remove.data(), (GLuint)to_remove.size());
 
 		return ustate;
 	}
