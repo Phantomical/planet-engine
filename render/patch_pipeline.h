@@ -32,22 +32,13 @@ namespace planet_engine
 	{
 		std::vector<DrawElementsIndirectCommand> commands;
 		std::vector<MoveCommand> movecommands;
-
-		void concat(const update_state& ust);
 	};
 
-	struct mesh_info
+	struct patch_info
 	{
 		glm::dvec3 pos;
-		double planet_radius;
-		glm::dvec3 nwc;
-		double skirt_depth;
-		glm::dvec3 nec;
-		double scale;
-		glm::dvec3 swc;
-		double _pad4;
-		glm::dvec3 sec;
-		double _pad5;
+		GLuint level;
+		float farthest_vertex;
 	};
 
 	class patch_pipeline

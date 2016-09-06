@@ -24,6 +24,22 @@ namespace planet_engine
 		return ((a + b - 1) / b) * b;
 	}
 
+	/* Data Structures */
+
+	struct mesh_info
+	{
+		glm::dvec3 pos;
+		double planet_radius;
+		glm::dvec3 nwc;
+		double skirt_depth;
+		glm::dvec3 nec;
+		double scale;
+		glm::dvec3 swc;
+		double _pad4;
+		glm::dvec3 sec;
+		double _pad5;
+	};
+
 	/* Patch Pipeline */
 
 	void patch_pipeline::dispatch_vertex_gen(GLuint size, GLuint vertices, GLuint infos)
