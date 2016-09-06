@@ -14,16 +14,6 @@
 
 #pragma warning(disable : 4267)
 
-#define TARGET_DIR "D:\\Projects\\Projects\\C++\\planet-engine\\x64\\Debug\\"
-
-namespace
-{
-	std::string concat(const std::string& appendix)
-	{
-		return TARGET_DIR + appendix;
-	}
-}
-
 namespace planet_engine
 {
 #define vOffset(size) ((void*)(size))
@@ -100,13 +90,6 @@ namespace planet_engine
 		return buffer.str();
 	}
 
-	/* Mesh Manipulation and Calculation Functions */
-	void update_state::concat(const update_state& ust)
-	{
-		commands.insert(commands.end(), ust.commands.begin(), ust.commands.end());
-		movecommands.insert(movecommands.end(), ust.movecommands.begin(), ust.movecommands.end());
-	}
-
 	void renderer::update_meshes()
 	{
 		static size_t add_max = 0;
@@ -134,10 +117,6 @@ namespace planet_engine
 			data->to_remove.clear();
 
 			pipeline.cull();
-
-			//if (!to_compute.empty())
-			//	compute_states.push_back(compute_bounds(std::initializer_list<std::shared_ptr<patch>>(
-			//		to_compute.data(), to_compute.data() + to_compute.size())));
 		}
 
 		if (ustate.movecommands.size() != 0)
@@ -205,12 +184,7 @@ namespace planet_engine
 
 		glBindVertexArray(0);
 	}
-
-	std::future<std::pair<GLuint, GLsync>> renderer::get_mesh(std::shared_ptr<patch> patch)
-	{
-		return std::future<std::pair<GLuint, GLsync>>();
-	}
-	
+		
 	/* Constructors and Destructors */
 	renderer::renderer(GLuint shader, double planet_radius, double scale) :
 		pipeline(NUM_BLOCKS),

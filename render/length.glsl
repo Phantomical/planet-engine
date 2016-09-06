@@ -2,10 +2,11 @@
 
 layout(local_size_x = 128) in;
 
-#include "stride.h"
+#include "caps.h"
 
 layout(location = 0) uniform uint size;
 layout(location = 1) uniform uint offset_mul;
+layout(location = 2) uniform uint output_bits;
 
 layout(binding = 0, std140) uniform Positions
 {
@@ -30,7 +31,7 @@ void main()
 	if (gl_GlobalInvocationID.x < size)
 	{
 		uint baseindex = offsets[gl_GlobalInvocationID.y] * offset_mul 
-			+ gl_GlobalInvocationID.x * STRIDE;
+			+ gl_GlobalInvocationID.x * stride(output_bits);
 
 		vec3 vertex = vec3(
 			values[baseindex + 0],

@@ -24,6 +24,22 @@ namespace planet_engine
 		return ((a + b - 1) / b) * b;
 	}
 
+	/* Data Structures */
+
+	struct mesh_info
+	{
+		glm::dvec3 pos;
+		double planet_radius;
+		glm::dvec3 nwc;
+		double skirt_depth;
+		glm::dvec3 nec;
+		double scale;
+		glm::dvec3 swc;
+		double _pad4;
+		glm::dvec3 sec;
+		double _pad5;
+	};
+
 	/* Patch Pipeline */
 
 	void patch_pipeline::dispatch_vertex_gen(GLuint size, GLuint vertices, GLuint infos)
@@ -134,10 +150,6 @@ namespace planet_engine
 		GLuint lengths = buffers[3];
 		GLuint offsetbuf = buffers[4];
 		GLuint downloads = buffers[5];
-
-		GLuint vbo_stride = VERTEX_BUFFER_SIZE;
-		GLuint pos_stride = sizeof(double) * 4;
-		GLuint tmp_stride = roundup<GLuint>(sizeof(float) * NUM_RESULT_ELEMS, _ssbo_alignment);
 
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, vertices);
 		glBufferData(GL_SHADER_STORAGE_BUFFER, VERTEX_BUFFER_SIZE * size, nullptr, GL_STATIC_DRAW);
@@ -292,7 +304,7 @@ namespace planet_engine
 
 	update_state patch_pipeline::process()
 	{
-		static constexpr size_t MAX_UPDATES_PER_FRAME = 256;
+		static constexpr size_t MAX_UPDATES_PER_FRAME = 128;
 
 		update_state ustate;
 
@@ -381,6 +393,9 @@ namespace planet_engine
 
 		glProgramUniform1ui(_meshgen, 0, SIDE_LEN);
 		glProgramUniform1ui(_vertex_gen, 0, SIDE_LEN);
+		// Output Bits
+		glProgramUniform1ui(_meshgen, 2, ~0);
+		glProgramUniform1ui(_length_calc, 2, ~0);
 
 		glGenBuffers(1, &_lengths);
 		glBindBuffer(GL_COPY_WRITE_BUFFER, _lengths);

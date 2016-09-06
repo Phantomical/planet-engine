@@ -59,6 +59,9 @@
     <ClInclude Include="is_glsl.h">
       <Filter>Header Files\Shared</Filter>
     </ClInclude>
+    <ClInclude Include="caps.h">
+      <Filter>Header Files\Shared</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="planet_shader_frag.glsl">
@@ -88,6 +91,18 @@
     <CustomBuild Include="compact.glsl">
       <Filter>Shaders\pipeline</Filter>
     </CustomBuild>
+    <CustomBuild Include="occludee-frag.glsl">
+      <Filter>Shaders\occlusion-culling</Filter>
+    </CustomBuild>
+    <CustomBuild Include="occludee-vert.glsl">
+      <Filter>Shaders\occlusion-culling</Filter>
+    </CustomBuild>
+    <CustomBuild Include="occluder-geom.glsl">
+      <Filter>Shaders\occlusion-culling</Filter>
+    </CustomBuild>
+    <CustomBuild Include="occluder-vert.glsl">
+      <Filter>Shaders\occlusion-culling</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="noise.glsl">
@@ -95,9 +110,6 @@
     </None>
     <None Include="patch_subdivide.glsl">
       <Filter>Shaders\surface</Filter>
-    </None>
-    <None Include="occlusion-culling-frag.glsl">
-      <Filter>Shaders\occlusion-culling</Filter>
     </None>
   </ItemGroup>
 </Project>

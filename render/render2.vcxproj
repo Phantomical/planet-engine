@@ -22,6 +22,7 @@
     <ProjectGuid>{027A0C69-77A5-4E61-949C-A834F0525216}</ProjectGuid>
     <RootNamespace>render2</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>render</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -70,15 +71,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetExt>.lib</TargetExt>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetExt>.lib</TargetExt>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetExt>.lib</TargetExt>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetExt>.lib</TargetExt>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -97,7 +102,14 @@
     </CustomBuild>
     <PreBuildEvent>
       <Command>D:\Projects\Projects\Python\noise-generator\result.bat</Command>
+      <Message>Generating Noise.</Message>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -116,7 +128,14 @@
     </CustomBuild>
     <PreBuildEvent>
       <Command>D:\Projects\Projects\Python\noise-generator\result.bat</Command>
+      <Message>Generating Noise.</Message>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -141,7 +160,14 @@
     </CustomBuild>
     <PreBuildEvent>
       <Command>D:\Projects\Projects\Python\noise-generator\result.bat</Command>
+      <Message>Generating Noise.</Message>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -167,13 +193,21 @@
     </CustomBuild>
     <PreBuildEvent>
       <Command>D:\Projects\Projects\Python\noise-generator\result.bat</Command>
+      <Message>Generating Noise.</Message>
     </PreBuildEvent>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="patch_pipeline.cpp" />
     <ClCompile Include="renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="caps.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="is_glsl.h" />
     <ClInclude Include="patch_data.h" />
@@ -216,7 +250,24 @@
       <FileType>Document</FileType>
     </CustomBuild>
     <None Include="noise.glsl" />
-    <None Include="occlusion-culling-frag.glsl" />
+    <CustomBuild Include="occludee-frag.glsl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="occludee-vert.glsl">
+      <SubType>
+      </SubType>
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="occluder-geom.glsl">
+      <SubType>
+      </SubType>
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="occluder-vert.glsl">
+      <SubType>
+      </SubType>
+      <FileType>Document</FileType>
+    </CustomBuild>
     <None Include="patch_subdivide.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
