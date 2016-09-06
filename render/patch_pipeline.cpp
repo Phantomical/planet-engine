@@ -377,6 +377,9 @@ namespace planet_engine
 
 		glProgramUniform1ui(_meshgen, 0, SIDE_LEN);
 		glProgramUniform1ui(_vertex_gen, 0, SIDE_LEN);
+		// Output Bits
+		glProgramUniform1ui(_meshgen, 2, ~0);
+		glProgramUniform1ui(_length_calc, 2, ~0);
 
 		glGenBuffers(1, &_lengths);
 		glBindBuffer(GL_COPY_WRITE_BUFFER, _lengths);

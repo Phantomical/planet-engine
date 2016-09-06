@@ -59,6 +59,9 @@
     <ClInclude Include="is_glsl.h">
       <Filter>Header Files\Shared</Filter>
     </ClInclude>
+    <ClInclude Include="caps.h">
+      <Filter>Header Files\Shared</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="planet_shader_frag.glsl">

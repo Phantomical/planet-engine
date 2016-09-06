@@ -1,11 +1,12 @@
 #version 430
 
-#include "stride.h"
+#include "caps.h"
 
 layout(local_size_x = 128) in;
 
 layout(location = 0) uniform uint SIDE_LEN;
 layout(location = 1) uniform uint block_size;
+layout(location = 2) uniform uint output_bits;
 
 struct PatchInfo
 {
@@ -18,7 +19,6 @@ struct PatchInfo
 	dvec3 swc;
 	dvec3 sec;
 };
-
 
 layout(binding = 0, std430) readonly buffer GeneratorOutputs
 {
@@ -144,16 +144,29 @@ void main()
 		displacement = float(-skirt_depth * scale);
 	}
 
-	uint outindex = offsets[InvocationIndex / 4][InvocationIndex % 4] * block_size + index * STRIDE;
+	uint outindex = offsets[InvocationIndex / 4][InvocationIndex % 4] * block_size 
+		+ index * stride(output_bits);
 
-	values[outindex + 0] = vertex.x;
-	values[outindex + 1] = vertex.y;
-	values[outindex + 2] = vertex.z;
-	values[outindex + 3] = normal.x;
-	values[outindex + 4] = normal.y;
-	values[outindex + 5] = normal.z;
-	values[outindex + 6] = displacement;
-	values[outindex + 7] = outdir.x;
-	values[outindex + 8] = outdir.y;
-	values[outindex + 9] = outdir.z;
+	uint idx = 0;
+
+	values[outindex + idx++] = vertex.x;
+	values[outindex + idx++] = vertex.y;
+	values[outindex + idx++] = vertex.z;
+
+	if ((output_bits & NORMAL_BIT) != 0)
+	{
+		values[outindex + idx++] = normal.x;
+		values[outindex + idx++] = normal.y;
+		values[outindex + idx++] = normal.z;
+	}
+	if ((output_bits & DISPLACEMENT_BIT) != 0)
+	{
+		values[outindex + idx++] = displacement;
+	}
+	if ((output_bits & OUTDIR_BIT) != 0)
+	{
+		values[outindex + idx++] = outdir.x;
+		values[outindex + idx++] = outdir.y;
+		values[outindex + idx++] = outdir.z;
+	}
 }
