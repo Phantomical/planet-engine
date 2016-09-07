@@ -21,6 +21,8 @@ struct patch_data
 #define SWC(var) dvec3(var._pdata[0x9], var._pdata[0xA], var._pdata[0xB])
 #define SEC(var) dvec3(var._pdata[0xC], var._pdata[0xD], var._pdata[0xE])
 
+#define INVALID_LEVEL 0xFFFFFFFF
+
 #else
 namespace planet_engine
 {
@@ -40,6 +42,8 @@ namespace planet_engine
 			glm::vec3 pos_offset;
 			float farthest_vertex;
 		};
+
+		static constexpr glm::uint INVALID_LEVEL = 0xFFFFFFFF;
 	}
 }
 #endif
