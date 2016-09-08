@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+#include "resources.h"
+
 namespace planet_engine
 {
 	namespace gpu_surface
@@ -10,8 +12,8 @@ namespace planet_engine
 		{
 			static constexpr GLuint COMPUTE_GROUP_SIZE = 128;
 
-			static GLuint rmdup_1 = 0;
-			static GLuint rmdup_2 = 0;
+			static GLuint rmdup_1 = resources::RcMgr->LoadShader("rmdup-1");
+			static GLuint rmdup_2 = resources::RcMgr->LoadShader("rmdup-2");
 
 			//TODO: Add shader compilation code
 			// This assert will fire until that happens

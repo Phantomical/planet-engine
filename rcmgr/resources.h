@@ -22,8 +22,12 @@ namespace planet_engine
 			Impl* Data;
 
 		public:
-			// Loads and compiles the shader 
-			GLuint RCMGR_API LoadShader(const char* shader_name);
+			// Loads and compiles a shader resource to an OpenGL program
+			// Parameters:
+			//     shader_name: The string key that the shader is associated with
+			//     critical:    Indicates if the resource manager should halt the
+			//                  application if the shader fails to compile
+			GLuint RCMGR_API LoadShader(const char* shader_name, bool critical = true);
 		};
 
 		RCMGR_API ResourceManager* RcMgr;
