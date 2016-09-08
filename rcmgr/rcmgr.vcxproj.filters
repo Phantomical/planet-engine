@@ -13,37 +13,14 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{e427fe07-be8e-479e-8aab-aebaa91081b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders\Sorting">
-      <UniqueIdentifier>{4f748a32-96a5-4495-b0bc-99b93ae32d17}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="surface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="remove_duplicates.cpp">
+    <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="should_subdivide.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="rmdup-1.glsl">
-      <Filter>Shaders\Sorting</Filter>
-    </None>
-    <None Include="rmdup-2.glsl">
-      <Filter>Shaders\Sorting</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="patch_data.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="remove_duplicates.h">
+    <ClInclude Include="resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

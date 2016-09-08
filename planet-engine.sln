@@ -37,6 +37,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "render", "render\render2.vc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gpu_surface", "gpu_surface\gpu_surface.vcxproj", "{29B74C8F-1F41-46E5-A586-3B3B2EDC08BE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rcmgr", "rcmgr\rcmgr.vcxproj", "{B20A28DC-DEC3-4F08-AE36-EDE7C0521C15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,6 +119,16 @@ Global
 		{29B74C8F-1F41-46E5-A586-3B3B2EDC08BE}.Release|x64.Build.0 = Release|x64
 		{29B74C8F-1F41-46E5-A586-3B3B2EDC08BE}.Release|x86.ActiveCfg = Release|Win32
 		{29B74C8F-1F41-46E5-A586-3B3B2EDC08BE}.Release|x86.Build.0 = Release|Win32
+		{B20A28DC-DEC3-4F08-AE36-EDE7C0521C15}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{B20A28DC-DEC3-4F08-AE36-EDE7C0521C15}.Debug|x64.ActiveCfg = Debug|x64
+		{B20A28DC-DEC3-4F08-AE36-EDE7C0521C15}.Debug|x64.Build.0 = Debug|x64
+		{B20A28DC-DEC3-4F08-AE36-EDE7C0521C15}.Debug|x86.ActiveCfg = Debug|Win32
+		{B20A28DC-DEC3-4F08-AE36-EDE7C0521C15}.Debug|x86.Build.0 = Debug|Win32
+		{B20A28DC-DEC3-4F08-AE36-EDE7C0521C15}.Release|Any CPU.ActiveCfg = Release|Win32
+		{B20A28DC-DEC3-4F08-AE36-EDE7C0521C15}.Release|x64.ActiveCfg = Release|x64
+		{B20A28DC-DEC3-4F08-AE36-EDE7C0521C15}.Release|x64.Build.0 = Release|x64
+		{B20A28DC-DEC3-4F08-AE36-EDE7C0521C15}.Release|x86.ActiveCfg = Release|Win32
+		{B20A28DC-DEC3-4F08-AE36-EDE7C0521C15}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
