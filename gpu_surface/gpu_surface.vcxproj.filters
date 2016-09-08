@@ -38,6 +38,9 @@
     <None Include="rmdup-2.glsl">
       <Filter>Shaders\Sorting</Filter>
     </None>
+    <None Include="should_merge.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="patch_data.h">

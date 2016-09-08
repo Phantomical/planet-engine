@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <string>
+
 #ifndef __gl_h_
 typedef unsigned int GLuint;
 #endif
@@ -27,9 +30,16 @@ namespace planet_engine
 			//     shader_name: The string key that the shader is associated with
 			//     critical:    Indicates if the resource manager should halt the
 			//                  application if the shader fails to compile
-			GLuint RCMGR_API LoadShader(const char* shader_name, bool critical = true);
+			GLuint RCMGR_API LoadShader(const char* resource_name, bool critical = true);
+			std::string RCMGR_API LoadText(const char* resource_name, bool cached = false);
+
+			ResourceManager();
+			~ResourceManager();
+
+			ResourceManager(const ResourceManager&) = delete;
+			ResourceManager(ResourceManager&&) = delete;
 		};
 
-		RCMGR_API ResourceManager* RcMgr;
+		RCMGR_API std::shared_ptr<ResourceManager> RcMgr;
 	}
 }
