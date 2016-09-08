@@ -1,5 +1,7 @@
 #include "remove_duplicates.h"
 
+#include <cassert>
+
 namespace planet_engine
 {
 	namespace gpu_surface
@@ -8,8 +10,12 @@ namespace planet_engine
 		{
 			static constexpr GLuint COMPUTE_GROUP_SIZE = 128;
 
-			static GLuint rmdup_1;
-			static GLuint rmdup_2;
+			static GLuint rmdup_1 = 0;
+			static GLuint rmdup_2 = 0;
+
+			//TODO: Add shader compilation code
+			// This assert will fire until that happens
+			assert(rmdup_1 != 0 && rmdup_2 != 0);
 
 			/* Setup */
 			GLuint buffers[3];
