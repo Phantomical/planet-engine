@@ -90,7 +90,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)surface;D:\projects\src;$(SolutionDir)utils</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)surface;D:\projects\src;$(SolutionDir)utils;$(SolutionDir)rcmgr</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>LOG_TO_FILE</PreprocessorDefinitions>
     </ClCompile>
     <CustomBuild>
@@ -116,7 +116,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)surface;D:\projects\src;$(SolutionDir)utils</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)surface;D:\projects\src;$(SolutionDir)utils;$(SolutionDir)rcmgr</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>LOG_TO_FILE</PreprocessorDefinitions>
     </ClCompile>
     <CustomBuild>
@@ -144,7 +144,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)surface;D:\projects\src;$(SolutionDir)utils</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)surface;D:\projects\src;$(SolutionDir)utils;$(SolutionDir)rcmgr</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>LOG_TO_FILE</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -176,7 +176,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)surface;D:\projects\src;$(SolutionDir)utils</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)surface;D:\projects\src;$(SolutionDir)utils;$(SolutionDir)rcmgr</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>LOG_TO_FILE</PreprocessorDefinitions>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
     </ClCompile>

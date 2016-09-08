@@ -15,6 +15,8 @@ namespace planet_engine
 {
 	namespace resources
 	{
+		std::shared_ptr<ResourceManager> RcMgr = std::make_shared<ResourceManager>();
+
 		std::string operator ""_s(const char* str, size_t)
 		{
 			return std::string(str);

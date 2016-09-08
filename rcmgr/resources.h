@@ -42,6 +42,6 @@ namespace planet_engine
 			ResourceManager(ResourceManager&&) = delete;
 		};
 
-		RCMGR_API std::shared_ptr<ResourceManager> RcMgr;
+		extern RCMGR_API std::shared_ptr<ResourceManager> RcMgr;
 	}
 }

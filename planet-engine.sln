@@ -38,6 +38,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gpu_surface", "gpu_surface\gpu_surface.vcxproj", "{29B74C8F-1F41-46E5-A586-3B3B2EDC08BE}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rcmgr", "rcmgr\rcmgr.vcxproj", "{B20A28DC-DEC3-4F08-AE36-EDE7C0521C15}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FD04F2E2-DA2F-4C84-AA74-D9FCCDBD1BF0} = {FD04F2E2-DA2F-4C84-AA74-D9FCCDBD1BF0}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
