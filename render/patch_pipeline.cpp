@@ -1,11 +1,11 @@
 #include "patch_pipeline.h"
 
 #include "defs.h"
-#include "shader.h"
-#include "load_file.h"
 #include "findutils.h"
 #include "templateutils.h"
 #include "spaced_buffer.h"
+
+#include "resources.h"
 
 #include <iostream>
 #include <algorithm>
@@ -351,45 +351,13 @@ namespace planet_engine
 		_manager(MESH_SIZE, static_cast<GLuint>(num_blocks))
 	{
 		using namespace util;
-
-		shader meshgen(false);
-		shader vertex_gen(false);
-		shader length_calc(false);
-		shader max_calc(false);
-		shader get_pos(false);
-		shader compact(false);
-
-		meshgen.compute(read_file("mesh_gen.glsl"));
-		meshgen.link();
-
-		vertex_gen.compute(read_file("vertex_gen.glsl"));
-		vertex_gen.link();
-
-		length_calc.compute(read_file("length.glsl"));
-		length_calc.link();
-
-		max_calc.compute(read_file("max.glsl"));
-		max_calc.link();
-
-		get_pos.compute(read_file("get_pos.glsl"));
-		get_pos.link();
-
-		compact.compute(read_file("compact.glsl"));
-		compact.link();
-
-		meshgen.check_errors({ GL_COMPUTE_SHADER });
-		vertex_gen.check_errors({ GL_COMPUTE_SHADER });
-		length_calc.check_errors({ GL_COMPUTE_SHADER });
-		max_calc.check_errors({ GL_COMPUTE_SHADER });
-		get_pos.check_errors({ GL_COMPUTE_SHADER });
-		compact.check_errors({ GL_COMPUTE_SHADER });
-
-		_meshgen = meshgen.program();
-		_vertex_gen = vertex_gen.program();
-		_length_calc = length_calc.program();
-		_max_calc = max_calc.program();
-		_get_pos = get_pos.program();
-		_compact = compact.program();
+		
+		_meshgen = resources::RcMgr->LoadShader("render\\patch-pipeline\\mesh_gen");
+		_vertex_gen = resources::RcMgr->LoadShader("render\\patch-pipeline\\vertex_gen");
+		_length_calc = resources::RcMgr->LoadShader("render\\patch-pipeline\\length");
+		_max_calc = resources::RcMgr->LoadShader("render\\patch-pipeline\\max");
+		_get_pos = resources::RcMgr->LoadShader("render\\patch-pipeline\\get_pos");
+		_compact = resources::RcMgr->LoadShader("render\\patch-pipeline\\compact");
 
 		glProgramUniform1ui(_meshgen, 0, SIDE_LEN);
 		glProgramUniform1ui(_vertex_gen, 0, SIDE_LEN);
