@@ -15,7 +15,7 @@ namespace planet_engine
 {
 	namespace resources
 	{
-		std::string operator ""s(const char* str, size_t)
+		std::string operator ""_s(const char* str, size_t)
 		{
 			return std::string(str);
 		}
@@ -53,7 +53,7 @@ namespace planet_engine
 			auto it = Data->Shaders.find(shader_name);
 			if (it == Data->Shaders.end())
 			{
-				DisplayError(std::string("ERROR: Unable to find definition for resource '")
+				DisplayError("ERROR: Unable to find definition for resource '"_s
 					+ shader_name + "'\n");
 			}
 
@@ -106,7 +106,7 @@ namespace planet_engine
 
 			if (iserr)
 			{
-				DisplayError(std::string("Error while compiling shader '") + shader_name + "'");
+				DisplayError("Error while compiling shader '"_s + shader_name + "'");
 			}
 
 			glLinkProgram(program);
@@ -124,7 +124,7 @@ namespace planet_engine
 					glGetProgramInfoLog(program, maxlength, &maxlength, &log[0]);
 
 					printf("%s", log.c_str());
-					DisplayError(std::string("Error while linking shader '") + shader_name + "'");
+					DisplayError("Error while linking shader '"_s + shader_name + "'");
 				}
 			}
 
@@ -151,7 +151,7 @@ namespace planet_engine
 
 			if (!t.is_open())
 			{
-				DisplayError("Unable to load path '"s + it->second + "' while loading resource '" + resource_name);
+				DisplayError("Unable to load path '"_s + it->second + "' while loading resource '" + resource_name);
 			}
 
 			std::stringstream buffer;
@@ -162,11 +162,86 @@ namespace planet_engine
 		ResourceManager::ResourceManager() :
 			Data(new Impl)
 		{
-
+			InitResources(Data);
 		}
 		ResourceManager::~ResourceManager()
 		{
 			delete Data;
+		}
+
+#define ADD_SHADER(name, vert, geom, tctrl, teval, frag) \
+	data->Shaders[name] = { vert, geom, tctrl, teval, frag, nullptr }
+#define ADD_COMPUTE(name, comp) \
+	data->Shaders[name] = { nullptr, nullptr, nullptr, nullptr, nullptr, comp }
+#define ADD_FILE(name, path) \
+	data->Files[name] = path
+
+		void ResourceManager::InitResources(Impl* data)
+		{
+			/* Shaders */
+			/* gpu_surface */
+			/* remove_duplicates */
+			ADD_COMPUTE("gpu_surface\\rmdup-1", "gpu_surface\\shaders\\rmdup-1");
+			ADD_COMPUTE("gpu_surface\\rmdup-2", "gpu_surface\\shaders\\rmdup-2");
+			
+			ADD_COMPUTE("gpu_surface\\should-merge", "gpu_surface\\shaders\\should-merge");
+			ADD_COMPUTE("gpu_surface\\should-subdivide", "gpu_suface\\shaders\\should-subdivide");
+
+			/* render */
+			/* occlusion-culling */
+			ADD_SHADER("render\\occlusion-culling\\occludee", 
+				"render\\occlusion-culling\\shaders\\occludee-vert",
+				nullptr, nullptr, nullptr,
+				"render\\occlusion-culling\\shaders\\occludee-frag");
+			ADD_SHADER("render\\occlusion-culling\\occluder",
+				"render\\occlusion-culling\\shaders\\occluder-vert",
+				"render\\occlusion-culling\\shaders\\occluder-geom",
+				nullptr, nullptr, nullptr);
+
+			/* pipeline */
+			ADD_COMPUTE("render\\patch-pipline\\compact", "render\\patch-pipline\\shaders\\compact");
+			ADD_COMPUTE("render\\patch-pipline\\get_pos", "render\\patch-pipline\\shaders\\get_pos");
+			ADD_COMPUTE("render\\patch-pipline\\length", "render\\patch-pipline\\shaders\\length");
+			ADD_COMPUTE("render\\patch-pipline\\max", "render\\patch-pipline\\shaders\\max");
+			ADD_COMPUTE("render\\patch-pipline\\mesh_gen", "render\\patch-pipline\\shaders\\mesh_gen");
+			ADD_COMPUTE("render\\patch-pipline\\noise", "render\\patch-pipline\\shaders\\noise");
+			ADD_COMPUTE("render\\patch-pipline\\vertex_gen", "render\\patch-pipline\\shaders\\vertex_gen");
+
+			/* renderer */
+			ADD_COMPUTE("render\\renderer\\command_update", "render\\renderer\\shaders\\command_update");
+
+			/* general */
+			ADD_SHADER("render\\planet-shader",
+				"render\\shaders\\planet-shader-vert",
+				nullptr, nullptr, nullptr,
+				"render\\shaders\\planet-shader-frag");
+
+			/* Files */
+			/* gpu_surface */
+			ADD_FILE("gpu_surface\\shaders\\rmdup-1", "rmdup-1.glsl");
+			ADD_FILE("gpu_surface\\shaders\\rmdup-2", "rmdup-2.glsl");
+
+			ADD_FILE("gpu_surface\\shaders\\should-merge", "should_merge.glsl");
+			ADD_FILE("gpu_surface\\shaders\\should-subdivide", "should_subdivide.glsl");
+
+			/* render */
+			ADD_FILE("render\\occlusion-culling\\shaders\\occludee-frag", "occludee-frag.glsl");
+			ADD_FILE("render\\occlusion-culling\\shaders\\occludee-vert", "occludee-vert.glsl");
+			ADD_FILE("render\\occlusion-culling\\shaders\\occluder-geom", "occluder-geom.glsl");
+			ADD_FILE("render\\occlusion-culling\\shaders\\occluder-vert", "occluder-vert.glsl");
+
+			ADD_FILE("render\\patch-pipline\\shaders\\compact", "compact.glsl");
+			ADD_FILE("render\\patch-pipline\\shaders\\get_pos", "get_pos.glsl");
+			ADD_FILE("render\\patch-pipline\\shaders\\length", "length.glsl");
+			ADD_FILE("render\\patch-pipline\\shaders\\max", "max.glsl");
+			ADD_FILE("render\\patch-pipline\\shaders\\mesh_gen", "mesh_gen.glsl");
+			ADD_FILE("render\\patch-pipline\\shaders\\noise", "noise.glsl");
+			ADD_FILE("render\\patch-pipline\\shaders\\vertex_gen", "vertex_gen.glsl");
+
+			ADD_FILE("render\\renderer\\shaders\\command_update", "command_update.glsl");
+
+			ADD_FILE("render\\shaders\\planet-shader-vert", "planet_shader_vert.glsl");
+			ADD_FILE("render\\shaders\\planet-shader-frag", "planet_shader_frag.glsl");
 		}
 	}
 }

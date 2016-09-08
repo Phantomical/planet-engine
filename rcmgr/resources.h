@@ -24,13 +24,15 @@ namespace planet_engine
 
 			Impl* Data;
 
+			static void InitResources(Impl* data);
+
 		public:
 			// Loads and compiles a shader resource to an OpenGL program
 			// Parameters:
 			//     shader_name: The string key that the shader is associated with
 			//     critical:    Indicates if the resource manager should halt the
 			//                  application if the shader fails to compile
-			GLuint RCMGR_API LoadShader(const char* resource_name, bool critical = true);
+			GLuint RCMGR_API LoadShader(const char* resource_name);
 			std::string RCMGR_API LoadText(const char* resource_name, bool cached = false);
 
 			ResourceManager();
