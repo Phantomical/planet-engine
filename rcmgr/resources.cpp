@@ -172,9 +172,9 @@ namespace planet_engine
 		}
 
 #define ADD_SHADER(name, vert, geom, tctrl, teval, frag) \
-	data->Shaders[name] = { vert, geom, tctrl, teval, frag, nullptr }
+	data->Shaders[name] = { vert, geom, tctrl, teval, frag, "" }
 #define ADD_COMPUTE(name, comp) \
-	data->Shaders[name] = { nullptr, nullptr, nullptr, nullptr, nullptr, comp }
+	data->Shaders[name] = { "", "", "", "", "", comp }
 #define ADD_FILE(name, path) \
 	data->Files[name] = path
 
@@ -193,21 +193,21 @@ namespace planet_engine
 			/* occlusion-culling */
 			ADD_SHADER("render\\occlusion-culling\\occludee", 
 				"render\\occlusion-culling\\shaders\\occludee-vert",
-				nullptr, nullptr, nullptr,
+				"", "", "",
 				"render\\occlusion-culling\\shaders\\occludee-frag");
 			ADD_SHADER("render\\occlusion-culling\\occluder",
 				"render\\occlusion-culling\\shaders\\occluder-vert",
 				"render\\occlusion-culling\\shaders\\occluder-geom",
-				nullptr, nullptr, nullptr);
+				"", "", "");
 
 			/* pipeline */
-			ADD_COMPUTE("render\\patch-pipline\\compact", "render\\patch-pipline\\shaders\\compact");
-			ADD_COMPUTE("render\\patch-pipline\\get_pos", "render\\patch-pipline\\shaders\\get_pos");
-			ADD_COMPUTE("render\\patch-pipline\\length", "render\\patch-pipline\\shaders\\length");
-			ADD_COMPUTE("render\\patch-pipline\\max", "render\\patch-pipline\\shaders\\max");
-			ADD_COMPUTE("render\\patch-pipline\\mesh_gen", "render\\patch-pipline\\shaders\\mesh_gen");
-			ADD_COMPUTE("render\\patch-pipline\\noise", "render\\patch-pipline\\shaders\\noise");
-			ADD_COMPUTE("render\\patch-pipline\\vertex_gen", "render\\patch-pipline\\shaders\\vertex_gen");
+			ADD_COMPUTE("render\\patch-pipeline\\compact", "render\\patch-pipeline\\shaders\\compact");
+			ADD_COMPUTE("render\\patch-pipeline\\get_pos", "render\\patch-pipeline\\shaders\\get_pos");
+			ADD_COMPUTE("render\\patch-pipeline\\length", "render\\patch-pipeline\\shaders\\length");
+			ADD_COMPUTE("render\\patch-pipeline\\max", "render\\patch-pipeline\\shaders\\max");
+			ADD_COMPUTE("render\\patch-pipeline\\mesh_gen", "render\\patch-pipeline\\shaders\\mesh_gen");
+			ADD_COMPUTE("render\\patch-pipeline\\noise", "render\\patch-pipeline\\shaders\\noise");
+			ADD_COMPUTE("render\\patch-pipeline\\vertex_gen", "render\\patch-pipeline\\shaders\\vertex_gen");
 
 			/* renderer */
 			ADD_COMPUTE("render\\renderer\\command_update", "render\\renderer\\shaders\\command_update");
@@ -215,7 +215,7 @@ namespace planet_engine
 			/* general */
 			ADD_SHADER("render\\planet-shader",
 				"render\\shaders\\planet-shader-vert",
-				nullptr, nullptr, nullptr,
+				"", "", "",
 				"render\\shaders\\planet-shader-frag");
 
 			/* Files */
@@ -232,13 +232,13 @@ namespace planet_engine
 			ADD_FILE("render\\occlusion-culling\\shaders\\occluder-geom", "occluder-geom.glsl");
 			ADD_FILE("render\\occlusion-culling\\shaders\\occluder-vert", "occluder-vert.glsl");
 
-			ADD_FILE("render\\patch-pipline\\shaders\\compact", "compact.glsl");
-			ADD_FILE("render\\patch-pipline\\shaders\\get_pos", "get_pos.glsl");
-			ADD_FILE("render\\patch-pipline\\shaders\\length", "length.glsl");
-			ADD_FILE("render\\patch-pipline\\shaders\\max", "max.glsl");
-			ADD_FILE("render\\patch-pipline\\shaders\\mesh_gen", "mesh_gen.glsl");
-			ADD_FILE("render\\patch-pipline\\shaders\\noise", "noise.glsl");
-			ADD_FILE("render\\patch-pipline\\shaders\\vertex_gen", "vertex_gen.glsl");
+			ADD_FILE("render\\patch-pipeline\\shaders\\compact", "compact.glsl");
+			ADD_FILE("render\\patch-pipeline\\shaders\\get_pos", "get_pos.glsl");
+			ADD_FILE("render\\patch-pipeline\\shaders\\length", "length.glsl");
+			ADD_FILE("render\\patch-pipeline\\shaders\\max", "max.glsl");
+			ADD_FILE("render\\patch-pipeline\\shaders\\mesh_gen", "mesh_gen.glsl");
+			ADD_FILE("render\\patch-pipeline\\shaders\\noise", "noise.glsl");
+			ADD_FILE("render\\patch-pipeline\\shaders\\vertex_gen", "vertex_gen.glsl");
 
 			ADD_FILE("render\\renderer\\shaders\\command_update", "command_update.glsl");
 
