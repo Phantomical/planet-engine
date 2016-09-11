@@ -244,9 +244,7 @@ namespace planet_engine
 			
 			glfwSetWindowSizeCallback(Window, ResizeCallback);
 			glfwSetWindowUserPointer(Window, this);
-
-			ogl_LoadFunctions();
-
+			
 			glDebugMessageCallback(&DebugProc, nullptr);
 		}
 		AppBase::~AppBase()

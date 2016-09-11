@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="remove_duplicates.h" />
     <ClInclude Include="patch_data.h" />
+    <ClInclude Include="surface.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="remove_duplicates.cpp" />

@@ -117,9 +117,7 @@ int main()
 	glfwMakeContextCurrent(win);
 
 	glfwSetWindowSizeCallback(win, &WindowCallback);
-
-	ogl_LoadFunctions();
-
+	
 	glfwSwapBuffers(win);
 
 	aspect = 1.5;

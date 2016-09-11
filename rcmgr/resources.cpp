@@ -69,7 +69,7 @@ namespace planet_engine
 
 			for (size_t i = 0; i < 6; ++i)
 			{
-				if (!sources[i].empty())
+				if (!(*it).second.Sources[i].empty())
 				{
 					std::string source = LoadText(sources[i].c_str(), false);
 					const char* str = source.c_str();
