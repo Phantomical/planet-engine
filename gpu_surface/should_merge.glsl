@@ -23,6 +23,10 @@ layout(binding = 1) uniform CameraData
 	dvec3 cam_pos;
 	dvec3 cam_vel;
 };
+layout(binding = 2) uniform Ranges
+{
+	double ranges[128];
+};
 
 layout(binding = 0) buffer Patches
 {
@@ -57,13 +61,14 @@ double distance2(in dvec3 a, in dvec3 b)
 bool should_subdivide(in patch_data patch)
 {
 	return patch.level < planet.max_level
-		&& distance2(cam_pos, POS(patch) + dvec3(patch.pos_offset)) * planet.multiplier
-		< patch.farthest_vertex * patch.farthest_vertex - length(cam_vel);
+		&& distance2(vec3(cam_pos - POS(patch)), dvec3(patch.pos_offset))
+		- patch.farthest_vertex < ranges[patch.level];
 }
 bool should_merge(in patch_data patch)
 {
-	return distance2(cam_pos, POS(patch) + dvec3(patch.pos_offset)) * planet.multiplier
-		> patch.farthest_vertex * patch.farthest_vertex - length(cam_vel);
+	return patch.level < planet.max_level
+		&& distance2(vec3(cam_pos - POS(patch)), dvec3(patch.pos_offset))
+		- patch.farthest_vertex > ranges[patch.level];
 }
 
 void main()
