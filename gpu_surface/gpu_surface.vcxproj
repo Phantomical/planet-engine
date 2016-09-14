@@ -44,6 +44,10 @@
       <SubType>
       </SubType>
     </None>
+    <None Include="subdivide.glsl">
+      <SubType>
+      </SubType>
+    </None>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{29B74C8F-1F41-46E5-A586-3B3B2EDC08BE}</ProjectGuid>

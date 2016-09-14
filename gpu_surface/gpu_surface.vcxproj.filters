@@ -41,6 +41,9 @@
     <None Include="should_merge.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="subdivide.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="patch_data.h">
