@@ -304,7 +304,7 @@ namespace planet_engine
 
 	update_state patch_pipeline::process()
 	{
-		static constexpr size_t MAX_UPDATES_PER_FRAME = 128;
+		static constexpr size_t MAX_UPDATES_PER_FRAME = 256;
 
 		update_state ustate;
 

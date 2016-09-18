@@ -38,13 +38,13 @@ namespace planet_engine
 	struct patch : std::enable_shared_from_this<patch>
 	{
 	public:
-		static constexpr size_t SIDE_LEN = 33;
+		static constexpr size_t SIDE_LEN = 32;
 		static constexpr size_t NUM_VERTICES = num_vertices(SIDE_LEN);
 		static constexpr size_t NUM_INDICES = num_indices(SIDE_LEN);
 		static constexpr double SKIRT_DEPTH = 500.0;
 		// Minimum distance between vertices
 		static constexpr double MAX_RESOLUTION = 0.1;
-		static constexpr size_t MAX_LEVEL = 400;
+		static constexpr size_t MAX_LEVEL = 200;
 
 		struct info
 		{
@@ -83,7 +83,7 @@ namespace planet_engine
 		void merge(update_info& info);
 
 	private:
-		static constexpr double MULT = 1.0 / (10.0);
+		static constexpr double MULT = 1.0 / (3.0);
 
 	public:
 		bool should_subdivide(const glm::dvec3& cam_pos, const glm::dvec3& cam_vel) const;

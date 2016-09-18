@@ -19,6 +19,7 @@ layout(location = 3) in vec3 in_outdir;
 
 smooth out vec3 normal;
 smooth out float displacement;
+smooth out vec3 outdir;
 
 void main()
 {
@@ -27,4 +28,5 @@ void main()
 	gl_Position = mvp * vec4(in_vertex, 1.0);
 	normal = in_normal;
 	displacement = in_displacement;
+	outdir = in_outdir;
 }
