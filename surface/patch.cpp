@@ -11,6 +11,12 @@ namespace planet_engine
 	using glm::fvec3;
 	using glm::normalize;
 
+	template<typename T>
+	inline T square(T a)
+	{
+		return a * a;
+	}
+
 	void patch::split(update_info& uinfo)
 	{
 		assert(!subdivided());
@@ -82,7 +88,7 @@ namespace planet_engine
 
 	bool patch::should_subdivide(const glm::dvec3& cam_pos, const glm::dvec3& cam_vel) const
 	{
-		return level < data->max_level && side_length() > glm::length(cam_vel) 
+		return level < data->max_level && square(side_length()) > glm::length(cam_vel) 
 			&& length(cam_pos - actual_pos) * MULT < farthest_vertex;
 	}
 	bool patch::should_merge(const glm::dvec3& cam_pos, const glm::dvec3& cam_vel) const

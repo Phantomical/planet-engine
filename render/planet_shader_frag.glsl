@@ -15,6 +15,6 @@ void main()
 	if (displacement <= 0.0)
 		col = vec3(0.0, 0.0, 1.0);
 
-	Colour = col * (dot(normal, -LightDir) + sin(2.0 * angle));
-	Colour *= clamp((dot(outdir, -LightDir) + sin(2.0 * angle + 0.2)) * 5.0, 0.0, 1.0);
+	Colour = col * (dot(normal, -LightDir) + sin(angle));
+	Colour *= clamp((dot(outdir, -LightDir) + sin(angle + 0.2)) * 5.0, 0.0, 1.0);
 }

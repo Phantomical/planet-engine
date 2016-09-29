@@ -153,12 +153,12 @@ int main()
 			program = shader.program();
 
 			glProgramUniform3f(program, 1, 0.0, 0.0, -1.0);
-			glProgramUniform1f(program, 2, deg2rad(45));
+			glProgramUniform1f(program, 2, deg2rad(5));
 		}
 
 
 		renderer ren{ program, 6700000.0 };
-		renderer ren2{ program, 1000000.0, 50.0 };
+		renderer ren2{ program, 1000000.0, 10.0 };
 
 		CamPos = glm::dvec3(0.0, 0.0, ren.planet.data->planet_radius + 100000);
 		CamRot = glm::dquat(1.0, 0.0, 0.0, 0.0);
