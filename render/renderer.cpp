@@ -158,17 +158,19 @@ namespace planet_engine
 
 		glm::mat4* matrices = new glm::mat4[size];
 
-		for (auto& p : pipeline.patches())
+		for (size_t i = 0; i < visible.size(); ++i)
 		{
-			GLuint idx = p.second;
-			assert(idx < size);
-
-			glm::dmat4 mat = mvp_mat * glm::translate(glm::dmat4(1.0), p.first->pos);
-			matrices[idx] = mat;
+			if (!visible[i].expired())
+			{
+				std::shared_ptr<patch> p = visible[i].lock();
+				glm::dmat4 mat = mvp_mat * glm::translate(glm::dmat4(1.0), p->pos);
+				matrices[i] = mat;
+			}
 		}
 
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, matbuffer);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, size * sizeof(glm::mat4), matrices, GL_DYNAMIC_DRAW);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, visible.size() * sizeof(glm::mat4), 
+			matrices, GL_DYNAMIC_DRAW);
 		
 		delete[] matrices;
 
@@ -176,13 +178,48 @@ namespace planet_engine
 
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, matbuffer);
 
-		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, drawcommands);
+		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, visible_commands);
 
 		glBindVertexArray(vertex_array);
 
-		glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, nullptr, size, 0);
+		glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, nullptr, visible.size(), 0);
 
 		glBindVertexArray(0);
+	}
+	void renderer::frustum_cull(const frustum& f)
+	{
+		visible.clear();
+		std::vector<std::pair<GLuint, GLuint>> cmds;
+
+		for (const auto& val : pipeline.patches())
+		{
+			if (f.intersects(val.first->actual_pos, val.first->farthest_vertex))
+			{
+				cmds.emplace_back(val.second, (GLuint)cmds.size());
+				visible.push_back(val.first);
+			}
+		}
+
+		glUseProgram(copy_commands);
+
+		glUniform1ui(0, cmds.size());
+
+		GLuint commands;
+		glGenBuffers(1, &commands);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, commands);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, cmds.size() * sizeof(GLuint) * 2, cmds.data(), GL_STATIC_DRAW);
+
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, visible_commands);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, cmds.size() * sizeof(DrawElementsIndirectCommand),
+			nullptr, GL_STATIC_DRAW);
+
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, commands);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, drawcommands);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, visible_commands);
+
+		glDispatchCompute((cmds.size() + COMPUTE_GROUP_SIZE - 1) / COMPUTE_GROUP_SIZE, 1, 1);
+
+		glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
 	}
 		
 	/* Constructors and Destructors */
@@ -196,7 +233,13 @@ namespace planet_engine
 		command_update.link();
 		command_update.check_errors({ GL_COMPUTE_SHADER });
 
+		glsl_shader copy_commands = glsl_shader(false);
+		copy_commands.compute(read_file("copy-commands.glsl"));
+		copy_commands.link();
+		copy_commands.check_errors({ GL_COMPUTE_SHADER });
+
 		this->command_update = command_update.program();
+		this->copy_commands = copy_commands.program();
 
 		data = planet.data;
 
@@ -214,6 +257,7 @@ namespace planet_engine
 		glClearBufferData(GL_DRAW_INDIRECT_BUFFER, GL_R32UI, GL_RED, GL_UNSIGNED_INT, &zero);
 
 		glGenBuffers(1, &matbuffer);
+		glGenBuffers(1, &visible_commands);
 
 		delete[] indices;
 

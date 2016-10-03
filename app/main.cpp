@@ -85,7 +85,7 @@ void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, 
 		break;
 	case GL_DEBUG_SEVERITY_NOTIFICATION:
 		severitystr = "[NOTIFICATION]";
-		break;
+		return;
 	default:
 		severitystr = "[UNKNOWN]";
 		break;
@@ -111,19 +111,19 @@ int main()
 {
 	glfwInit();
 
-	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, 0);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, 1);
 
 	GLFWwindow* win = glfwCreateWindow(1080, 720, "Planet Engine Demo", nullptr, nullptr);
 	glfwMakeContextCurrent(win);
 
 	glfwSetWindowSizeCallback(win, &WindowCallback);
-	
+
 	glfwSwapBuffers(win);
 
 	aspect = 1.5;
-	
-	//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-	//glDebugMessageCallback(DebugProc, nullptr);
+
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glDebugMessageCallback(DebugProc, nullptr);
 
 	glClearColor(0.05f, 0.0f, 0.0f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -176,6 +176,9 @@ int main()
 			glm::dmat4 view_mat = glm::inverse(glm::translate(glm::dmat4(1.0), CamPos) * (glm::dmat4)CamRot);
 			glm::dmat4 model_mat = glm::translate(glm::dmat4(1.0), glm::dvec3(10000000.0, 0.0, 0.0));
 
+			frustum f{ view_mat *  glm::perspective(deg2rad(10.0), aspect, 0.1, 1000000000.0) };
+
+
 			{
 				glm::dmat4 proj_mat = glm::infinitePerspective(deg2rad(60.0), aspect, 10000.0);
 				auto vp_mat = proj_mat * view_mat;
@@ -183,7 +186,7 @@ int main()
 				ren.render(vp_mat);
 				ren2.render(vp_mat * model_mat);
 			}
-			
+
 			glClear(GL_DEPTH_BUFFER_BIT);
 
 			{
@@ -203,6 +206,9 @@ int main()
 			prevpos = CamPos;
 
 			HandleInput(win, 20);
+
+			ren.frustum_cull(f);
+			ren2.frustum_cull(f);
 
 			glfwPollEvents();
 			glfwSwapBuffers(win);

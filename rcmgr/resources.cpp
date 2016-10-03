@@ -211,6 +211,7 @@ namespace planet_engine
 
 			/* renderer */
 			ADD_COMPUTE("render\\renderer\\command_update", "render\\renderer\\shaders\\command_update");
+			ADD_COMPUTE("render\\renderer\\copy-commands", "render\\renderer\\shaders\\copy-commands");
 
 			/* general */
 			ADD_SHADER("render\\planet-shader",
@@ -241,6 +242,7 @@ namespace planet_engine
 			ADD_FILE("render\\patch-pipeline\\shaders\\vertex_gen", "vertex_gen.glsl");
 
 			ADD_FILE("render\\renderer\\shaders\\command_update", "command_update.glsl");
+			ADD_FILE("render\\renderer\\shaders\\copy-commands", "copy-commands.glsl");
 
 			ADD_FILE("render\\shaders\\planet-shader-vert", "planet_shader_vert.glsl");
 			ADD_FILE("render\\shaders\\planet-shader-frag", "planet_shader_frag.glsl");

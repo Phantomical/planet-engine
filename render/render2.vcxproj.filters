@@ -105,5 +105,8 @@
     <None Include="noise.glsl">
       <Filter>Shaders\pipeline</Filter>
     </None>
+    <None Include="copy-commands.glsl">
+      <Filter>Shaders\renderer</Filter>
+    </None>
   </ItemGroup>
 </Project>

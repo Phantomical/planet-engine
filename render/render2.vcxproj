@@ -249,6 +249,11 @@
       </SubType>
       <FileType>Document</FileType>
     </CustomBuild>
+    <CustomBuild Include="copy-commands.glsl">
+      <SubType>
+      </SubType>
+      <FileType>Document</FileType>
+    </CustomBuild>
     <None Include="noise.glsl" />
     <CustomBuild Include="occludee-frag.glsl">
       <FileType>Document</FileType>
