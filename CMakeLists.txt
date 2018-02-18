@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 2.6)
 
 project (planet-engine)
 
+add_subdirectory(glslpp)
 add_subdirectory(utils)
 add_subdirectory(rcmgr)
 add_subdirectory(surface)

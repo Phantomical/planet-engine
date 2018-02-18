@@ -43,6 +43,7 @@ glm::dmat4 translation(const glm::dvec3& v)
 }
 
 double aspect;
+double displacement = 20;
 
 void APIENTRY DebugProc(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void*)
 {
@@ -106,6 +107,10 @@ void WindowCallback(GLFWwindow* win, int xsz, int ysz)
 		ysz = 1;
 	aspect = double(xsz) / double(ysz);
 }
+void ScrollCallback(GLFWwindow* win, double xoffset, double yoffset) {
+	displacement = exp2(log2(displacement) + (yoffset / 10));
+	std::cout << displacement << std::endl;
+}
 
 int main()
 {
@@ -117,6 +122,7 @@ int main()
 	glfwMakeContextCurrent(win);
 
 	glfwSetWindowSizeCallback(win, &WindowCallback);
+	glfwSetScrollCallback(win, &ScrollCallback);
 
 	glfwSwapBuffers(win);
 
@@ -205,7 +211,7 @@ int main()
 
 			prevpos = CamPos;
 
-			HandleInput(win, 20);
+			HandleInput(win, displacement);
 
 			ren.frustum_cull(f);
 			ren2.frustum_cull(f);

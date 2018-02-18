@@ -24,7 +24,7 @@ find_package(GLM REQUIRED)
 target_link_libraries(render PRIVATE ${OPENGL_gl_LIBRARY})
 
 # Indicate the other targets we depend on
-add_dependencies(render surface utils rcmgr)
+add_dependencies(render surface utils rcmgr glslpp)
 
 # Make sure to include the utils include files
 target_include_directories(render PRIVATE ${UTILS_INCLUDE_DIRS})
@@ -40,7 +40,7 @@ target_include_directories(render PRIVATE ${RCMGR_INCLUDE_DIRS})
 foreach(file ${shaders})
 	get_filename_component(filename ${file} NAME)
 	add_custom_command(TARGET render POST_BUILD
-		COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../glslpp
+		COMMAND $<TARGET_FILE:glslpp>
 			${file} ${CMAKE_CURRENT_BINARY_DIR}/${filename} 
 			-I${CMAKE_CURRENT_SOURCE_DIR}/
 	)

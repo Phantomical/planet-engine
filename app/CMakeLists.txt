@@ -45,6 +45,5 @@ foreach(file ${shaders})
 		COMMAND ${CMAKE_COMMAND} -E copy
 			${CMAKE_CURRENT_BINARY_DIR}/../render/${shader}
 			$<TARGET_FILE_DIR:app>
-		COMMAND echo ${shader}
 	)
 endforeach()
