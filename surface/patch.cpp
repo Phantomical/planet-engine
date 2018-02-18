@@ -1,6 +1,7 @@
 #include "patch.h"
 #include "defs.h"
 #include "findutils.h"
+#include <cassert>
 
 #undef max
 #undef min
@@ -156,6 +157,6 @@ namespace planet_engine
 		// These should be replaced with more accurate values
 		// when the mesh is generated
 		actual_pos = pos;
-		farthest_vertex = side_length();
+		farthest_vertex = (float)side_length();
 	}
 }

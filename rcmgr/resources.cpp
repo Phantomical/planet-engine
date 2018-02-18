@@ -41,7 +41,7 @@ namespace planet_engine
 			std::unordered_map<std::string, std::string> Files;
 		};
 
-		GLuint ResourceManager::LoadShader(const char* shader_name)
+		GLuint RCMGR_API ResourceManager::LoadShader(const char* shader_name)
 		{
 			static constexpr GLenum StageEnums[] = {
 				GL_VERTEX_SHADER,

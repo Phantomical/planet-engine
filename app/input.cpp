@@ -1,5 +1,7 @@
 #include "input.h"
 
+#define GLM_ENABLE_EXPERIMENTAL 1
+
 #include <glm\gtx\euler_angles.hpp>
 
 glm::dvec3 CamPos;
@@ -41,7 +43,7 @@ void HandleInput(GLFWwindow* win, double displacement)
 	dvec3 up = dvec3(rot[1]);
 	dvec3 front = dvec3(rot[2]);
 
-	dvec3 NewCamRot;
+	dvec3 NewCamRot = dvec3(0.0);
 
 	if (Keyboard[GLFW_KEY_LEFT_SHIFT])
 		displacement *= 500;

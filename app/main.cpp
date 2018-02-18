@@ -153,7 +153,7 @@ int main()
 			program = shader.program();
 
 			glProgramUniform3f(program, 1, 0.0, 0.0, -1.0);
-			glProgramUniform1f(program, 2, deg2rad(5));
+			glProgramUniform1f(program, 2, (float)deg2rad(5));
 		}
 
 

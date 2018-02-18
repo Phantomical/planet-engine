@@ -1,5 +1,7 @@
 #include "input.h"
 
+#define GLM_ENABLE_EXPERIMENTAL 1
+
 #include <glm\gtx\euler_angles.hpp>
 
 namespace planet_engine
@@ -45,7 +47,7 @@ namespace planet_engine
 			dvec3 up = dvec3(rot[1]);
 			dvec3 front = dvec3(rot[2]);
 
-			dvec3 NewCamRot;
+			dvec3 NewCamRot = dvec3(0.0);
 
 			// Translate camera
 			if (Keyboard[GLFW_KEY_W])

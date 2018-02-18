@@ -16,5 +16,5 @@ void main()
 		col = vec3(0.0, 0.0, 1.0);
 
 	Colour = col * (dot(normal, -LightDir) + sin(angle));
-	Colour *= clamp((dot(outdir, -LightDir) + sin(angle + 0.2)) * 5.0, 0.0, 1.0);
+	Colour = col * clamp((dot(normal, -LightDir) + sin(angle)), 0.0, 1.0);
 }
